@@ -1,0 +1,144 @@
+syntax = "proto3";
+package message;
+
+message LoginReq{
+  int32 uid = 1;
+  string token= 2;
+}
+
+message LoginRsp {
+  int32 error = 1;
+  int32 uid = 2;
+  string token = 3;
+}
+
+message GetChatServerReq {
+  int32 uid = 1;
+}
+
+message GetChatServerRsp{
+  int32 error = 1;
+  string host = 2;
+  string port = 3;
+  string token = 4;
+}
+
+service StatusService {
+  rpc GetChatServer (GetChatServerReq) returns (GetChatServerRsp) {}
+  rpc Login(LoginReq) returns(LoginRsp);
+}
+
+message AddFriendReq{
+  int32  applyuid = 1;
+  string name = 2;
+  string desc = 3;
+  string icon = 4;
+  string nick = 5;
+  int32  sex = 6;
+  int32  touid = 7;
+
+}
+
+message AddFriendRsp{
+  int32 error = 1;
+  int32 applyuid = 2;
+  int32 touid = 3;
+}
+
+message AuthFriendReq{
+  int32 fromuid = 1;
+  int32 touid = 2;
+}
+
+message AuthFriendRsp{
+  int32 error = 1;
+  int32 fromuid = 2;
+  int32 touid = 3;
+}
+
+message TextChatMsgReq {
+  int32 fromuid = 1;
+  int32 touid = 2;
+  int32 thread_id = 3;
+  repeated TextChatData textmsgs = 4;
+  bool is_group = 5;
+}
+
+message TextChatData{
+  string unique_id = 1;
+  int32 msg_id = 2;
+  string msgcontent = 3;
+  string chat_time = 4;
+}
+
+message TextChatMsgRsp {
+  int32 error = 1;
+  int32 fromuid = 2;
+  int32 touid = 3;
+  int32 thread_id = 4;
+  repeated TextChatData textmsgs = 5;
+}
+
+message ImageChatMsgReq {
+  int32 fromuid = 1;
+  int32 touid = 2;
+  int32 thread_id = 3;
+  int32 message_id = 4;
+  string unique_id = 5;
+  string name = 6;
+  string md5 = 7;
+  string chat_time = 8;
+  int32 status = 9;
+  int32 type = 10;
+  int32 total_size = 11;
+  bool is_group = 12;
+}
+
+message ImageChatMsgRsp {
+  int32 error = 1;
+  int32 fromuid = 2;
+  int32 touid = 3;
+  int32 thread_id = 4;
+  int32 message_id = 5;
+  int32 total_size = 6;
+}
+
+message KickUserReq{
+  int32 uid = 1;
+}
+
+message KickUserRsp{
+  int32 error = 1;
+  int32 uid = 2;
+}
+
+message MembersUid{
+  int32 uid = 1;
+}
+
+message AddGroupChatReq{
+  int32 host_uid = 1;
+  int32 uid = 2;
+  repeated MembersUid members_uid= 3;
+  int32 thread_id = 4;
+  int32 member_size = 5;
+}
+
+message AddGroupChatRsp{
+  int32 error = 1;
+  int32 host_uid = 2;
+  int32 uid = 3;
+  repeated MembersUid members_uid= 4;
+  int32 thread_id = 5;
+  int32 member_size = 6;
+}
+
+service ChatService{
+  rpc NotifyAddFriend(AddFriendReq) returns (AddFriendRsp) {}
+  rpc NotifyAuthFriend(AuthFriendReq) returns (AuthFriendRsp) {}
+  rpc NotifyTextChatMsg(TextChatMsgReq) returns (TextChatMsgRsp) {}
+  rpc NotifyImageChatMsg(ImageChatMsgReq) returns (ImageChatMsgRsp) {}
+  rpc NotifyKickUser(KickUserReq) returns (KickUserRsp){}
+  rpc NotifyAddGroupChat(AddGroupChatReq) returns(AddGroupChatRsp){}
+}
+

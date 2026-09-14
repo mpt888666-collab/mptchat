@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>res/app.ico</file>
+        <file>res/search.ico</file>
+        <file>res/clear_visible.ico</file>
+        <file>res/empty.ico</file>
+    </qresource>
+
+    <qresource prefix="/images">
+        <file>res/tx.jpg</file>
+        <file>res/chat_clicked.png</file>
+        <file>res/chat.png</file>
+        <file>res/contact_clicked.png</file>
+        <file>res/contact.png</file>
+        <file>res/right.png</file>
+        <file>res/user.png</file>
+        <file>res/red_point.png</file>
+        <file>res/new_friend.png</file>
+        <file>res/dg.png</file>
+        <file>res/show.png</file>
+    </qresource>
+
+    <qresource prefix="/images">
+        <file>res/unvisible.png</file>
+        <file>res/visible.png</file>
+    </qresource>
+
+    <qresource prefix="/style">
+        <file>style.qss</file>
+    </qresource>
+</RCC>

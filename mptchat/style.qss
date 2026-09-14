@@ -1,0 +1,699 @@
+
+/* ============================================================
+   ChatDialog ȫ��
+   ============================================================ */
+ChatDialog {
+    background: #f0f0f0;
+}
+
+/* ---------- ������ ---------- */
+#side_bar {
+    background: #2c2c2c;
+}
+
+#head_label, #chat_label, #contact_label {
+    background: transparent;
+    border: none;
+    padding: 4px;
+}
+#head_label:hover, #chat_label:hover, #contact_label:hover {
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+}
+
+/* ---------- �û��б���� ---------- */
+#widget_2 {
+    background: #e8e8e8;
+    border-right: 1px solid #d6d6d6;
+}
+
+/* ������ */
+#search_wid {
+    background: #e8e8e8;
+}
+#search_edit {
+    background: #d4d4d4;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    color: #333;
+}
+#search_edit:focus {
+    background: #ffffff;
+}
+
+/* �û��б� */
+#chat_user_list {
+    background: #f2f2f2;
+    border: none;
+    outline: none;
+}
+#chat_user_list::item {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+#chat_user_list::item:hover {
+    background: #dedede;
+}
+#chat_user_list::item:selected {
+    background: #e6f7ee;
+    color: #111111;
+}
+#chat_user_list::item:selected:!active {
+    background: transparent;
+    color: #111111;
+}
+
+ChatUserWid {
+    background: transparent;
+}
+
+ChatUserWid #widget,
+ChatUserWid #time_wid,
+ChatUserWid #user_info_wid,
+ChatUserWid #ico_wid {
+    background: transparent;
+    border: none;
+}
+
+/* ---------- ����ҳ�� ---------- */
+#chat_page {
+    background: #f5f5f5;
+}
+
+/* ������ */
+#title_wid {
+    background: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+#title_label {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    padding-left: 20px;
+}
+
+/* ������Ϣ�� (ChatView) */
+#chat_data_list {
+    background: #f5f5f5;
+}
+
+/* �Զ�������� */
+QScrollBar#chatScrollBar {
+    background: transparent;
+    width: 6px;
+    margin: 0;
+}
+QScrollBar#chatScrollBar::handle {
+    background: #c0c0c0;
+    border-radius: 3px;
+    min-height: 30px;
+}
+QScrollBar#chatScrollBar::handle:hover {
+    background: #a0a0a0;
+}
+QScrollBar#chatScrollBar::add-line,
+QScrollBar#chatScrollBar::sub-line {
+    height: 0;
+}
+QScrollBar#chatScrollBar::add-page,
+QScrollBar#chatScrollBar::sub-page {
+    background: transparent;
+}
+
+/* ������ */
+#tool_wid {
+    background: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+#emo_label, #file_label {
+    padding: 4px;
+}
+#emo_label:hover, #file_label:hover {
+    background: #e8e8e8;
+    border-radius: 4px;
+}
+
+/* ����� */
+#chat_edit {
+    background: #ffffff;
+    border: none;
+    font-size: 15px;
+    color: #333;
+    padding: 10px 16px;
+}
+
+/* ����/���հ�ť */
+#send_btn {
+    background: #07c160;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+#send_btn:hover {
+    background: #06ad56;
+}
+#send_btn:pressed {
+    background: #059048;
+}
+
+#receive_btn {
+    background: #ffffff;
+    color: #07c160;
+    border: 1px solid #07c160;
+    border-radius: 4px;
+    font-size: 14px;
+}
+#receive_btn:hover {
+    background: #e8f8ef;
+}
+
+#widget_6 {
+    background: #ffffff;
+}
+
+/* ============================================================
+   ԭ�еĵ�¼/ע����ʽ��������
+   ============================================================ */
+#err_tip[state="normal"] {
+    color: green;
+}
+
+#err_tip[state="err"] {
+    color: red;
+}
+
+#pass_visible[state='unvisible']{
+   border-image: url(:/images/res/unvisible.png);
+}
+#pass_visible[state='visible']{
+   border-image: url(:/images/res/visible.png);
+}
+#confirm_visible[state='unvisible']{
+   border-image: url(:/images/res/unvisible.png);
+}
+#confirm_visible[state='visible']{
+   border-image: url(:/images/res/visible.png);
+}
+#chat_label[state='normal']{
+    border-image: url(:/images/res/chat.png);
+}
+#chat_label[state='selected']{
+    border-image: url(:/images/res/chat_clicked.png);
+}
+
+#show_friend_or_member_label[state='normal']{
+    border-image: url(:/images/res/show.png);
+}
+#show_friend_or_member_label[state='selected']{
+    border-image: url(:/images/res/show.png);
+}
+
+#contact_label[state='normal']{
+    border-image: url(:/images/res/contact.png);
+}
+#contact_label[state='selected']{
+    border-image: url(:/images/res/contact_clicked.png);
+}
+#red_point{
+    border-image: url(:/images/res/red_point.png);
+}
+#icon_label{
+    border-image: url(:/images/res/new_friend.png);
+}
+#add_tip{
+            border-image: url(:/images/res/user.png);
+}
+
+#right_tip{
+    border-image: url(:/images/res/right.png);
+}
+
+
+/* ============================================================
+   ApplyFriend ������ѶԻ���
+   ============================================================ */
+ApplyFriend {
+    background: #f5f5f5;
+}
+
+/* ���� */
+#apply_label {
+    font-size: 17px;
+    font-weight: bold;
+    color: #333;
+    background: transparent;
+}
+
+/* �������� */
+#label_2, #label, #label_3 {
+    font-size: 14px;
+    color: #555;
+    background: transparent;
+    padding: 2px 0;
+}
+
+/* ����� */
+#name_edit, #back_edit {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 14px;
+    color: #333;
+}
+#name_edit:focus, #back_edit:focus {
+    border-color: #07c160;
+    background: #ffffff;
+}
+
+/* �ָ��� */
+#line {
+    color: #e0e0e0;
+}
+
+/* ��ǩ�������� */
+#label_group_wid {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+}
+
+/* ��ǩ����� */
+#label_edit {
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    padding: 4px 8px;
+}
+
+/* ������ʾ���� */
+#input_tip_wid {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+#tip_label {
+    font-size: 13px;
+    color: #07c160;
+    padding: 6px 12px;
+}
+#tip_label:hover {
+    background: #e8f8ef;
+}
+
+/* ��ǩ�б����� */
+#widget_2 {
+    background: transparent;
+}
+#label_list {
+    background: transparent;
+}
+
+/* ��ǩСԲ��(tipslb) */
+#tipslb[state='normal'] {
+    background: #f0f0f0;
+    color: #555;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 12px;
+    border: 1px solid transparent;
+}
+#tipslb[state='hover'] {
+    background: #e0e0e0;
+    color: #333;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 12px;
+    border: 1px solid transparent;
+}
+#tipslb[state='selected_normal'] {
+    background: #e8f8ef;
+    color: #07c160;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 12px;
+    border: 1px solid #07c160;
+}
+#tipslb[state='selected_hover'] {
+    background: #d4f0e4;
+    color: #06ad56;
+    border-radius: 10px;
+    padding: 2px 10px;
+    font-size: 12px;
+    border: 1px solid #06ad56;
+}
+
+/* �����ǩ��ť */
+#more_label_wid {
+    background: transparent;
+}
+#more_label {
+    background: #e8e8e8;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #999;
+}
+#more_label:hover {
+    background: #d4d4d4;
+    color: #07c160;
+}
+
+/* ���ѱ�ǩ */
+#FriendLabel {
+    background: #e8f8ef;
+    border: 1px solid #b7ebd0;
+    border-radius: 8px;
+}
+#FriendLabel #tip_label {
+    color: #07c160;
+    font-size: 13px;
+    background: transparent;
+    padding: 2px 6px;
+}
+#FriendLabel #close_label {
+    color: #aaa;
+    font-size: 12px;
+    font-weight: bold;
+    background: transparent;
+    border-radius: 7px;
+    min-width: 15px;
+    min-height: 15px;
+}
+#FriendLabel #close_label:hover {
+    background: #ffe0e0;
+    color: #ff4444;
+}
+
+/* ��ť���� */
+#apply_sure_wid {
+    background: transparent;
+}
+
+/* ȷ����ť */
+#confirm_btn {
+    background: #07c160;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+#confirm_btn:hover {
+    background: #06ad56;
+}
+#confirm_btn:pressed {
+    background: #059048;
+}
+
+/* ȡ����ť */
+#cancel_btn {
+    background: #ffffff;
+    color: #666;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 15px;
+}
+#cancel_btn:hover {
+    background: #f0f0f0;
+    border-color: #bbb;
+}
+
+/* ������ */
+#scrollArea {
+    background: transparent;
+    border: none;
+}
+
+/* ============================================================
+   ApplyFriendPage - WeChat style friend request page
+   ============================================================ */
+ApplyFriendPage {
+    background: #ffffff;
+}
+
+ApplyFriendPage #friend_apply_wid {
+    background: #ffffff;
+    border-bottom: 1px solid #ededed;
+}
+
+ApplyFriendPage #friend_apply_label {
+    color: #191919;
+    font-size: 15px;
+    font-weight: 600;
+    background: transparent;
+}
+
+ApplyFriendPage #widget_2 {
+    background: #ffffff;
+    border: none;
+}
+
+ApplyFriendList#apply_friend_list {
+    background: #ffffff;
+    border: none;
+    outline: none;
+}
+
+ApplyFriendList#apply_friend_list::item {
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #ededed;
+    padding: 0;
+}
+
+ApplyFriendList#apply_friend_list::item:hover {
+    background: #f5f5f5;
+}
+
+ApplyFriendList#apply_friend_list::item:selected,
+ApplyFriendList#apply_friend_list::item:selected:!active {
+    background: #f5f5f5;
+    color: #191919;
+}
+
+/* ============================================================
+   ApplyFriendItem - WeChat style friend request row
+   ============================================================ */
+ApplyFriendItem {
+    background: transparent;
+}
+
+ApplyFriendItem #widget,
+ApplyFriendItem #widget_2 {
+    background: transparent;
+    border: none;
+}
+
+ApplyFriendItem #icon_lb {
+    background: #e5e5e5;
+    border: none;
+    border-radius: 6px;
+}
+
+ApplyFriendItem #user_name_label {
+    color: #191919;
+    font-size: 15px;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+}
+
+ApplyFriendItem #user_chat_label {
+    color: #999999;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+}
+
+ApplyFriendItem #add_btn {
+    background: #07c160;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+ApplyFriendItem #add_btn:hover {
+    background: #06ad56;
+}
+
+ApplyFriendItem #add_btn:pressed {
+    background: #059048;
+}
+
+ApplyFriendItem #already_add_label {
+    color: #b2b2b2;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+}
+
+/* ============ user info card (centered) ============ */
+#user_info_page {
+    background: #f5f6f7;
+}
+#user_info_card {
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 14px;
+}
+#user_info_card #label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #1f2329;
+}
+#user_info_card QLabel {
+    background: transparent;
+    color: #4e5969;
+    font-size: 14px;
+}
+#user_info_card #head_label {
+    background: #eef0f3;
+    border-radius: 12px;
+}
+#user_info_card QLineEdit {
+    background: #f7f8fa;
+    border: 1px solid #e4e6eb;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #1f2329;
+    selection-background-color: #07c160;
+}
+#user_info_card QLineEdit:focus {
+    background: #ffffff;
+    border-color: #07c160;
+}
+#user_info_card QPushButton {
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+}
+#user_info_card #up_btn {
+    background: #ffffff;
+    color: #07c160;
+    border: 1px solid #07c160;
+}
+#user_info_card #up_btn:hover {
+    background: #e8f8ef;
+}
+#user_info_card #submit_btn {
+    background: #07c160;
+    color: #ffffff;
+    font-weight: bold;
+}
+#user_info_card #submit_btn:hover {
+    background: #06ad56;
+}
+#user_info_card #submit_btn:pressed {
+    background: #059048;
+}
+
+/* ============ chat user row selected ============ */
+#chat_user_list ChatUserWid[state="selected"] {
+    background: #e6f7ee;
+}
+
+/* ============================================================
+   FriendInfoPage - 好友资料页（和「我的资料」同款卡片）
+   注意：ChatDialog 会把这个页面的 objectName 改成 friend_info_page，
+   所以这里统一用卡片自己的名字 friend_info_card 做作用域。
+   ============================================================ */
+#friend_info_page {
+    background: #f5f6f7;
+}
+
+#friend_info_card {
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 14px;
+}
+
+#friend_info_card #card_title {
+    background: transparent;
+    border: none;
+    color: #1f2329;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#friend_info_card #head_label {
+    background: #eef0f3;
+    border: none;
+    border-radius: 12px;
+    padding: 0px;
+}
+
+#friend_info_card #name_title_label,
+#friend_info_card #sex_title_label,
+#friend_info_card #desc_title_label {
+    background: transparent;
+    border: none;
+    color: #8a9099;
+    font-size: 14px;
+}
+
+#friend_info_card #name_label,
+#friend_info_card #desc_label {
+    background: transparent;
+    border: none;
+    color: #1f2329;
+    font-size: 14px;
+}
+
+#friend_info_card #sex_label {
+    background: transparent;
+    border: none;
+    color: #2f8cff;
+    font-size: 14px;
+}
+
+#friend_info_card #sex_label[sex="female"] {
+    color: #ff6fa5;
+}
+
+/* ---------- 三个动作：空心方框，不填底色 ---------- */
+#friend_info_card #send_msg_label,
+#friend_info_card #voice_label,
+#friend_info_card #video_label {
+    background: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+#friend_info_card #voice_label,
+#friend_info_card #video_label {
+    color: #1f2329;
+    border: 1px solid #d7d9dd;
+}
+
+#friend_info_card #voice_label:hover,
+#friend_info_card #video_label:hover {
+    background: #f5f6f7;
+    border-color: #c6c9cf;
+}
+
+#friend_info_card #voice_label:pressed,
+#friend_info_card #video_label:pressed {
+    background: #eef0f3;
+}
+
+#friend_info_card #send_msg_label {
+    color: #07c160;
+    border: 1px solid #07c160;
+}
+
+#friend_info_card #send_msg_label:hover {
+    background: #e8f8ef;
+}
+
+#friend_info_card #send_msg_label:pressed {
+    background: #d7f2e3;
+}

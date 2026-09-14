@@ -1,0 +1,14 @@
+# CMake构建目录
+cmake-build-*/
+build/
+
+# Qt自动生成文件
+*_autogen/
+
+# Visual Studio
+.vs/
+*.user
+*.pdb
+*.ilk
+*.exe
+*.obj
