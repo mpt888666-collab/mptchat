@@ -3,6 +3,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QPaintEvent>
+#include <QResizeEvent>
 
 #include "global.h"
 
@@ -23,11 +24,14 @@ public:
 protected:
     void paintEvent(QPaintEvent* event) override;
     void mousePressEvent(QMouseEvent *ev) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 signals:
     void clicked();
 
 private:
+    void UpdateRedPointGeometry();
+
     QString _normal;
     QString _normal_hover;
     QString _normal_press;

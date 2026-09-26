@@ -14,11 +14,13 @@
 class ChatThreadData;
 class TextChatData;
 class ChatDataBase;
+class ChatGroupInfoShow;
+class AudioRecorder;
 QT_BEGIN_NAMESPACE
 struct UserInfo;
 namespace Ui { class ChatPage; }
 QT_END_NAMESPACE
-
+class ChatFriendInfoShow;
 class ChatPage : public QWidget {
     Q_OBJECT
 public:
@@ -76,7 +78,14 @@ private slots:
     void onReceiveClicked();
     void refreshAvatars();
     void onImgDownloaded(const QString &name, const QString &localPath);
-
+    void slot_display_friend_or_group_info();
+    void onPartialText(const QString &text);
+    void onSentence(const QString &text);
+    void onAsrInitFinished(bool ok);
+signals:
+    void sigPartialText(QString text);
+    void sigSentence(QString text);
+    void sigInitFinished(bool ok);
 private:
     QPixmap loadAvatarPixmap(const QString &iconFileName) const;
     void resolveSender(int send_uid, ChatRole role, QString &name, QPixmap &icon) const;
@@ -93,6 +102,9 @@ private:
     std::shared_ptr<ChatThreadData> _chat_data;
     QMap<QString, QList<PictureBubble*>> _pending_pictures;
     QVector<int> _group_members_uid;
+    ChatFriendInfoShow * _private_info{nullptr};
+    ChatGroupInfoShow * _group_info{nullptr};
+    AudioRecorder *_recorder{nullptr};
 };
 
 #endif //MPTCHAT_CHATPAGE_H

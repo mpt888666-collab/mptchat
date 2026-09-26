@@ -8,7 +8,14 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QStyleOption>
-#include <QVBoxLayout>
+#include <QResizeEvent>
+
+namespace {
+// 红点控件的边长（图片自带透明边，实际可见的圆点约 8x8）
+constexpr int kRedPointSize = 24;
+// 圆点距控件右上角的像素
+constexpr int kRedPointInset = 2;
+}
 
 StateWidget::StateWidget(QWidget *parent): QLabel(parent),_curstate(ClickLbState::Normal)
 {
@@ -64,15 +71,32 @@ void StateWidget::SetSelected(bool bselected)
 
 void StateWidget::AddRedPoint()
 {
-    //娣诲姞绾㈢偣绀烘剰鍥?
-    _red_point = new QLabel();
+
+    _red_point = new QLabel(this);
     _red_point->setObjectName("red_point");
-    auto* layout2 = new QVBoxLayout;
-    _red_point->setAlignment(Qt::AlignCenter);
-    layout2->addWidget(_red_point);
-    layout2->setContentsMargins(0, 0, 0, 0);
-    this->setLayout(layout2);
+    _red_point->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    _red_point->setFixedSize(kRedPointSize, kRedPointSize);
     _red_point->setVisible(false);
+    UpdateRedPointGeometry();
+}
+
+void StateWidget::UpdateRedPointGeometry()
+{
+    if (!_red_point)
+    {
+        return;
+    }
+
+    const int padding = _red_point->width() / 3;
+    const int x = width() - kRedPointInset + padding - _red_point->width();
+    const int y = kRedPointInset - padding;
+    _red_point->move(x, y);
+}
+
+void StateWidget::resizeEvent(QResizeEvent *event)
+{
+    QLabel::resizeEvent(event);
+    UpdateRedPointGeometry();
 }
 
 void StateWidget::ShowRedPoint(bool show)
@@ -93,7 +117,6 @@ void StateWidget::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         if(_curstate == ClickLbState::Selected){
-            // 璋冪敤鍩虹被鐨刴ousePressEvent浠ヤ繚璇佹甯哥殑浜嬩欢澶勭悊
             QWidget::mousePressEvent(event);
             return;
         }
@@ -108,7 +131,7 @@ void StateWidget::mousePressEvent(QMouseEvent *event)
 
         return;
     }
-    // 璋冪敤鍩虹被鐨刴ousePressEvent浠ヤ繚璇佹甯哥殑浜嬩欢澶勭悊
+
     QWidget::mousePressEvent(event);
 }
 

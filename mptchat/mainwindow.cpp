@@ -15,6 +15,8 @@
 #include "usermgr.h"
 #include "applygroupchat.h"
 #include "addgroupitem.h"
+#include "TCPFileMgr.h"
+
 mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::mainwindow) {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/icons/res/app.ico"));
@@ -31,11 +33,13 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::mainwi
     setCentralWidget(_stack);
 
     _ui_status = LOGIN_UI;
+    _b_user_logout = false;
 
     connect(_loginDialog, &LoginDialog::switchRegister, this, &mainwindow::on_register);
     connect(_registerDialog, &RegisterDialog::sigSwitchLogin, this, &mainwindow::SlotSwitchLogin);
     connect(_loginDialog, &LoginDialog::switchReset, this, &mainwindow::SlotSwitchReset);
     connect(_resetDialog, &ResetDialog::sigSwitchLogin, this, &mainwindow::SlotSwitchLogin);
+    connect(_chatDialog, &ChatDialog::sig_user_logout, this, &mainwindow::slot_user_logout);
 
     connect(TCPMgr::instance().get(),&TCPMgr::sig_switch_chatdlg, this, &mainwindow::SlotSwitchChat);
     connect(TCPMgr::instance().get(),&TCPMgr::sig_notify_offline, this, &mainwindow::SlotOffline);
@@ -44,7 +48,9 @@ mainwindow::mainwindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::mainwi
 
 void mainwindow::SlotExcepConOffline()
 {
-    // 使用静态方法直接弹出一个信息框
+    if (_b_user_logout) {
+        return;
+    }
     QMessageBox::information(this, "下线提示", "心跳超时或临界异常，该终端下线！");
     TCPMgr::instance()->CloseConnection();
     offlineLogin();
@@ -61,6 +67,7 @@ void mainwindow::on_register() {
 
 void mainwindow::SlotSwitchLogin() {
     _ui_status = LOGIN_UI;
+    _b_user_logout = false;
     _stack->setCurrentIndex(0);
 }
 
@@ -81,6 +88,7 @@ void mainwindow::SlotSwitchChat() {
 
 void mainwindow::SlotOffline() {
     QMessageBox::information(this, "下线提示", "同账号异地登录，该终端下线！");
+    _b_user_logout = true;
     TCPMgr::instance()->CloseConnection();
     offlineLogin();
 }
@@ -90,10 +98,8 @@ void mainwindow::offlineLogin(){
         return;
     }
 
-    // Close chat dialog completely
     _chatDialog->hide();
 
-    // Re-create login dialog and put it back into the stack
     if (_loginDialog) {
         _stack->removeWidget(_loginDialog);
         delete _loginDialog;
@@ -101,11 +107,9 @@ void mainwindow::offlineLogin(){
     _loginDialog = new LoginDialog();
     _stack->insertWidget(0, _loginDialog);
 
-    // Re-connect signals
     connect(_loginDialog, &LoginDialog::switchRegister, this, &mainwindow::on_register);
     connect(_loginDialog, &LoginDialog::switchReset, this, &mainwindow::SlotSwitchReset);
 
-    // Show main window and switch to login page
     _stack->setCurrentIndex(0);
     this->setMaximumSize(300, 500);
     this->setMinimumSize(300, 500);
@@ -114,5 +118,15 @@ void mainwindow::offlineLogin(){
     _ui_status = LOGIN_UI;
 
     qDebug() << "relogic";
+}
+
+void mainwindow::slot_user_logout() {
+    _b_user_logout = true;
+    TCPMgr::instance()->CloseConnection();
+    TCPFileMgr::instance()->CloseConnection();
+
+    UserMgr::instance()->Clear();
+
+    offlineLogin();
 }
 

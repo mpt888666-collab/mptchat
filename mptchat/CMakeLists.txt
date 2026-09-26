@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 4.0)
 project(mptchat)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -6,7 +6,12 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network Multimedia)
+
+# 源文件是 UTF-8（无 BOM），显式告诉 MSVC，避免中文串被按 GBK 解析出 C2001/C4819
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
 
 add_executable(mptchat main.cpp
         mainwindow.cpp
@@ -126,8 +131,36 @@ add_executable(mptchat main.cpp
         addgroupitem.cpp
         addgroupitem.h
         addgroupitem.ui
+        chatfriendinfoshow.cpp
+        chatfriendinfoshow.h
+        chatfriendinfoshow.ui
+        chatgroupinfoshow.cpp
+        chatgroupinfoshow.h
+        chatgroupinfoshow.ui
+        SherpaOnnxRecognizer.cpp
+        SherpaOnnxRecognizer.h
+        AudioRecorder.cpp
+        AudioRecorder.h
 )
 
+if(WIN32)
+    set(SHERPA_ONNX_ROOT "${PROJECT_SOURCE_DIR}/thirdparty/sherpa-onnx-v1.13.8-win-x64-shared-MD-Release")
+    add_library(sherpa-onnx-c-api SHARED IMPORTED)
+    set_target_properties(sherpa-onnx-c-api PROPERTIES
+            IMPORTED_LOCATION "${SHERPA_ONNX_ROOT}/lib/sherpa-onnx-c-api.dll"
+            IMPORTED_IMPLIB "${SHERPA_ONNX_ROOT}/lib/sherpa-onnx-c-api.lib"
+            INTERFACE_INCLUDE_DIRECTORIES "${SHERPA_ONNX_ROOT}/include"
+    )
+    target_link_libraries(mptchat PRIVATE sherpa-onnx-c-api)
+
+    add_custom_command(TARGET mptchat POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${SHERPA_ONNX_ROOT}/lib/sherpa-onnx-c-api.dll"
+                    "${SHERPA_ONNX_ROOT}/bin/onnxruntime.dll"
+                    "${SHERPA_ONNX_ROOT}/bin/onnxruntime_providers_shared.dll"
+                    "$<TARGET_FILE_DIR:mptchat>")
+endif()
+
 target_link_libraries(mptchat
-        PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network
+        PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Multimedia
 )

@@ -33,6 +33,7 @@ public:
     [[nodiscard]] QSize sizeHint() const override;
     ~ConUserItem() override;
 
+    void SetIcon(QString icon);
 private:
     Ui::ConUserItem *ui;
     std::shared_ptr<UserInfo> _info;

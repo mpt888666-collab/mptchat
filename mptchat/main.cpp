@@ -6,9 +6,12 @@
 #include "global.h"
 #include <QSettings>
 #include <QDir>
+#include <QDebug>
 #include "resetdialog.h"
 #include "chatdialog.h"
 #include "TCPFileMgr.h"
+#include "SherpaOnnxRecognizer.h"
+#include <cstring>
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
@@ -30,13 +33,12 @@ int main(int argc, char *argv[]) {
         file.close();
         std::cout << "qss in sucsece" << std::endl;
     }
+    RecognizerThread recognizer_thread;
     FileTcpThread file_tcp_thread;
     TCPThread tcp_thread;
+
     mainwindow w;
     w.show();
-    // ChatDialog c;
-    // c.show();
-    // c.setMinimumSize(QSize(1050,900));
-    // c.setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
     return QApplication::exec();
 }

@@ -103,6 +103,8 @@ enum ReqId {
     ID_CREATE_GROUP_CHAT_REQ = 1045,
     ID_CREATE_GROUP_CHAT_RSP = 1046,
     ID_NOTIFY_CREATE_GROUP_CHAT_RSP = 1047,
+    ID_USER_LOGOUT_REQ = 1048,
+    ID_USER_LOGOUT_RSP = 1049,
 };
 
 enum ErrorCodes{
@@ -135,7 +137,7 @@ enum TipErr{
 
 enum ClickLbState{
     Normal = 0,
-    Selected = 1
+    Selected = 1,
 };
 
 struct ServerInfo {

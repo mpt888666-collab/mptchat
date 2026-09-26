@@ -11,7 +11,6 @@ ClickedLabel::ClickedLabel(QWidget* parent):QLabel (parent),_curstate(ClickLbSta
 }
 
 
-// 澶勭悊榧犳爣鐐瑰嚮浜嬩欢
 void ClickedLabel::mousePressEvent(QMouseEvent* event)  {
     if (event->button() == Qt::LeftButton) {
         if(_curstate == ClickLbState::Normal){
@@ -29,7 +28,7 @@ void ClickedLabel::mousePressEvent(QMouseEvent* event)  {
         }
         emit clicked(this->text(), _curstate);
     }
-    // 璋冪敤鍩虹被鐨刴ousePressEvent浠ヤ繚璇佹甯哥殑浜嬩欢澶勭悊
+
     QLabel::mousePressEvent(event);
 }
 

@@ -207,6 +207,14 @@ QScrollBar#chatScrollBar::sub-page {
     border-image: url(:/images/res/chat_clicked.png);
 }
 
+#more_label[state='normal']{
+   border-image: url(:/images/res/show.png);
+}
+
+#more_label[state='selected']{
+    border-image: url(:/images/res/show.png);
+}
+
 #show_friend_or_member_label[state='normal']{
     border-image: url(:/images/res/show.png);
 }
@@ -223,9 +231,7 @@ QScrollBar#chatScrollBar::sub-page {
 #red_point{
     border-image: url(:/images/res/red_point.png);
 }
-#icon_label{
-    border-image: url(:/images/res/new_friend.png);
-}
+
 #add_tip{
             border-image: url(:/images/res/user.png);
 }

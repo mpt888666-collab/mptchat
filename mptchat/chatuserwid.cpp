@@ -16,6 +16,7 @@ ChatUserWid::ChatUserWid(QWidget *parent) : ListItemBase(parent), ui(new Ui::Cha
 
     SetItemType(ListItemType::CHAT_USER_ITEM);
     _chat_type = ChatFormType::PRIVATE;
+    ui->ico_label->AddRedPoint();
 }
 
 ChatUserWid::ChatUserWid(ChatFormType type, QWidget *parent) : ListItemBase(parent), ui(new Ui::ChatUserWid) {
@@ -23,6 +24,7 @@ ChatUserWid::ChatUserWid(ChatFormType type, QWidget *parent) : ListItemBase(pare
 
     SetItemType(ListItemType::CHAT_USER_ITEM);
     _chat_type = type;
+    ui->ico_label->AddRedPoint();
 }
 
 ChatUserWid::~ChatUserWid() {
@@ -136,3 +138,7 @@ QVector<int> ChatUserWid::GetGroupUids() {
     return _group_friend_uid;
 }
 
+void ChatUserWid::ShowRedPoint(bool show) {
+
+    ui->ico_label->ShowRedPoint(show);
+}

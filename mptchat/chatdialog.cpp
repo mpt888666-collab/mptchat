@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QItemSelectionModel>
+#include <qmenu.h>
 
 #include "global.h"
 #include "chatuserwid.h"
@@ -20,7 +21,7 @@
 #include "friendinfopage.h"
 #include "TCPFileMgr.h"
 #include "ui_addgroupitem.h"
-
+#include <QListWidgetItem>
 void ChatDialog::addChatUserList() {
     auto friend_list = UserMgr::instance()->GetFriendList();
     for (const auto& fr : friend_list) {
@@ -34,7 +35,7 @@ void ChatDialog::addChatUserList() {
         ui->chat_user_list->insertItem(0, chat_item);
         ui->chat_user_list->setItemWidget(chat_item, chat_user_item);
         _chat_id_items.insert(fr->_uid, chat_item);
-        //nnew
+
         auto thread_id = UserMgr::instance()->GetChatThreadByUid(fr->_uid);
         if (thread_id == -1) {
             qDebug() << "UserMgr::GetChatThreadByUid error";
@@ -46,7 +47,7 @@ void ChatDialog::addChatUserList() {
 }
 
 
-ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog), _state(ChatMode), _mode(ChatMode), _b_loading(false), _cur_chat_thread_id(-1) {
+ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog), _state(ChatMode), _mode(ChatMode), _b_loading(false), _cur_chat_thread_id(-1), _more_label_meum(nullptr) {
     ui->setupUi(this);
     ShowSearch(false);
     ui->search_list->SetSearchEdit(ui->search_edit);
@@ -55,8 +56,14 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
     ui->user_info_page->hide();
     //addChatUserList();
     _applygroup_chat = new applygroupchat(this);
+    _more_label_meum = new QMenu(this);
+    QAction* actLogout = _more_label_meum->addAction("退出登录");
+    connect(actLogout, &QAction::triggered, this, &ChatDialog::slot_logout);
+    ui->chat_label->AddRedPoint();
 
     installEventFilter(this);
+    ui->more_label->setProperty("state", "normal");
+    ui->more_label->SetState("normal", "", "", "selected", "", "");
     ui->chat_label->setProperty("state", "selected");
     ui->contact_label->setProperty("state", "normal");
     ui->chat_label->SetState("normal", "", "", "selected", "", "");
@@ -112,13 +119,18 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
     connect(ui->config_label, &StateWidget::clicked, this, &ChatDialog::slot_side_config);
     connect(ui->add_btn, &QPushButton::clicked, this, &ChatDialog::slot_show_add_group);
 
-    connect(ui->con_user_list, &ContactUserList::sig_switch_apply_friend_page, this, [this]() {
+    connect(ui->con_user_list, &ContactUserList::sig_switch_apply_friend_page, this, [this](QListWidgetItem *item) {
         ui->stackedWidget->setCurrentWidget(ui->friend_apply_page);
+        auto *widget = ui->con_user_list->itemWidget(item);
+        if (!widget) return;
+        auto con_item = qobject_cast<ConUserItem*>(widget);
+        con_item->ShowRedPoint(false);
     });
 
     // Click on a chat user to open their conversation
     connect(ui->chat_user_list, &QListWidget::itemClicked, this, &ChatDialog::slot_chat_item_clicked);
     connect(ui->con_user_list, &QListWidget::itemClicked, this, &ChatDialog::slot_con_item_clicked);
+    connect(ui->more_label, &StateWidget::clicked, this, &ChatDialog::slot_more_select);
 
     connect(ui->chat_user_list, &QListWidget::currentItemChanged, this,
             [this](QListWidgetItem *current, QListWidgetItem *previous) {
@@ -149,10 +161,12 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_chatDialog_head_icon, this, &ChatDialog::slot_show_head_icon);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_add_group_chat_item, this, &ChatDialog::slot_group_chat_item);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_notify_add_group_chat_item, this, &ChatDialog::slot_notify_group_chat_item);
-    //重置label icon
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_show_red_point, this, &ChatDialog::slot_show_red_point_chat);
+
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_reset_label_icon, this, &ChatDialog::slot_reset_icon);
-    // an avatar finished downloading: repaint the group avatars
+
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_avatar_downloaded, this, &ChatDialog::slot_refresh_group_avatars);
+
 }
 
 ChatDialog::~ChatDialog() {
@@ -192,6 +206,7 @@ void ChatDialog::slot_loading_chat_user(){
 }
 
 void ChatDialog::slot_side_chat() {
+    ui->chat_label->ShowRedPoint(false);
     ui->contact_label->ClearState();
     ui->config_label->ClearState();
 
@@ -358,6 +373,7 @@ void ChatDialog::slot_refresh_chat_user() {
 void ChatDialog::slot_chat_item_clicked(QListWidgetItem *item) {
     QWidget *widget = ui->chat_user_list->itemWidget(item);
     auto *chat_wid = qobject_cast<ChatUserWid*>(widget);
+    chat_wid->ShowRedPoint(false);
     if (!chat_wid) return;
     if (chat_wid->GetChatType() == ChatFormType::PRIVATE) {
         int friend_uid = chat_wid->GetUid();
@@ -1122,9 +1138,7 @@ QPixmap LoadAvatarPix(const QString& iconFileName)
 
     return pix;
 }
-// Group avatar: the member avatars in a WeChat-like grid. Every member avatar is
-// fetched from the resource server when it is not cached locally, so members that
-// are not friends still show their avatar.
+
 void ChatDialog::fillGroupAvatars(ChatUserWid *chat_item, const QVector<int> &members)
 {
     if (!chat_item) {
@@ -1239,5 +1253,46 @@ void ChatDialog::slot_notify_group_chat_item(QVector<int> members, int host_uid,
     }
 
     fillGroupAvatars(chat_item, members);
+
+}
+
+void ChatDialog::slot_more_select() {
+    ui->more_label->ClearState();
+    if (_more_label_meum)
+    {
+        if (_more_label_meum->isVisible())
+        {
+            _more_label_meum->close();
+            return;
+        }
+    }
+
+
+    QPoint globalPos = ui->more_label->mapToGlobal(QPoint(0, ui->more_label->height()));
+    _more_label_meum->popup(globalPos);
+}
+
+void ChatDialog::slot_logout() {
+    // QJsonObject jsonObj;
+    // jsonObj["uid"] = UserMgr::instance()->GetUid();
+    // QJsonDocument doc = QJsonDocument(jsonObj);
+    // QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    // TCPMgr::instance()->sig_send_data(ID_USER_LOGOUT_REQ, jsonData);
+
+    emit sig_user_logout();
+}
+
+void ChatDialog::slot_show_red_point_chat(int thread_id) {
+    auto iter = _chat_thread_items.find(thread_id);
+    if (iter == _chat_thread_items.end()) return;
+    auto *item = iter.value();
+    auto *widget = ui->chat_user_list->itemWidget(item);
+    if (!widget) return;
+
+    if (_state != ChatUIMode::ChatMode) {
+        ui->chat_label->ShowRedPoint(true);
+    }
+    auto item_chat = qobject_cast<ChatUserWid*>(widget);
+    if (_cur_chat_thread_id != thread_id) item_chat->ShowRedPoint(true);
 
 }

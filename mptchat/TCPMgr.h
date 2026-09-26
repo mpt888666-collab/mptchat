@@ -74,6 +74,10 @@ signals:
 
     void sig_notify_add_group_chat_item(QVector<int> members, int host_uid, int thread_id);
 
+    void sig_close_uid();
+
+    void sig_show_red_point(int thread_id);
+
 
 private:
     QTcpSocket _socket;

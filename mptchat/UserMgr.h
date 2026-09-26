@@ -33,8 +33,6 @@ public:
 
     static QString GetAvatarLocalPath(const QString &iconFileName);
     static void SetLabelAvatar(QLabel *label, const QString &iconFileName);
-    // Make sure an avatar image is cached locally, download it from the resource
-    // server when it is missing. Used for group members that are not friends.
     bool EnsureAvatarDownloaded(const QString &iconFileName, int owner_uid);
 
     bool IsDownLoading(QString name);
@@ -74,11 +72,9 @@ public:
     std::vector<std::shared_ptr<UserInfo>> GetFriendList();
     std::shared_ptr<UserInfo> GetFriendById(int uid);
 
-    // group members are not necessarily friends: friends first, then the group member cache
     std::shared_ptr<UserInfo> GetUserInfoById(int uid);
     void AddGroupMemberInfo(std::shared_ptr<UserInfo> info);
 
-    // Chat message storage
     void AppendFriendChatMsg(int friend_uid, QJsonArray contents);
     QVector<QJsonObject> GetFriendChatMsgs(int friend_uid);
     QString GetToken() {
@@ -91,6 +87,8 @@ public:
     std::shared_ptr<MsgInfo> GetTransFileByName(QString name);
 
     void AddTransFile(QString name, std::shared_ptr<MsgInfo> msg_info);
+
+    void Clear();
 
 
 private:
@@ -112,7 +110,6 @@ private:
     QMap<QString, std::shared_ptr<FileInfo>> _name_files;
     QMap<QString, std::shared_ptr<FileInfo>> _file_infos;
     QMap<QString, std::shared_ptr<DownloadInfo>> _name_to_download_info;
-    // avatars already requested from the resource server (avoids duplicate requests)
     QSet<QString> _avatar_requested;
     QMap<QString, QList<QLabel*>> _name_to_reset_labels;
     QMap<QString, std::shared_ptr<MsgInfo>> _file_msgs;

@@ -99,8 +99,9 @@ void CSession::Close() {
     if (_user_uid != 0) {
         auto server_name = ConfigMgr::Inst()["SelfServer"]["Name"];
         RedisMgr::GetInstance()->Del(USERIPPREFIX + std::to_string(_user_uid));
+        RedisMgr::GetInstance()->Del(USERTOKENPREFIX + std::to_string(_user_uid));
         RedisMgr::GetInstance()->HDecr(LOGIN_COUNT, server_name);
-        _user_uid = 0; // ��ֹ�ظ���
+        _user_uid = 0;
     }
 }
 

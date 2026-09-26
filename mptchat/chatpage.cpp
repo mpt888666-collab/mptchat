@@ -16,12 +16,21 @@
 #include "PictureBubble.h"
 #include "TCPMgr.h"
 #include "TCPFileMgr.h"
-
+#include "ChatFriendInfoShow.h"
+#include "ChatGroupInfoShow.h"
+#include "AudioRecorder.h"
+#include "SherpaOnnxRecognizer.h"
+#include <QTextCursor>
 ChatPage::ChatPage(QWidget *parent) : QWidget(parent), ui(new Ui::ChatPage) {
     ui->setupUi(this);
 
     ui->show_friend_or_member_label->setProperty("state", "normal");
     ui->show_friend_or_member_label->SetState("normal", "", "", "selected", "", "");
+    _private_info = new ChatFriendInfoShow(this);
+    _group_info = new ChatGroupInfoShow(this);
+    connect(ui->show_friend_or_member_label, &ClickedLabel::clicked, this, &ChatPage::slot_display_friend_or_group_info);
+
+
 
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_chatDialog_head_icon,
             this, &ChatPage::refreshAvatars);
@@ -36,6 +45,49 @@ ChatPage::ChatPage(QWidget *parent) : QWidget(parent), ui(new Ui::ChatPage) {
     // ==================== 测试代码 START ====================
     connect(ui->receive_btn, &QPushButton::clicked, this, &ChatPage::onReceiveClicked);
     // ==================== 测试代码 END   ====================
+
+    auto *asr = SherpaOnnxRecognizer::instance().get();
+    _recorder = new AudioRecorder(this);
+
+    // 模型要加载约 1 秒，好了之前先禁用，免得用户点了没反应
+    ui->recognizer_label->setEnabled(false);
+    ui->recognizer_label->SetState("normal", "", "", "selected", "", "");
+
+    connect(ui->recognizer_label, &ClickedLabel::clicked, this,
+            [this, asr](QString, ClickLbState state) {
+        if (state == ClickLbState::Selected) {
+            // ---- 开始说话 ----
+            if (!_recorder->isUsable()) {
+                ui->chat_edit->setPlaceholderText(QStringLiteral("没有可用的麦克风"));
+                ui->recognizer_label->SetCurState(ClickLbState::Normal);
+                ui->chat_edit->setPlaceholderText(QStringLiteral(""));
+                return;
+            }
+            ui->recognizer_label->setText(QStringLiteral("停止"));
+            ui->chat_edit->setPlaceholderText(QStringLiteral("正在聆听…"));
+            QMetaObject::invokeMethod(asr, "slotCreateStream", Qt::QueuedConnection);
+            _recorder->slotStart();
+        } else {
+            // ---- 结束说话 ----
+            ui->recognizer_label->setText(QStringLiteral("转文字"));
+            ui->chat_edit->setPlaceholderText(QStringLiteral(""));
+            _recorder->slotStop();
+            QMetaObject::invokeMethod(asr, "slotFinishInput", Qt::QueuedConnection);
+        }
+    });
+
+    // 麦克风数据 -> 识别器（跨线程，自动走队列连接）
+    connect(_recorder, &AudioRecorder::sigAudioReady, asr,
+            &SherpaOnnxRecognizer::slotAcceptWaveform);
+
+    connect(_recorder, &AudioRecorder::sigError, this, [this](const QString &msg) {
+        ui->chat_edit->setPlaceholderText(msg);
+    });
+
+    // 识别结果 -> 界面
+    connect(asr, &SherpaOnnxRecognizer::sigPartialText, this, &ChatPage::onPartialText);
+    connect(asr, &SherpaOnnxRecognizer::sigSentence,    this, &ChatPage::onSentence);
+    connect(asr, &SherpaOnnxRecognizer::sigInitFinished, this, &ChatPage::onAsrInitFinished);
 }
 
 ChatPage::~ChatPage() {
@@ -631,4 +683,46 @@ void ChatPage::setGroupUids(const QVector<int> &uids) {
     if (!_group_members_uid.isEmpty()) {
         _user_info = nullptr;
     }
+}
+
+void ChatPage::slot_display_friend_or_group_info() {
+    if (!hasActiveChat()) return;
+    if (_user_info) {
+        qDebug() << "this is private chatPage";
+        _private_info->setWindowTitle(ui->title_label->text());
+        _private_info->SetPrivateChatInfo(_user_info->_icon);
+        _private_info->show();
+
+    }else {
+        _group_info->setWindowTitle(ui->title_label->text());
+        //_group_info->SetPrivateChatInfo(_user_info->_icon);
+        _group_info->show();
+        qDebug() << "this is group chatPage";
+    }
+}
+
+void ChatPage::onAsrInitFinished(bool ok)
+{
+    ui->recognizer_label->setEnabled(ok);
+    if (!ok) {
+        ui->chat_edit->setPlaceholderText(QStringLiteral("语音识别初始化失败"));
+    }
+}
+
+void ChatPage::onPartialText(const QString &text)
+{
+    // 用占位符做实时预览：只显示、不进文档
+    ui->chat_edit->setPlaceholderText(
+        text.isEmpty() ? QStringLiteral("正在聆听…") : text);
+}
+
+void ChatPage::onSentence(const QString &text)
+{
+    ui->chat_edit->setPlaceholderText(QString());   // 清掉预览
+    if (text.isEmpty()) return;
+
+    QTextCursor c = ui->chat_edit->textCursor();
+    c.movePosition(QTextCursor::End);
+    ui->chat_edit->setTextCursor(c);
+    ui->chat_edit->insertPlainText(text + ",");           // 正式写进输入框
 }

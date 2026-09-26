@@ -16,10 +16,38 @@ UserMgr::~UserMgr()
 
 }
 
-UserMgr::UserMgr(): _user_info(nullptr), _cur_load_chat_index(0)
+UserMgr::UserMgr(): _user_info(nullptr),  _last_thread_id(0), _cur_load_chat_index(0)
 {
 
 }
+
+void UserMgr::Clear()
+{
+    std::lock_guard<std::mutex> down_lock(_down_load_mtx);
+    std::lock_guard<std::mutex> file_lock(_file_msg_mtx);
+
+    _user_info = nullptr;
+    _token.clear();
+    _last_thread_id = 0;
+    _cur_load_chat_index = 0;
+
+    _apply_list.clear();
+    _friend_list.clear();
+    _friend_map.clear();
+    _group_member_infos.clear();
+    _friend_chat_msgs.clear();
+    _chat_map.clear();
+    _uid_to_thread_id.clear();
+    _chat_thread_ids.clear();
+
+    _name_files.clear();
+    _file_infos.clear();
+    _name_to_download_info.clear();
+    _avatar_requested.clear();
+    _file_msgs.clear();
+    _name_to_reset_labels.clear();
+}
+
 
 void UserMgr::SetUserInfo(std::shared_ptr<UserInfo> user_info) {
     _user_info = user_info;
@@ -32,7 +60,7 @@ void UserMgr::SetToken(QString token)
 
 int UserMgr::GetUid()
 {
-    return _user_info->_uid;
+    return _user_info ? _user_info->_uid : 0;
 }
 
 QString UserMgr::GetName()

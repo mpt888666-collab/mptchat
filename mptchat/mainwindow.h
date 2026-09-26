@@ -48,6 +48,7 @@ public slots:
 
     void offlineLogin();
     void SlotExcepConOffline();
+    void slot_user_logout();
 
 private:
     Ui::mainwindow *ui;
@@ -57,6 +58,7 @@ private:
     ResetDialog *_resetDialog;
     ChatDialog *_chatDialog;
     UIStatus _ui_status;
+    bool _b_user_logout;
 };
 
 

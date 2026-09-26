@@ -49,3 +49,7 @@ void ConUserItem::ShowRedPoint(bool show)
     }
 
 }
+
+void ConUserItem::SetIcon(QString icon) {
+    ui->icon_label->setPixmap(QPixmap(icon));
+}

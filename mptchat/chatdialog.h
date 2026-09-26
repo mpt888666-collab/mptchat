@@ -53,6 +53,7 @@ private:
     std::shared_ptr<ChatThreadData> _next_load_chat;
 
     applygroupchat *_applygroup_chat;
+    QMenu * _more_label_meum;
     void ShowSearch(bool);
     void handleGlobalMousePress(QMouseEvent *mouseEvent);
     void UpdateChatMsg(int friend_uid, QJsonArray contents);
@@ -69,6 +70,8 @@ private:
 
 signals:
     void sig_show_add_group();
+
+    void sig_user_logout();
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 private slots:
@@ -117,6 +120,14 @@ private slots:
     void slot_group_chat_item(QVector<int> members, int thread_id);
 
     void slot_notify_group_chat_item(QVector<int> members, int host_uid, int thread_id);
+
+    void slot_more_select();
+
+    void slot_logout();
+
+    void slot_show_red_point_chat(int thread_id);
+
+
 
 };
 

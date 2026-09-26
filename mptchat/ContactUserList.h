@@ -17,6 +17,7 @@ public:
 
     void slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp);
 
+
 protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
@@ -28,9 +29,10 @@ private:
 
     void addContactUserList();
 signals:
-    void sig_switch_apply_friend_page();
+    void sig_switch_apply_friend_page(QListWidgetItem *item);
     void sig_switch_friend_info_page();
     void sig_loading_contact_user();
+
 
 
 private:

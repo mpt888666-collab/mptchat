@@ -59,6 +59,8 @@ public:
 
     void SetGroupUids(const QVector<int> &uids);
 
+    void ShowRedPoint(bool);
+
     QString GetGroupName()const {return _name;}
 
     [[nodiscard]] ChatFormType GetChatType() const {return _chat_type;}

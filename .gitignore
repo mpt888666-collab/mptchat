@@ -12,3 +12,15 @@ build/
 *.ilk
 *.exe
 *.obj
+
+# 模型
+mptchat/models/
+
+# 第三方预编译二进制库、dll
+mptchat/thirdparty/
+
+*.onnx
+*.dll
+*.lib
+build/
+

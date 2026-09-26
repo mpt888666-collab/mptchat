@@ -58,6 +58,8 @@ signals:
     // an avatar image finished downloading and is now cached locally
     void sig_avatar_downloaded(QString name);
 
+    void sig_close_uid();
+
 public slots:
     void slot_send_data(ReqId, QByteArray);
     void slot_tcp_connect(std::shared_ptr<ServerInfo> si);

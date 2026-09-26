@@ -8,6 +8,13 @@
 #include <QPainterPath>
 
 namespace {
+    // 红点控件的边长（图片自带透明边，实际可见的圆点约 8x8）
+    constexpr int kRedPointSize = 24;
+    // 圆点距控件右上角的像素
+    constexpr int kRedPointInset = 2;
+}
+
+namespace {
 
 // WeChat grid: how many avatars sit in each row, top row first.
 // The row that is not full goes on top.
@@ -144,4 +151,39 @@ void GroupAvatarLabel::paintEvent(QPaintEvent *event)
         }
         y += rowHeight + gap;
     }
+}
+
+void GroupAvatarLabel::AddRedPoint()
+{
+
+    _red_point = new QLabel(this);
+    _red_point->setObjectName("red_point");
+    _red_point->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+    _red_point->setFixedSize(kRedPointSize, kRedPointSize);
+    _red_point->setVisible(false);
+    UpdateRedPointGeometry();
+}
+
+void GroupAvatarLabel::UpdateRedPointGeometry()
+{
+    if (!_red_point)
+    {
+        return;
+    }
+
+    const int padding = _red_point->width() / 3;
+    const int x = width() - kRedPointInset + padding - _red_point->width();
+    const int y = kRedPointInset - padding;
+    _red_point->move(x, y);
+}
+
+void GroupAvatarLabel::resizeEvent(QResizeEvent *event)
+{
+    QLabel::resizeEvent(event);
+    UpdateRedPointGeometry();
+}
+
+void GroupAvatarLabel::ShowRedPoint(bool show)
+{
+    _red_point->setVisible(show);
 }

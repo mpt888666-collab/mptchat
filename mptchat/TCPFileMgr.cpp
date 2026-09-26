@@ -56,6 +56,10 @@ TCPFileMgr::TCPFileMgr() : QObject(), _b_recv_pending(false), _message_id(0), _m
         emit sig_con_success(true);
     });
 
+    connect(this, &TCPFileMgr::sig_close_uid, this, [this]() {
+        _socket.close();
+    });
+
     QObject::connect(&_socket, QOverload<QAbstractSocket::SocketError>::of(&QTcpSocket::errorOccurred), this, [this](QAbstractSocket::SocketError socketError) {
         Q_UNUSED(socketError)
         qDebug() << "Resource Error:" << _socket.errorString();
@@ -368,7 +372,7 @@ void TCPFileMgr::initHandlers() {
         qint64  current_size = current_size_str.toLongLong(nullptr);
         QString name = jsonObj["name"].toString();
 
-auto file_info = UserMgr::instance()->GetDownloadInfo(name);
+        auto file_info = UserMgr::instance()->GetDownloadInfo(name);
         if (file_info == nullptr) {
             qDebug() << "file: " << name << " not found";
             UserMgr::instance()->RmvDownloadFile(name);
@@ -382,7 +386,6 @@ auto file_info = UserMgr::instance()->GetDownloadInfo(name);
 
         QByteArray decodedData = QByteArray::fromBase64(base64Data.toUtf8());
 
-        // make sure the target directory exists (avatar cache, chat file cache, ...)
         const QDir client_dir = QFileInfo(clientPath).absoluteDir();
         if (!client_dir.exists()) {
             client_dir.mkpath(".");
@@ -580,5 +583,5 @@ void TCPFileMgr::SendDownloadInfo(std::shared_ptr<DownloadInfo> download) {
 }
 
 void TCPFileMgr::CloseConnection() {
-    _socket.close();
+    emit sig_close_uid();
 }

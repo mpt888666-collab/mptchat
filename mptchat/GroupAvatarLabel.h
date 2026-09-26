@@ -21,14 +21,19 @@ public:
     void setSpacing(int px);
     // Show at most the first N avatars (default 9, like WeChat).
     void setMaxShowCount(int cnt);
+    void AddRedPoint();
+    void ShowRedPoint(bool show=true);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
+    void UpdateRedPointGeometry();
     QVector<QPixmap> m_avatars;
     int m_spacing = 2;
     int m_maxShowCount = 9;
+    QLabel * _red_point;
 };
 
 #endif //MPTCHAT_GROUPAVATARLABEL_H

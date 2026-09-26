@@ -54,6 +54,9 @@ TCPThread::~TCPThread() {
 
 TCPMgr::TCPMgr() : _host(""), _port(0), _b_recv_pending(false), _message_id(0), _message_len(0){
     initHandlers();
+    connect(this, &TCPMgr::sig_close_uid, this, [this]() {
+        _socket.close();
+    });
     connect(&_socket, &QTcpSocket::connected, this, [&]() {
             qDebug() << "Connected to server!";
             emit sig_connect_success(true);
@@ -483,6 +486,7 @@ void TCPMgr::initHandlers() {
         }
 
         emit sig_text_chat_msg(chat_datas);
+        emit sig_show_red_point(thread_id);
     });
 
     _handlers.insert(ID_NOTIFY_OFF_LINE_REQ,[this](ReqId id, int len, QByteArray data){
@@ -848,6 +852,7 @@ void TCPMgr::initHandlers() {
         }
 
         emit sig_img_chat_msg(jsonObj);
+        emit sig_show_red_point(jsonObj["thread_id"].toInt());
     });
 
     _handlers.insert(ID_FILE_CHAT_MSG_RSP, [this](ReqId id, int len, QByteArray data) {
@@ -1028,5 +1033,5 @@ void TCPMgr::handleMsg(ReqId id, int len, QByteArray data)
 }
 
 void TCPMgr::CloseConnection(){
-    _socket.close();
+    emit sig_close_uid();
 }

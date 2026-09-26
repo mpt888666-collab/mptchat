@@ -827,7 +827,6 @@ void LogicSystem::DealMsg() {
 void LogicSystem::PostMsgToQue(std::shared_ptr<LogicNode> msg) {
     std::unique_lock<std::mutex> unique_lk(_mutex);
     _msg_que.push(msg);
-    //鐢?鍙樹负1鍒欏彂閫侀€氱煡淇″彿
     if (_msg_que.size() == 1) {
         unique_lk.unlock();
         _consume.notify_one();
