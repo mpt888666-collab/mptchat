@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 4.0)
+set(CMAKE_TOOLCHAIN_FILE "C:/Users/mpt/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 project(mptchat)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -7,6 +8,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets Network Multimedia)
+find_package(SampleRate CONFIG REQUIRED)
 
 # 源文件是 UTF-8（无 BOM），显式告诉 MSVC，避免中文串被按 GBK 解析出 C2001/C4819
 if(MSVC)
@@ -141,6 +143,8 @@ add_executable(mptchat main.cpp
         SherpaOnnxRecognizer.h
         AudioRecorder.cpp
         AudioRecorder.h
+        AudioResampler.cpp
+        AudioResampler.h
 )
 
 if(WIN32)
@@ -162,5 +166,5 @@ if(WIN32)
 endif()
 
 target_link_libraries(mptchat
-        PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Multimedia
+        PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Network Qt6::Multimedia SampleRate::samplerate
 )

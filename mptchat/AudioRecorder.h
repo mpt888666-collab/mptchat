@@ -12,6 +12,8 @@
 #include <QAudioDevice>
 #include <QMediaDevices>
 
+class AudioResampler;
+
 class AudioRecorder : public QObject {
     Q_OBJECT
 public:
@@ -20,6 +22,9 @@ public:
 
     bool isRecording() const { return _recording; }
     bool isUsable()    const { return _usable; }
+    AudioResampler * GetResampler() const {
+        return _resampler;
+    }
 
 public slots:
     void slotStart();
@@ -34,6 +39,8 @@ private:
     QIODevice    *_io{nullptr};
     bool _recording{false};
     bool _usable{false};
+    AudioResampler* _resampler{nullptr};
+    bool _needResample{false};
 };
 
 

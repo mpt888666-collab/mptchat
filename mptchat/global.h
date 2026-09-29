@@ -190,4 +190,54 @@ enum class CustomObjType {
 };
 
 #define MAX_FILE_LEN 1024
+
+namespace {
+
+    // 句末已经带标点就不要再补
+    bool HasEndPunct(const QString &s)
+    {
+        static const QString kPunct = QStringLiteral("。．.！!？?…~～，,、；;：:");
+        return !s.isEmpty() && kPunct.contains(s.back());
+    }
+
+    // 按语气猜句末标点：疑问 -> ？  感叹 -> ！  其余 -> 。
+    QString GuessEndPunct(const QString &s)
+    {
+        // 句尾疑问语气词
+        static const QStringList kQuestionTail{
+            QStringLiteral("吗"), QStringLiteral("呢"), QStringLiteral("吧"), QStringLiteral("么")
+        };
+        for (const QString &w : kQuestionTail) {
+            if (s.endsWith(w)) return QStringLiteral("？");
+        }
+
+        // 句中出现疑问词
+        static const QStringList kQuestionWord{
+            QStringLiteral("什么"), QStringLiteral("怎么"), QStringLiteral("哪"),
+            QStringLiteral("谁"),   QStringLiteral("多少"), QStringLiteral("是不是"),
+            QStringLiteral("对不对"), QStringLiteral("有没有"), QStringLiteral("行不行"),
+            QStringLiteral("能不能")
+        };
+        for (const QString &w : kQuestionWord) {
+            if (s.contains(w)) return QStringLiteral("？");
+        }
+
+        // 句尾感叹语气词 / “太…了”结构
+        static const QStringList kExclaimTail{
+            QStringLiteral("啊"), QStringLiteral("呀"), QStringLiteral("啦"),
+            QStringLiteral("耶"), QStringLiteral("哦"), QStringLiteral("哈")
+        };
+        for (const QString &w : kExclaimTail) {
+            if (s.endsWith(w)) return QStringLiteral("！");
+        }
+        if (s.startsWith(QStringLiteral("太")) && s.endsWith(QStringLiteral("了"))) {
+            return QStringLiteral("！");
+        }
+
+        return QStringLiteral("。");
+    }
+
+} // namespace
+
+
 #endif //MPTCHAT_GLOBAL_H

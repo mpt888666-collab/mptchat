@@ -75,7 +75,6 @@ protected:
 
 private slots:
     void onSendClicked();
-    void onReceiveClicked();
     void refreshAvatars();
     void onImgDownloaded(const QString &name, const QString &localPath);
     void slot_display_friend_or_group_info();
@@ -88,6 +87,8 @@ signals:
     void sigInitFinished(bool ok);
 private:
     QPixmap loadAvatarPixmap(const QString &iconFileName) const;
+    void showAsrPreview(const QString &text);
+    void hideAsrPreview();
     void resolveSender(int send_uid, ChatRole role, QString &name, QPixmap &icon) const;
     void appendImageMessage(const QString &image_name, ChatRole role,
                             const QString &user_name, const QPixmap &user_icon,

@@ -91,14 +91,13 @@ bool SherpaOnnxRecognizer::Init() {
     config.decoding_method = "greedy_search";
 
     config.enable_endpoint = 1;
-    // config.rule2_min_trailing_silence = 1.2f;
+    config.rule2_min_trailing_silence = 0.7f;
 
     _recognizer.reset(const_cast<SherpaOnnxOnlineRecognizer*>(SherpaOnnxCreateOnlineRecognizer(&config)), DestroyRecognizer);
 
     if (!_recognizer)
     {
         qWarning() << "SherpaOnnxCreateOnlineRecognizer 返回空";
-        //emit sigInitFailed(QStringLiteral("创建识别器失败：检查模型路径与文件完整性"));
         return false;
     }
 
@@ -124,7 +123,6 @@ bool SherpaOnnxRecognizer::CreateStream() {
     if (!_stream)
     {
         qWarning() << "SherpaOnnxCreateOnlineStream 返回空";
-        //emit sigInitFailed(QStringLiteral("创建识别流失败"));
         return false;
     }
     return true;

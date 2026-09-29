@@ -21,6 +21,11 @@
 #include "AudioRecorder.h"
 #include "SherpaOnnxRecognizer.h"
 #include <QTextCursor>
+#include <QLabel>
+#include <QFontMetrics>
+
+#include "AudioResampler.h"
+
 ChatPage::ChatPage(QWidget *parent) : QWidget(parent), ui(new Ui::ChatPage) {
     ui->setupUi(this);
 
@@ -36,55 +41,50 @@ ChatPage::ChatPage(QWidget *parent) : QWidget(parent), ui(new Ui::ChatPage) {
             this, &ChatPage::refreshAvatars);
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_img_chat_downloaded,
             this, &ChatPage::onImgDownloaded);
-    // an avatar finished downloading: repaint the bubbles of group members
+
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_avatar_downloaded,
             this, &ChatPage::refreshAvatars);
 
     connect(ui->send_btn,   &QPushButton::clicked, this, &ChatPage::onSendClicked);
 
-    // ==================== 测试代码 START ====================
-    connect(ui->receive_btn, &QPushButton::clicked, this, &ChatPage::onReceiveClicked);
-    // ==================== 测试代码 END   ====================
-
     auto *asr = SherpaOnnxRecognizer::instance().get();
     _recorder = new AudioRecorder(this);
 
-    // 模型要加载约 1 秒，好了之前先禁用，免得用户点了没反应
     ui->recognizer_label->setEnabled(false);
     ui->recognizer_label->SetState("normal", "", "", "selected", "", "");
+    hideAsrPreview();
 
     connect(ui->recognizer_label, &ClickedLabel::clicked, this,
             [this, asr](QString, ClickLbState state) {
         if (state == ClickLbState::Selected) {
             // ---- 开始说话 ----
             if (!_recorder->isUsable()) {
-                ui->chat_edit->setPlaceholderText(QStringLiteral("没有可用的麦克风"));
                 ui->recognizer_label->SetCurState(ClickLbState::Normal);
-                ui->chat_edit->setPlaceholderText(QStringLiteral(""));
+                showAsrPreview(QStringLiteral("没有可用的麦克风"));
                 return;
             }
             ui->recognizer_label->setText(QStringLiteral("停止"));
-            ui->chat_edit->setPlaceholderText(QStringLiteral("正在聆听…"));
+            showAsrPreview(QString());
             QMetaObject::invokeMethod(asr, "slotCreateStream", Qt::QueuedConnection);
+            auto * resanpler = _recorder->GetResampler();
+            if(resanpler) resanpler->reset();
             _recorder->slotStart();
         } else {
             // ---- 结束说话 ----
             ui->recognizer_label->setText(QStringLiteral("转文字"));
-            ui->chat_edit->setPlaceholderText(QStringLiteral(""));
+            hideAsrPreview();
             _recorder->slotStop();
             QMetaObject::invokeMethod(asr, "slotFinishInput", Qt::QueuedConnection);
         }
     });
 
-    // 麦克风数据 -> 识别器（跨线程，自动走队列连接）
     connect(_recorder, &AudioRecorder::sigAudioReady, asr,
             &SherpaOnnxRecognizer::slotAcceptWaveform);
 
     connect(_recorder, &AudioRecorder::sigError, this, [this](const QString &msg) {
-        ui->chat_edit->setPlaceholderText(msg);
+        showAsrPreview(msg);
     });
 
-    // 识别结果 -> 界面
     connect(asr, &SherpaOnnxRecognizer::sigPartialText, this, &ChatPage::onPartialText);
     connect(asr, &SherpaOnnxRecognizer::sigSentence,    this, &ChatPage::onSentence);
     connect(asr, &SherpaOnnxRecognizer::sigInitFinished, this, &ChatPage::onAsrInitFinished);
@@ -661,12 +661,6 @@ void ChatPage::onImgDownloaded(const QString &name, const QString &localPath) {
     _pending_pictures.remove(name);
 }
 
-// ==================== 测试代码 START ====================
-void ChatPage::onReceiveClicked() {
-
-}
-// ==================== 测试代码 END   ====================
-
 void ChatPage::paintEvent(QPaintEvent *event) {
     QStyleOption opt;
     opt.initFrom(this);
@@ -701,28 +695,45 @@ void ChatPage::slot_display_friend_or_group_info() {
     }
 }
 
-void ChatPage::onAsrInitFinished(bool ok)
-{
+void ChatPage::onAsrInitFinished(bool ok){
     ui->recognizer_label->setEnabled(ok);
     if (!ok) {
-        ui->chat_edit->setPlaceholderText(QStringLiteral("语音识别初始化失败"));
+        showAsrPreview(QStringLiteral("语音识别初始化失败"));
     }
 }
 
-void ChatPage::onPartialText(const QString &text)
-{
-    // 用占位符做实时预览：只显示、不进文档
-    ui->chat_edit->setPlaceholderText(
-        text.isEmpty() ? QStringLiteral("正在聆听…") : text);
+void ChatPage::onPartialText(const QString &text){
+    // 实时预览写在输入框上方的独立 label 上：不进文档、不污染撤销栈。
+    showAsrPreview(text);
 }
 
-void ChatPage::onSentence(const QString &text)
-{
-    ui->chat_edit->setPlaceholderText(QString());   // 清掉预览
-    if (text.isEmpty()) return;
+void ChatPage::onSentence(const QString &text){
+    hideAsrPreview();                               // 清掉预览
+
+    const QString sentence = text.trimmed();
+    if (sentence.isEmpty()) return;
+
+    // 口语转写一般不带标点：已有标点就保留，没有就按语气补一个
+    const QString final_text = HasEndPunct(sentence)? sentence : sentence + GuessEndPunct(sentence);
 
     QTextCursor c = ui->chat_edit->textCursor();
     c.movePosition(QTextCursor::End);
     ui->chat_edit->setTextCursor(c);
-    ui->chat_edit->insertPlainText(text + ",");           // 正式写进输入框
+    ui->chat_edit->insertPlainText(final_text);     // 正式写进输入框
+}
+
+void ChatPage::showAsrPreview(const QString &text){
+    const QString shown = text.isEmpty() ? QStringLiteral("正在聆听…") : text;
+    // 预览过长时从左侧省略，保证刚说出来的字始终可见
+    const QFontMetrics fm(ui->asr_preview_label->font());
+    const int avail = qMax(60, ui->asr_preview_label->width() - 12);
+    ui->asr_preview_label->setText(fm.elidedText(shown, Qt::ElideLeft, avail));
+    ui->asr_preview_label->setToolTip(shown);
+    ui->asr_preview_label->setVisible(true);
+}
+
+void ChatPage::hideAsrPreview(){
+    ui->asr_preview_label->clear();
+    ui->asr_preview_label->setToolTip(QString());
+    ui->asr_preview_label->setVisible(false);
 }

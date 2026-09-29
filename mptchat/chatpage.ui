@@ -266,6 +266,31 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="asr_preview_label">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color: rgb(150, 150, 150); padding-left: 8px;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="visible">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="MessageTextEdit" name="chat_edit">
         <property name="minimumSize">
          <size>
