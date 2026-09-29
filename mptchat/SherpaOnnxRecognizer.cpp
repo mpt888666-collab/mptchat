@@ -6,8 +6,20 @@
 #include "sherpa-onnx/c-api/c-api.h"
 #include <QThread>
 #include <QDebug>
-const std::string SherpaOnnxRecognizer::kModelDir =
-    R"(C:\Users\mpt\ChatDemo\mptchat\models\sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30)";
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QStringList>
+#include "ConfigMgr.h"
+
+namespace {
+
+// 采集 / 重采样 / 特征提取必须一致的量：不做成运行时配置。
+// 改这里必须同步 AudioRecorder 的采集格式和 AudioResampler 的目标采样率。
+constexpr int kFeatSampleRate = 16000;
+constexpr int kFeatDim = 80;
+
+} // namespace
 
 void SherpaOnnxRecognizer::DestroyRecognizer(SherpaOnnxOnlineRecognizer* p)
 {
@@ -61,51 +73,91 @@ SherpaOnnxRecognizer::SherpaOnnxRecognizer() : _recognizer(nullptr), _ready(fals
 }
 
 bool SherpaOnnxRecognizer::Init() {
-    std::string enc = kModelDir + "\\encoder.int8.onnx";
-    std::string dec = kModelDir + "\\decoder.onnx";
-    std::string joi = kModelDir + "\\joiner.int8.onnx";
-    std::string tok = kModelDir + "\\tokens.txt";
+    const ConfigMgr &cfg = ConfigMgr::Inst();
 
-    const std::string* files[] = {&enc, &dec, &joi, &tok};
-    for (const std::string* f : files)
-    {
-        if (!SherpaOnnxFileExists(f->c_str()))
-        {
-            qWarning() << "模型文件不存在:" << QString::fromStdString(*f);
-            //emit sigInitFailed(QString::fromStdString(*f) + QStringLiteral(" 不存在"));
+    QString model_dir = cfg.value(QStringLiteral("ASR"), QStringLiteral("model_dir"),
+                                  QStringLiteral("models/sherpa-onnx-streaming-zipformer-zh-int8-2025-06-30"));
+    if (!QFileInfo(model_dir).isAbsolute()) {
+        model_dir = QDir(QCoreApplication::applicationDirPath()).filePath(model_dir);
+    }
+
+    const auto model_file = [&cfg, &model_dir](const QString &key, const QString &defaultName) {
+        return QDir(model_dir).filePath(cfg.value(QStringLiteral("ASR"), key, defaultName));
+    };
+
+    const std::string enc = model_file(QStringLiteral("encoder"), QStringLiteral("encoder.int8.onnx")).toStdString();
+    const std::string dec = model_file(QStringLiteral("decoder"), QStringLiteral("decoder.onnx")).toStdString();
+    const std::string joi = model_file(QStringLiteral("joiner"),  QStringLiteral("joiner.int8.onnx")).toStdString();
+    const std::string tok = model_file(QStringLiteral("tokens"),  QStringLiteral("tokens.txt")).toStdString();
+
+    for (const std::string *f : {&enc, &dec, &joi, &tok}) {
+        if (!SherpaOnnxFileExists(f->c_str())) {
+            qWarning() << "[ASR] 模型文件不存在:" << QString::fromStdString(*f);
             return false;
         }
     }
+
+    int threads = cfg.value(QStringLiteral("ASR"), QStringLiteral("num_threads"), QStringLiteral("2")).toInt();
+    threads = qBound(1, threads, QThread::idealThreadCount());
+
+    QString provider = cfg.value(QStringLiteral("ASR"), QStringLiteral("provider"), QStringLiteral("cpu"));
+    static const QStringList kProviders{QStringLiteral("cpu"), QStringLiteral("cuda"),
+                                        QStringLiteral("directml")};
+    if (!kProviders.contains(provider)) {
+        qWarning() << "[ASR] provider 不在白名单，回退 cpu:" << provider;
+        provider = QStringLiteral("cpu");
+    }
+    
+    const QByteArray provider_utf8 = provider.toUtf8();
+    const QByteArray method_utf8 =
+        cfg.value(QStringLiteral("ASR"), QStringLiteral("decoding_method"),
+                  QStringLiteral("greedy_search")).toUtf8();
+
+    const bool endpoint_on =
+        cfg.value(QStringLiteral("ASR"), QStringLiteral("enable_endpoint"), QStringLiteral("1")).toInt() != 0;
+    const float rule1 = cfg.value(QStringLiteral("ASR"), QStringLiteral("rule1_min_trailing_silence"),
+                                  QStringLiteral("2.4")).toFloat();
+    const float rule2 = cfg.value(QStringLiteral("ASR"), QStringLiteral("rule2_min_trailing_silence"),
+                                  QStringLiteral("0.7")).toFloat();
+    const float rule3 = cfg.value(QStringLiteral("ASR"), QStringLiteral("rule3_min_utterance_length"),
+                                  QStringLiteral("20")).toFloat();
+
     SherpaOnnxOnlineRecognizerConfig config{};
 
-    config.feat_config.sample_rate = 16000;
-    config.feat_config.feature_dim = 80;
+    config.feat_config.sample_rate = kFeatSampleRate;
+    config.feat_config.feature_dim = kFeatDim;
 
     config.model_config.transducer.encoder = enc.c_str();
     config.model_config.transducer.decoder = dec.c_str();
     config.model_config.transducer.joiner = joi.c_str();
     config.model_config.tokens = tok.c_str();
 
-    config.model_config.num_threads = 2;
-    config.model_config.provider = "cpu";
-    config.decoding_method = "greedy_search";
+    config.model_config.num_threads = threads;
+    config.model_config.provider = provider_utf8.constData();
+    config.decoding_method = method_utf8.constData();
 
-    config.enable_endpoint = 1;
-    config.rule2_min_trailing_silence = 0.7f;
+    config.enable_endpoint = endpoint_on ? 1 : 0;
+    config.rule1_min_trailing_silence = rule1;
+    config.rule2_min_trailing_silence = rule2;
+    config.rule3_min_utterance_length = rule3;
 
     _recognizer.reset(const_cast<SherpaOnnxOnlineRecognizer*>(SherpaOnnxCreateOnlineRecognizer(&config)), DestroyRecognizer);
 
-    if (!_recognizer)
-    {
-        qWarning() << "SherpaOnnxCreateOnlineRecognizer 返回空";
+    if (!_recognizer) {
+        qWarning() << "[ASR] SherpaOnnxCreateOnlineRecognizer 返回空，检查模型文件与 onnxruntime";
         return false;
     }
 
     _ready = true;
-    qDebug() << "sherpa-onnx 识别器就绪，所在线程:" << QThread::currentThread()->objectName();
+    qDebug().noquote() << "[ASR] 就绪 | model_dir:" << model_dir
+                       << "| threads:" << threads
+                       << "| provider:" << provider
+                       << "| method:" << QString::fromUtf8(method_utf8)
+                       << "| endpoint:" << endpoint_on
+                       << "| rule: " << rule1 << rule2 << rule3
+                       << "| asr thread:" << QThread::currentThread()->objectName();
     return true;
 }
-
 void SherpaOnnxRecognizer::slotInit()
 {
     bool ok = Init();

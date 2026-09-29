@@ -136,26 +136,22 @@ void LoginDialog::initHttpHandlers() {
 
 void LoginDialog::slot_login_mod_finish(ReqId id, QString res, ErrorCodes err) {
     if(err != ErrorCodes::SUCCESS){
-        showTip(tr("缃戠粶璇锋眰閿欒"),false);
+        showTip(tr("登录失败"),false);
         return;
     }
 
-    // 瑙ｆ瀽 JSON 瀛楃涓?res闇€杞寲涓篞ByteArray
     QJsonDocument jsonDoc = QJsonDocument::fromJson(res.toUtf8());
-    //json瑙ｆ瀽閿欒
     if(jsonDoc.isNull()){
         showTip(tr("json解析失败"),false);
         return;
     }
 
-    //json瑙ｆ瀽閿欒
     if(!jsonDoc.isObject()){
         showTip(tr("json解析失败"),false);
         return;
     }
     qDebug() << "this id is " << id;
 
-    //璋冪敤瀵瑰簲鐨勯€昏緫,鏍规嵁id鍥炶皟銆?
     _handlers[id](jsonDoc.object());
 
     return;

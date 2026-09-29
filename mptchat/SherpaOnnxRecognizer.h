@@ -54,7 +54,6 @@ private:
     std::vector<float> _f32buf;
     std::atomic<bool> _ready;
 
-    static const std::string kModelDir;
 };
 
 

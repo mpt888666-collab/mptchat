@@ -145,6 +145,8 @@ add_executable(mptchat main.cpp
         AudioRecorder.h
         AudioResampler.cpp
         AudioResampler.h
+        ConfigMgr.h
+        ConfigMgr.cpp
 )
 
 if(WIN32)
