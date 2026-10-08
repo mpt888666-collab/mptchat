@@ -1,26 +1,47 @@
-# CMake构建目录
+# ===================== 构建产物 =====================
 cmake-build-*/
 build/
+out/
+install/
+bin/
+static/
 
-# Qt自动生成文件
-*_autogen/
-
-# Visual Studio
+# ===================== IDE / 编译器中间文件 =====================
 .vs/
+.idea/
+.vscode/
 *.user
+*.suo
 *.pdb
 *.ilk
-*.exe
+*.idb
 *.obj
+*.exe
+*_autogen/
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
 
-# 模型
+# ===================== 本地配置（含数据库密码 / 邮箱授权码，禁止提交） =====================
+config.ini
+VarifyServer/config.js
+VarifyServer/config.json
+
+# ===================== 模型与预编译二进制 =====================
 mptchat/models/
-
-# 第三方预编译二进制库、dll
 mptchat/thirdparty/
-
 *.onnx
 *.dll
 *.lib
-build/
+*.so
+*.dylib
 
+# ===================== Node =====================
+VarifyServer/node_modules/
+
+# ===================== 运行期产物 =====================
+*.log
+
+# ===================== Python =====================
+__pycache__/
+*.pyc

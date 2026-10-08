@@ -1,0 +1,193 @@
+ChatDemo 服务端发版实测原始输出
+================================================================
+
+环境
+  CPU      : Intel i9-13900HX (24 核 32 线程)
+  内存     : 32 GB
+  系统     : Windows 11 家庭版 25H2 (build 26200)
+  构建     : MSVC Release (-O2), vcpkg 依赖
+  MySQL    : 9.3.0
+  Redis    : 5.0.14.1
+  被测服务 : StatusServer :50052 / GetServer :8080 / ChatServer :8090 + :8091
+  压测端   : Python 3.12 (同机, localhost)
+
+说明
+  - chat_stress.py 默认跟随登录下发的实例地址连接（StatusServer 的均衡结果）
+  - "PROC ChatServer x2" 是两个 ChatServer 实例的合计，avg_cpu_each 是折算到单实例
+  - 时间: 2026-10-08
+
+================================================================
+1. 压测矩阵
+================================================================
+### CASE: login_100_distinct
+args: --mode login --clients 100 --distinct-users 1000
+login storm: clients=100 distinct=1000 wall=0.214s ok=100 err=0 qps=467.1
+  assigned instances: 127.0.0.1:8090=100
+  rtt ms p50=67.67 p95=119.60 p99=131.10 max=131.10
+PROC ChatServer x2: cpu_time=0.11s avg_cpu_sum=38.1% avg_cpu_each=19.0% rss_total=53.1MB
+PROC StatusServer: cpu_time=0.09s avg_cpu=32.6% rss=17.2MB
+PROC GetServer: cpu_time=0.08s avg_cpu=27.2% rss=25.9MB
+harness_wall=0.29s
+
+### CASE: login_500_distinct
+args: --mode login --clients 500 --distinct-users 1000
+login storm: clients=500 distinct=1000 wall=0.742s ok=500 err=0 qps=674.0
+  assigned instances: 127.0.0.1:8090=500
+  rtt ms p50=240.01 p95=519.43 p99=613.96 max=660.15
+PROC ChatServer x2: cpu_time=0.44s avg_cpu_sum=53.8% avg_cpu_each=26.9% rss_total=55.1MB
+PROC StatusServer: cpu_time=0.38s avg_cpu=46.1% rss=17.2MB
+PROC GetServer: cpu_time=0.50s avg_cpu=61.5% rss=25.9MB
+harness_wall=0.81s
+
+### CASE: login_1000_distinct
+args: --mode login --clients 1000 --distinct-users 1000
+login storm: clients=1000 distinct=1000 wall=1.165s ok=1000 err=0 qps=858.6
+  assigned instances: 127.0.0.1:8090=673 127.0.0.1:8091=327
+  rtt ms p50=278.96 p95=750.62 p99=853.20 max=911.88
+PROC ChatServer x2: cpu_time=1.14s avg_cpu_sum=91.5% avg_cpu_each=45.8% rss_total=58.4MB
+PROC StatusServer: cpu_time=0.77s avg_cpu=61.4% rss=17.2MB
+PROC GetServer: cpu_time=0.89s avg_cpu=71.5% rss=25.9MB
+harness_wall=1.25s
+
+### CASE: connect_500
+args: --mode connect --clients 500
+connect storm: clients=500 wall=0.146s ok=500 err=0 accept_rate=100.0%
+PROC ChatServer x2: cpu_time=0.17s avg_cpu_sum=80.2% avg_cpu_each=40.1% rss_total=59.9MB
+PROC StatusServer: cpu_time=0.05s avg_cpu=21.9% rss=17.2MB
+PROC GetServer: cpu_time=0.00s avg_cpu=0.0% rss=25.9MB
+harness_wall=0.21s
+
+### CASE: connect_1000
+args: --mode connect --clients 1000
+connect storm: clients=1000 wall=0.316s ok=1000 err=0 accept_rate=100.0%
+PROC ChatServer x2: cpu_time=0.50s avg_cpu_sum=129.9% avg_cpu_each=65.0% rss_total=63.3MB
+PROC StatusServer: cpu_time=0.16s avg_cpu=40.6% rss=17.2MB
+PROC GetServer: cpu_time=0.00s avg_cpu=0.0% rss=25.9MB
+harness_wall=0.38s
+
+### CASE: connect_2000
+args: --mode connect --clients 2000
+connect storm: clients=2000 wall=0.584s ok=2000 err=0 accept_rate=100.0%
+PROC ChatServer x2: cpu_time=0.73s avg_cpu_sum=110.6% avg_cpu_each=55.3% rss_total=70.4MB
+PROC StatusServer: cpu_time=0.39s avg_cpu=58.9% rss=17.2MB
+PROC GetServer: cpu_time=0.00s avg_cpu=0.0% rss=25.9MB
+harness_wall=0.66s
+
+### CASE: sessions_100_60s
+args: --mode sessions --clients 100 --distinct-users 1000 --duration 60 --hb-interval 5 --redis-port 6379
+sessions: clients=100 handshake_ok=100 (100.0%) alive_at_end=100 hb_total=1200 hb_err=0 drop=0
+  handshake_wall=0.209s hold=60s total_wall=60.224s ready=True
+  assigned instances: 127.0.0.1:8090=100
+  rtt ms p50=0.23 p95=2.41 p99=3.19 max=3.94
+  redis: logincount_keys=:2 uip_keys=100 self_count=$3
+
+567
+PROC ChatServer x2: cpu_time=0.34s avg_cpu_sum=0.6% avg_cpu_each=0.3% rss_total=70.6MB
+PROC StatusServer: cpu_time=0.06s avg_cpu=0.1% rss=17.2MB
+PROC GetServer: cpu_time=0.16s avg_cpu=0.3% rss=25.9MB
+harness_wall=60.30s
+
+### CASE: sessions_500_60s
+args: --mode sessions --clients 500 --distinct-users 1000 --duration 60 --hb-interval 5 --redis-port 6379
+sessions: clients=500 handshake_ok=500 (100.0%) alive_at_end=500 hb_total=6000 hb_err=0 drop=0
+  handshake_wall=0.779s hold=60s total_wall=60.829s ready=True
+  assigned instances: 127.0.0.1:8091=500
+  rtt ms p50=0.22 p95=11.54 p99=16.63 max=20.36
+  redis: logincount_keys=:2 uip_keys=500 self_count=$4
+
+4773
+PROC ChatServer x2: cpu_time=1.16s avg_cpu_sum=1.9% avg_cpu_each=0.9% rss_total=59.3MB
+PROC StatusServer: cpu_time=0.34s avg_cpu=0.6% rss=17.2MB
+PROC GetServer: cpu_time=0.27s avg_cpu=0.4% rss=25.9MB
+harness_wall=60.91s
+
+### CASE: sessions_1000_60s
+args: --mode sessions --clients 1000 --distinct-users 1000 --duration 60 --hb-interval 5 --redis-port 6379
+sessions: clients=1000 handshake_ok=1000 (100.0%) alive_at_end=1000 hb_total=12000 hb_err=0 drop=0
+  handshake_wall=1.147s hold=60s total_wall=61.220s ready=True
+  assigned instances: 127.0.0.1:8090=600 127.0.0.1:8091=400
+  rtt ms p50=0.27 p95=19.51 p99=31.79 max=41.33
+  redis: logincount_keys=:2 uip_keys=1000 self_count=$3
+
+700
+PROC ChatServer x2: cpu_time=1.42s avg_cpu_sum=2.3% avg_cpu_each=1.2% rss_total=60.5MB
+PROC StatusServer: cpu_time=1.08s avg_cpu=1.8% rss=17.3MB
+PROC GetServer: cpu_time=0.67s avg_cpu=1.1% rss=25.9MB
+harness_wall=61.30s
+
+### CASE: heartbeat_single_30s
+args: --mode heartbeat --duration 30
+heartbeat: n=525862 err=0 qps=17528.7
+  rtt ms p50=0.05 p95=0.07 p99=0.11 max=49.44
+PROC ChatServer x2: cpu_time=24.20s avg_cpu_sum=80.3% avg_cpu_each=40.1% rss_total=60.5MB
+PROC StatusServer: cpu_time=0.03s avg_cpu=0.1% rss=17.3MB
+PROC GetServer: cpu_time=0.02s avg_cpu=0.1% rss=25.9MB
+harness_wall=30.15s
+
+### CASE: msg_20s_32B
+args: --mode msg --duration 20 --rate 5 --msg-size 32
+msg: thread_id=1 sent=12233 ack_err=0 io_err=0 sender_qps=611.6 recv_count=12233 loss=0
+  rtt ms p50=1.56 p95=2.01 p99=2.82 max=68.60
+PROC ChatServer x2: cpu_time=5.34s avg_cpu_sum=25.3% avg_cpu_each=12.7% rss_total=59.8MB
+PROC StatusServer: cpu_time=0.03s avg_cpu=0.1% rss=17.3MB
+PROC GetServer: cpu_time=0.03s avg_cpu=0.1% rss=25.9MB
+harness_wall=21.12s
+
+### CASE: msg_20s_512B
+args: --mode msg --duration 20 --rate 5 --msg-size 512
+msg: thread_id=1 sent=10212 ack_err=0 io_err=0 sender_qps=510.6 recv_count=10212 loss=0
+  rtt ms p50=1.87 p95=2.60 p99=3.34 max=36.04
+PROC ChatServer x2: cpu_time=4.50s avg_cpu_sum=21.3% avg_cpu_each=10.6% rss_total=59.9MB
+PROC StatusServer: cpu_time=0.00s avg_cpu=0.0% rss=17.3MB
+PROC GetServer: cpu_time=0.03s avg_cpu=0.1% rss=25.9MB
+harness_wall=21.14s
+
+
+
+================================================================
+2. 日志开销 A/B（同时核对日志文件行数，确认日志真的落盘）
+================================================================
+
+### A1: stdout -> 新日志文件（从 0 开始写）
+heartbeat: n=518384 err=0 qps=17279.5
+  rtt ms p50=0.06 p95=0.07 p99=0.10 max=49.34
+  chat_cpu=24.42s avg_cpu=80.8% (of one core)  wall=30.24s  rss=23.0MB
+  [验证] ab_A.log: 59.8MB, heartbeat 行数=518384
+
+### A2: stdout -> 同一个日志文件（追加，文件已存在）
+heartbeat: n=516220 err=0 qps=17207.3
+  rtt ms p50=0.06 p95=0.07 p99=0.10 max=48.65
+  chat_cpu=24.67s avg_cpu=81.8% (of one core)  wall=30.16s  rss=23.1MB
+  [验证] ab_A.log: 59.6MB, heartbeat 行数=516220
+
+### B: stdout -> NUL
+heartbeat: n=584817 err=0 qps=19493.9
+  rtt ms p50=0.05 p95=0.06 p99=0.09 max=50.57
+  chat_cpu=23.53s avg_cpu=77.9% (of one core)  wall=30.19s  rss=23.1MB
+
+结论: 写日志 17.3k 次/s vs 不写 19.5k 次/s = 1.13 倍，代价主要是 CPU（+3 个百分点）。
+      早期记录里的 "1,890 次/s / 9.6 倍" 连跑三轮都复现不出来，判定为机器瞬时干扰
+      （杀毒 / 索引扫描），已在 README 中修正。
+
+================================================================
+3. 跨服消息（_test_dirs.py，强制两个实例各占一边）
+================================================================
+A(uid2) -> 强制 8090, chat_login error=0
+B(uid3) -> 强制 8091, chat_login error=0
+logincount: chatserver1=1 chatserver2=1
+thread_id = 1
+
+方向1: chatserver2(8091) -> chatserver1(8090)
+  [A] 收到 msg_id=1019
+  B 收到 ack 0.01s error=0     结果: A 收到 1 条 notify
+
+方向2: chatserver1(8090) -> chatserver2(8091)
+  [B] 收到 msg_id=1019
+  A 收到 ack 0.01s error=0     结果: B 收到 1 条 notify
+
+================================================================
+4. StatusServer 负载均衡（1000 并发长连接保持期间采样 Redis）
+================================================================
+uip_total=1000  chatserver1(8090)=467  chatserver2(8091)=533
+logincount: chatserver1=468  chatserver2=533
+（uip_<uid> 是 ChatServer 在 chat_login 时写的路由键，断连即删）

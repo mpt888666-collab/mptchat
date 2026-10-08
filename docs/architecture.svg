@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1180" viewBox="0 0 1680 1180" font-family="'Microsoft YaHei','Segoe UI',Arial,sans-serif">
+<defs>
+  <marker id="aBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1F6FB2"/></marker>
+  <marker id="aGray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7A8299"/></marker>
+  <marker id="aPurple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8A63D2"/></marker>
+</defs>
+<rect x="0" y="0" width="1680" height="1180" fill="#FFFFFF"/>
+<text x="70" y="48" text-anchor="start" font-size="26" font-weight="700" fill="#14375E" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">ChatDemo · 仿微信实时聊天系统 总体架构</text>
+<text x="1610" y="46" text-anchor="end" font-size="14" font-weight="400" fill="#5A6B84" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">客户端 Qt 6 · 服务端 C++20 / Boost.Asio + gRPC · MySQL / Redis</text>
+<rect x="70" y="70" width="1540" height="230" rx="16" fill="#ECF4FF" stroke="#7FB2E5" stroke-width="1.6"/>
+<text x="95" y="100" text-anchor="start" font-size="17" font-weight="700" fill="#1F4E79" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">桌面客户端 mptchat（Qt 6 · C++17）</text>
+<rect x="95" y="118" width="465" height="160" rx="12" fill="#FFFFFF" stroke="#A8C9EE" stroke-width="1.6"/>
+  <text x="327.5" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">界面层</text>
+  <text x="327.5" y="174" text-anchor="middle" font-size="12.5" fill="#4A5568">登录 · 注册 · 找回密码</text>
+  <text x="327.5" y="194" text-anchor="middle" font-size="12.5" fill="#4A5568">主窗口 · 会话列表 · 聊天窗口</text>
+  <text x="327.5" y="214" text-anchor="middle" font-size="12.5" fill="#4A5568">联系人 · 群聊 · 个人资料页</text>
+<rect x="600" y="118" width="465" height="160" rx="12" fill="#FFFFFF" stroke="#A8C9EE" stroke-width="1.6"/>
+  <text x="832.5" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">业务与数据层</text>
+  <text x="832.5" y="174" text-anchor="middle" font-size="12.5" fill="#4A5568">UserMgr · userdata（单会话单数据源）</text>
+  <text x="832.5" y="194" text-anchor="middle" font-size="12.5" fill="#4A5568">ChatUserWid 会话项 · 未读红点</text>
+  <text x="832.5" y="214" text-anchor="middle" font-size="12.5" fill="#4A5568">历史消息分页 · 消息去重与排序</text>
+<rect x="1105" y="118" width="480" height="160" rx="12" fill="#FFFFFF" stroke="#A8C9EE" stroke-width="1.6"/>
+  <text x="1345" y="148" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">通信层</text>
+  <text x="1345" y="174" text-anchor="middle" font-size="12.5" fill="#4A5568">HttpMgr（HTTP 短连接）</text>
+  <text x="1345" y="194" text-anchor="middle" font-size="12.5" fill="#4A5568">TCPMgr（聊天长连接 · 心跳 · 粘包分包）</text>
+  <text x="1345" y="214" text-anchor="middle" font-size="12.5" fill="#4A5568">TCPFileMgr（文件通道 · 进度 · 断点续传）</text>
+<rect x="70" y="340" width="1540" height="490" rx="16" fill="#F6F7FB" stroke="#C6CBD9" stroke-width="1.6"/>
+<text x="1585" y="372" text-anchor="end" font-size="13.5" font-weight="400" fill="#7A8299" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">服务端集群（C++20 · Boost.Asio · 多进程部署）</text>
+<rect x="70" y="380" width="355" height="140" rx="12" fill="#FFF4E5" stroke="#E8A33D" stroke-width="1.6"/>
+  <text x="247.5" y="410" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">GateServer</text>
+  <text x="247.5" y="436" text-anchor="middle" font-size="12.5" fill="#4A5568">:8080 · HTTP 统一入口</text>
+  <text x="247.5" y="456" text-anchor="middle" font-size="12.5" fill="#4A5568">验证码 · 注册 · 登录 · 找回密码</text>
+  <text x="247.5" y="476" text-anchor="middle" font-size="12.5" fill="#4A5568">MysqlMgr · RedisMgr · StatusGrpcClient</text>
+<rect x="70" y="600" width="355" height="140" rx="12" fill="#F3E8FF" stroke="#A97BD8" stroke-width="1.6"/>
+  <text x="247.5" y="630" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">VarifyServer</text>
+  <text x="247.5" y="656" text-anchor="middle" font-size="12.5" fill="#4A5568">:50051 · gRPC（Node.js）</text>
+  <text x="247.5" y="676" text-anchor="middle" font-size="12.5" fill="#4A5568">生成 4 位验证码 → Redis（600s）</text>
+  <text x="247.5" y="696" text-anchor="middle" font-size="12.5" fill="#4A5568">nodemailer 邮件下发</text>
+<rect x="465" y="380" width="355" height="140" rx="12" fill="#E8F7F0" stroke="#3FAE7A" stroke-width="1.6"/>
+  <text x="642.5" y="410" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">StatusServer</text>
+  <text x="642.5" y="436" text-anchor="middle" font-size="12.5" fill="#4A5568">:50052 · gRPC</text>
+  <text x="642.5" y="456" text-anchor="middle" font-size="12.5" fill="#4A5568">Token 签发 · 在线状态（Redis）</text>
+  <text x="642.5" y="476" text-anchor="middle" font-size="12.5" fill="#4A5568">按负载分配 ChatServer · 踢下线</text>
+<rect x="860" y="380" width="355" height="130" rx="12" fill="#E9F0FF" stroke="#5B8DEF" stroke-width="1.6"/>
+  <text x="1037.5" y="410" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">ChatServer 1</text>
+  <text x="1037.5" y="436" text-anchor="middle" font-size="12.5" fill="#4A5568">:8090 · TCP 长连接</text>
+  <text x="1037.5" y="456" text-anchor="middle" font-size="12.5" fill="#4A5568">CServer / CSession · LogicSystem</text>
+  <text x="1037.5" y="476" text-anchor="middle" font-size="12.5" fill="#4A5568">消息路由 · 推送 · 落库</text>
+<rect x="860" y="540" width="355" height="130" rx="12" fill="#E9F0FF" stroke="#5B8DEF" stroke-width="1.6"/>
+  <text x="1037.5" y="570" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">ChatServer 2</text>
+  <text x="1037.5" y="596" text-anchor="middle" font-size="12.5" fill="#4A5568">:8091 · TCP 长连接</text>
+  <text x="1037.5" y="616" text-anchor="middle" font-size="12.5" fill="#4A5568">水平扩展实例</text>
+  <text x="1037.5" y="636" text-anchor="middle" font-size="12.5" fill="#4A5568">ChatGrpcClient 跨服互推</text>
+<rect x="1255" y="380" width="355" height="140" rx="12" fill="#FFF0F0" stroke="#E07777" stroke-width="1.6"/>
+  <text x="1432.5" y="410" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">ResourceServer</text>
+  <text x="1432.5" y="436" text-anchor="middle" font-size="12.5" fill="#4A5568">:9090 · TCP 文件通道</text>
+  <text x="1432.5" y="456" text-anchor="middle" font-size="12.5" fill="#4A5568">头像 / 图片 / 文件上传下载</text>
+  <text x="1432.5" y="476" text-anchor="middle" font-size="12.5" fill="#4A5568">4 × FileWorker 分片落盘 · 断点续传</text>
+<rect x="70" y="880" width="1540" height="210" rx="16" fill="#F3F8F3" stroke="#A9CBA9" stroke-width="1.6"/>
+<text x="95" y="908" text-anchor="start" font-size="17" font-weight="700" fill="#2F6B3F" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">数据与存储</text>
+<rect x="70" y="925" width="355" height="140" rx="12" fill="#FFFFFF" stroke="#7FAF7F" stroke-width="1.6"/>
+  <text x="247.5" y="955" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">MySQL · chatdb</text>
+  <text x="247.5" y="981" text-anchor="middle" font-size="12.5" fill="#4A5568">user / friend / friend_apply</text>
+  <text x="247.5" y="1001" text-anchor="middle" font-size="12.5" fill="#4A5568">private_chat / group_chat</text>
+  <text x="247.5" y="1021" text-anchor="middle" font-size="12.5" fill="#4A5568">chat_thread / chat_message</text>
+<rect x="465" y="925" width="355" height="140" rx="12" fill="#FFFFFF" stroke="#7FAF7F" stroke-width="1.6"/>
+  <text x="642.5" y="955" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">Redis</text>
+  <text x="642.5" y="981" text-anchor="middle" font-size="12.5" fill="#4A5568">验证码 code_&lt;email&gt;</text>
+  <text x="642.5" y="1001" text-anchor="middle" font-size="12.5" fill="#4A5568">Token utoken_&lt;uid&gt; · 在线状态 uip_&lt;uid&gt;</text>
+  <text x="642.5" y="1021" text-anchor="middle" font-size="12.5" fill="#4A5568">登录计数 · 文件传输信息</text>
+<rect x="860" y="925" width="750" height="140" rx="12" fill="#FFFFFF" stroke="#7FAF7F" stroke-width="1.6"/>
+  <text x="1235" y="955" text-anchor="middle" font-size="17" font-weight="700" fill="#16283D">静态资源目录 static / bin</text>
+  <text x="1235" y="981" text-anchor="middle" font-size="12.5" fill="#4A5568">头像 · 图片 · 文件（二进制不进聊天协议）</text>
+  <text x="1235" y="1001" text-anchor="middle" font-size="12.5" fill="#4A5568">客户端本地缓存：avatars/ · chat_images/</text>
+<path d="M247,300 V378" fill="none" stroke="#1F6FB2" stroke-width="2" marker-end="url(#aBlue)"/>
+<text x="258" y="345" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">HTTP / JSON</text>
+<path d="M1037,300 V378" fill="none" stroke="#1F6FB2" stroke-width="2" marker-end="url(#aBlue)"/>
+<text x="1048" y="345" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">TCP 长连接（心跳 · 消息）</text>
+<path d="M1432,300 V378" fill="none" stroke="#1F6FB2" stroke-width="2" marker-end="url(#aBlue)"/>
+<text x="1443" y="345" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">TCP 文件通道</text>
+<path d="M247,520 V598" fill="none" stroke="#8A63D2" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#aPurple)"/>
+<text x="258" y="572" text-anchor="start" font-size="12.5" font-weight="500" fill="#6B4FB8" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">gRPC 发送验证码邮件</text>
+<path d="M425,420 H463" fill="none" stroke="#8A63D2" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#aPurple)"/>
+<text x="444" y="408" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6B4FB8" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">gRPC</text>
+<path d="M820,430 H858" fill="none" stroke="#8A63D2" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#aPurple)"/>
+<text x="839" y="418" text-anchor="middle" font-size="11.5" font-weight="500" fill="#6B4FB8" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">gRPC 分配</text>
+<path d="M1037,510 V538" fill="none" stroke="#8A63D2" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#aPurple)"/>
+<text x="1050" y="530" text-anchor="start" font-size="12.5" font-weight="500" fill="#6B4FB8" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">跨服 gRPC 互推</text>
+<path d="M70,450 H45 V1000 H68" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="40" y="840" text-anchor="middle" font-size="12" font-weight="500" fill="#5C6679" transform="rotate(-90 40 840)" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">用户 / 消息持久化</text>
+<path d="M642,520 V923" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="656" y="700" text-anchor="start" font-size="12" font-weight="500" fill="#5C6679" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">Token · 在线状态</text>
+<path d="M425,670 H445 V878 H520 V923" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="452" y="870" text-anchor="start" font-size="12" font-weight="500" fill="#5C6679" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">验证码写入</text>
+<path d="M860,470 H840 V780 H330 V923" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="566" y="772" text-anchor="start" font-size="12" font-weight="500" fill="#5C6679" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">消息落库</text>
+<path d="M860,620 H850 V1000 H822" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="864" y="715" text-anchor="start" font-size="12" font-weight="500" fill="#5C6679" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">Token 校验 · 会话缓存</text>
+<path d="M1432,520 V923" fill="none" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="1446" y="715" text-anchor="start" font-size="12" font-weight="500" fill="#5C6679" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">FileWorker 分片落盘</text>
+<line x1="70" y1="1130" x2="130" y2="1130" stroke="#1F6FB2" stroke-width="2" marker-end="url(#aBlue)"/>
+<text x="140" y="1135" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">HTTP / TCP 直连（客户端 ↔ 服务端）</text>
+<line x1="470" y1="1130" x2="530" y2="1130" stroke="#8A63D2" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#aPurple)"/>
+<text x="540" y="1135" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">gRPC 服务间调用</text>
+<line x1="720" y1="1130" x2="780" y2="1130" stroke="#7A8299" stroke-width="2" marker-end="url(#aGray)"/>
+<text x="790" y="1135" text-anchor="start" font-size="12.5" font-weight="500" fill="#41506B" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">数据库 / 缓存读写</text>
+<text x="1610" y="1135" text-anchor="end" font-size="12.5" font-weight="400" fill="#5A6B84" style="paint-order:stroke;stroke:#ffffff;stroke-width:4.5px;stroke-linejoin:round">说明：图片与文件二进制不进聊天协议，统一由 ResourceServer 传输并缓存到客户端本地。</text>
+</svg>

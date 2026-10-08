@@ -1,0 +1,132 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+
+jobs:
+  build-release:
+    name: package (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            os: windows-latest
+            triplet: x64-windows
+            generator: "Visual Studio 17 2022"
+          - name: linux-x64
+            os: ubuntu-latest
+            triplet: x64-linux
+            generator: "Ninja"
+    env:
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
+      VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-cache,readwrite"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux toolchain
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build build-essential zip
+
+      - name: Cache vcpkg
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.VCPKG_ROOT }}/installed
+            ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ matrix.name }}-
+
+      - name: Bootstrap vcpkg
+        shell: bash
+        run: |
+          set -e
+          mkdir -p "${{ github.workspace }}/vcpkg-cache"
+          if [ ! -d "$VCPKG_ROOT" ]; then
+            git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          fi
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            "$VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
+          else
+            "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          fi
+
+      - name: Build Release
+        shell: bash
+        run: |
+          set -e
+          for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
+            cmake -S "$svc" -B "build/$svc" \
+              -G "${{ matrix.generator }}" \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+              -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
+              -DVCPKG_MANIFEST_DIR="$PWD" \
+              -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed"
+            cmake --build "build/$svc" --config Release --parallel
+          done
+
+      - name: Collect artifacts (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -e
+          mkdir -p dist
+          for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
+            cp "build/$svc/$svc" "dist/$svc"
+            cp "$svc/config.ini.example" "dist/$svc.config.ini.example"
+          done
+          cp -r db bench dist/
+          (cd dist && zip -r "../chatdemo-${{ matrix.name }}.zip" .)
+
+      - name: Collect artifacts (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          foreach ($svc in @('StatusServer','GetServer','ChatServer','ChatServer2','ResourceServer')) {
+            $exe = Get-ChildItem -Path "build/$svc" -Recurse -Filter "$svc.exe" | Select-Object -First 1
+            Copy-Item $exe.FullName "dist/$svc.exe"
+            Copy-Item "$svc/config.ini.example" "dist/$svc.config.ini.example"
+          }
+          Copy-Item db, bench -Destination dist -Recurse
+          Compress-Archive -Path dist/* -DestinationPath "chatdemo-${{ matrix.name }}.zip" -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatdemo-${{ matrix.name }}
+          path: chatdemo-${{ matrix.name }}.zip
+
+  create-release:
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          generate_release_notes: true
+          body: |
+            ## ChatDemo 服务端 Release
+
+            包含 StatusServer / GetServer / ChatServer / ChatServer2 / ResourceServer 五个服务，
+            以及 `config.ini.example` 配置模板、`db/schema.sql` 建表脚本与 `bench/` 压测工具。
+
+            快速开始见 [README](../README.md)。
