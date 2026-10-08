@@ -5,7 +5,7 @@
 #ifndef STATUSSERVER_STATUSSERVICEIMPL_H
 #define STATUSSERVER_STATUSSERVICEIMPL_H
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include "const.h"
 struct ChatServer {
     std::string host;

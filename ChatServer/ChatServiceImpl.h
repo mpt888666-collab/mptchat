@@ -6,7 +6,7 @@
 #define CHATSERVER_CHATSERVICEIMPL_H
 #include <complex.h>
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
 
 #include "data.h"

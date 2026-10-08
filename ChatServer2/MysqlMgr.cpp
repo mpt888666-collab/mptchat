@@ -1216,15 +1216,17 @@ bool MysqlMgr::GetUserThreads(int64_t userId, int64_t lastId, int pageSize,
 
     const std::string sql = R"(
         WITH all_threads AS (
-            SELECT thread_id, 'private' AS type, user1_id, user2_id
+            SELECT thread_id, 'private' AS type, user1_id, user2_id, '' AS group_name
             FROM private_chat
             WHERE (user1_id = ? OR user2_id = ?) AND thread_id > ?
             UNION ALL
-            SELECT thread_id, 'group' AS type, 0 AS user1_id, 0 AS user2_id
-            FROM group_chat_member
-            WHERE user_id = ? AND thread_id > ?
+            SELECT gm.thread_id, 'group' AS type, 0 AS user1_id, 0 AS user2_id,
+                   COALESCE(g.name, '') AS group_name
+            FROM group_chat_member gm
+            LEFT JOIN group_chat g ON g.thread_id = gm.thread_id
+            WHERE gm.user_id = ? AND gm.thread_id > ?
         )
-        SELECT thread_id, type, user1_id, user2_id
+        SELECT thread_id, type, user1_id, user2_id, group_name
         FROM all_threads
         ORDER BY thread_id
         LIMIT ?;
@@ -1285,12 +1287,13 @@ bool MysqlMgr::GetUserThreads(int64_t userId, int64_t lastId, int pageSize,
         mysql_stmt_store_result(stmt);
         my_ulonglong rows = mysql_stmt_num_rows(stmt);
 
-        // 输出绑定字段顺序 thread_id、type、user1_id、user2_id
+        // 输出绑定字段顺序 thread_id、type、user1_id、user2_id、group_name
         long long out_thread_id, out_user1, out_user2;
         char buf_type[16]{};
-        unsigned long len_type;
+        char buf_group_name[1024]{};
+        unsigned long len_type = 0, len_group_name = 0;
 
-        MYSQL_BIND bindOut[4]{};
+        MYSQL_BIND bindOut[5]{};
         bindOut[0].buffer_type = MYSQL_TYPE_LONGLONG;
         bindOut[0].buffer = &out_thread_id;
 
@@ -1305,6 +1308,11 @@ bool MysqlMgr::GetUserThreads(int64_t userId, int64_t lastId, int pageSize,
         bindOut[3].buffer_type = MYSQL_TYPE_LONGLONG;
         bindOut[3].buffer = &out_user2;
 
+        bindOut[4].buffer_type = MYSQL_TYPE_STRING;
+        bindOut[4].buffer = buf_group_name;
+        bindOut[4].buffer_length = sizeof(buf_group_name);
+        bindOut[4].length = &len_group_name;
+
         mysql_stmt_bind_result(stmt, bindOut);
 
         std::vector<std::shared_ptr<ChatThreadInfo>> tmp;
@@ -1315,6 +1323,7 @@ bool MysqlMgr::GetUserThreads(int64_t userId, int64_t lastId, int pageSize,
             info->_type.assign(buf_type, len_type);
             info->_user1_id = static_cast<int64_t>(out_user1);
             info->_user2_id = static_cast<int64_t>(out_user2);
+            info->_group_name.assign(buf_group_name, len_group_name);
             tmp.push_back(info);
         }
 
@@ -1872,3 +1881,390 @@ std::shared_ptr<PageResult> MysqlMgr::LoadChatMsg(int thread_id, int message_id,
     }
     return result;
 }
+
+bool MysqlMgr::IsGroupThread(int thread_id)
+{
+    auto connPtr = GetConn();
+    if (!connPtr)
+    {
+        std::cerr << "[IsGroupThread] get mysql connection failed" << std::endl;
+        return false;
+    }
+    MysqlConnGuard guard(std::move(connPtr));
+    MYSQL* mysql = guard.Raw();
+
+    const std::string sql = "SELECT 1 FROM group_chat WHERE thread_id = ? LIMIT 1;";
+    MYSQL_STMT* stmt = mysql_stmt_init(mysql);
+    if (!stmt)
+    {
+        std::cerr << "[IsGroupThread] mysql_stmt_init failed: " << mysql_error(mysql) << std::endl;
+        return false;
+    }
+
+    bool is_group = false;
+    do
+    {
+        if (mysql_stmt_prepare(stmt, sql.c_str(), sql.size()) != 0)
+        {
+            std::cerr << "[IsGroupThread] prepare failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        MYSQL_BIND bind_in[1]{};
+        long long arg_thread_id = static_cast<long long>(thread_id);
+        bind_in[0].buffer_type = MYSQL_TYPE_LONGLONG;
+        bind_in[0].buffer = &arg_thread_id;
+
+        if (mysql_stmt_bind_param(stmt, bind_in) != 0)
+        {
+            std::cerr << "[IsGroupThread] bind param failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        if (mysql_stmt_execute(stmt) != 0)
+        {
+            std::cerr << "[IsGroupThread] execute failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        mysql_stmt_store_result(stmt);
+        is_group = (mysql_stmt_num_rows(stmt) > 0);
+    } while (false);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+    return is_group;
+}
+
+bool MysqlMgr::GetGroupMembers(int thread_id, std::vector<int>& members)
+{
+    members.clear();
+
+    auto connPtr = GetConn();
+    if (!connPtr)
+    {
+        std::cerr << "[GetGroupMembers] get mysql connection failed" << std::endl;
+        return false;
+    }
+    MysqlConnGuard guard(std::move(connPtr));
+    MYSQL* mysql = guard.Raw();
+
+    const std::string sql = "SELECT user_id FROM group_chat_member WHERE thread_id = ? ORDER BY user_id;";
+    MYSQL_STMT* stmt = mysql_stmt_init(mysql);
+    if (!stmt)
+    {
+        std::cerr << "[GetGroupMembers] mysql_stmt_init failed: " << mysql_error(mysql) << std::endl;
+        return false;
+    }
+
+    bool ok = false;
+    do
+    {
+        if (mysql_stmt_prepare(stmt, sql.c_str(), sql.size()) != 0)
+        {
+            std::cerr << "[GetGroupMembers] prepare failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        MYSQL_BIND bind_in[1]{};
+        long long arg_thread_id = static_cast<long long>(thread_id);
+        bind_in[0].buffer_type = MYSQL_TYPE_LONGLONG;
+        bind_in[0].buffer = &arg_thread_id;
+
+        if (mysql_stmt_bind_param(stmt, bind_in) != 0)
+        {
+            std::cerr << "[GetGroupMembers] bind param failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        if (mysql_stmt_execute(stmt) != 0)
+        {
+            std::cerr << "[GetGroupMembers] execute failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        mysql_stmt_store_result(stmt);
+
+        long long out_uid = 0;
+        MYSQL_BIND bind_out[1]{};
+        bind_out[0].buffer_type = MYSQL_TYPE_LONGLONG;
+        bind_out[0].buffer = &out_uid;
+        if (mysql_stmt_bind_result(stmt, bind_out) != 0)
+        {
+            std::cerr << "[GetGroupMembers] bind result failed: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        while (mysql_stmt_fetch(stmt) == 0)
+        {
+            members.push_back(static_cast<int>(out_uid));
+        }
+        ok = true;
+    } while (false);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+    return ok;
+}
+
+bool MysqlMgr::UpdateHeadInfo(int uid, const std::string& icon)
+{
+    auto conn = GetConn();
+    MYSQL* mysql = conn.get();
+    if (!mysql)
+    {
+        std::cerr << "[UpdateHeadInfo] get mysql connection failed" << std::endl;
+        ReturnConn(std::move(conn));
+        return false;
+    }
+
+    const std::string sql = R"(UPDATE `user` SET icon = ? WHERE id = ?)";
+    MYSQL_STMT* stmt = mysql_stmt_init(mysql);
+    if (!stmt)
+    {
+        std::cerr << "[UpdateHeadInfo] mysql_stmt_init failed: " << mysql_error(mysql) << std::endl;
+        ReturnConn(std::move(conn));
+        return false;
+    }
+
+    bool ret = false;
+    do
+    {
+        if (mysql_stmt_prepare(stmt, sql.c_str(), sql.size()) != 0)
+        {
+            std::cerr << "[UpdateHeadInfo] prepare error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        MYSQL_BIND bindInput[2]{};
+        // 参数1 icon 字符串
+        char icon_buf[256]{};
+        strncpy(icon_buf, icon.c_str(), sizeof(icon_buf) - 1);
+        unsigned long icon_len = icon.size();
+
+        bindInput[0].buffer_type = MYSQL_TYPE_STRING;
+        bindInput[0].buffer = icon_buf;
+        bindInput[0].buffer_length = sizeof(icon_buf);
+        bindInput[0].length = &icon_len;
+
+        // 参数2 uid(id)
+        long long id_val = uid;
+        bindInput[1].buffer_type = MYSQL_TYPE_LONGLONG;
+        bindInput[1].buffer = &id_val;
+
+        if (mysql_stmt_bind_param(stmt, bindInput) != 0)
+        {
+            std::cerr << "[UpdateHeadInfo] bind param error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        if (mysql_stmt_execute(stmt) != 0)
+        {
+            std::cerr << "[UpdateHeadInfo] execute error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        my_ulonglong affected = mysql_stmt_affected_rows(stmt);
+        if (affected == 0)
+        {
+            std::cerr << "[UpdateHeadInfo] no user found, uid = " << uid << std::endl;
+            break;
+        }
+
+        ret = true;
+
+    } while (false);
+
+    mysql_stmt_free_result(stmt);
+    mysql_stmt_close(stmt);
+    ReturnConn(std::move(conn));
+    return ret;
+}
+
+bool MysqlMgr::CreateGroupChat(uint64_t host_uid, const std::vector<int>& members, int& thread_id)
+{
+    thread_id = 0;
+    auto connPtr = GetConn();
+    if (!connPtr)
+    {
+        std::cerr << "[CreateGroupChat] get mysql connection failed" << std::endl;
+        return false;
+    }
+    MysqlConnGuard guard(std::move(connPtr));
+    MYSQL* mysql = guard.Raw();
+
+    bool ret = false;
+    do
+    {
+        // 开启事务，关闭自动提交
+        if (mysql_autocommit(mysql, 0) != 0)
+        {
+            std::cerr << "[CreateGroupChat] disable autocommit failed: " << mysql_error(mysql) << std::endl;
+            break;
+        }
+
+        // ========== 1. 插入 chat_thread 会话主表 type='group' ==========
+        const std::string insertThreadSql = "INSERT INTO chat_thread (type) VALUES ('group');";
+        MYSQL_STMT* stmtInsertThread = mysql_stmt_init(mysql);
+        if (!stmtInsertThread)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertThread init failed: " << mysql_error(mysql) << std::endl;
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_prepare(stmtInsertThread, insertThreadSql.c_str(), insertThreadSql.size()) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertThread prepare error: " << mysql_stmt_error(stmtInsertThread) << std::endl;
+            mysql_stmt_close(stmtInsertThread);
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_execute(stmtInsertThread) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertThread execute error: " << mysql_stmt_error(stmtInsertThread) << std::endl;
+            mysql_stmt_close(stmtInsertThread);
+            mysql_rollback(mysql);
+            break;
+        }
+        mysql_stmt_close(stmtInsertThread);
+
+        // 获取自增ID，作为thread_id
+        const std::string lastIdSql = "SELECT LAST_INSERT_ID();";
+        MYSQL_STMT* stmtLastId = mysql_stmt_init(mysql);
+        if (!stmtLastId)
+        {
+            std::cerr << "[CreateGroupChat] stmtLastId init failed: " << mysql_error(mysql) << std::endl;
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_prepare(stmtLastId, lastIdSql.c_str(), lastIdSql.size()) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtLastId prepare error: " << mysql_stmt_error(stmtLastId) << std::endl;
+            mysql_stmt_close(stmtLastId);
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_execute(stmtLastId) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtLastId execute error: " << mysql_stmt_error(stmtLastId) << std::endl;
+            mysql_stmt_close(stmtLastId);
+            mysql_rollback(mysql);
+            break;
+        }
+        mysql_stmt_store_result(stmtLastId);
+        long long newThreadId = 0;
+        MYSQL_BIND bindLast[1]{};
+        bindLast[0].buffer_type = MYSQL_TYPE_LONGLONG;
+        bindLast[0].buffer = &newThreadId;
+        mysql_stmt_bind_result(stmtLastId, bindLast);
+        mysql_stmt_fetch(stmtLastId);
+        thread_id = static_cast<uint64_t>(newThreadId);
+        mysql_stmt_free_result(stmtLastId);
+        mysql_stmt_close(stmtLastId);
+
+        // ========== 2. 插入 group_chat 群信息表 ==========
+        // 默认群名 '群聊'：UTF-8 字节写成 hex，源码保持 ASCII（本文件按代码页 936 编译）
+        const std::string insertGroupSql = "INSERT INTO group_chat(thread_id, name) VALUES (?, _utf8mb4 0xE7BEA4E8818A);";
+        MYSQL_STMT* stmtInsertGroup = mysql_stmt_init(mysql);
+        if (!stmtInsertGroup)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertGroup init failed: " << mysql_error(mysql) << std::endl;
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_prepare(stmtInsertGroup, insertGroupSql.c_str(), insertGroupSql.size()) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertGroup prepare error: " << mysql_stmt_error(stmtInsertGroup) << std::endl;
+            mysql_stmt_close(stmtInsertGroup);
+            mysql_rollback(mysql);
+            break;
+        }
+        MYSQL_BIND bindGroup[1]{};
+        long long arg_tid = static_cast<long long>(thread_id);
+        bindGroup[0].buffer_type = MYSQL_TYPE_LONGLONG;
+        bindGroup[0].buffer = &arg_tid;
+        mysql_stmt_bind_param(stmtInsertGroup, bindGroup);
+        if (mysql_stmt_execute(stmtInsertGroup) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertGroup execute error: " << mysql_stmt_error(stmtInsertGroup) << std::endl;
+            mysql_stmt_close(stmtInsertGroup);
+            mysql_rollback(mysql);
+            break;
+        }
+        mysql_stmt_close(stmtInsertGroup);
+
+        // ==========3. 插入 group_chat_member：先插入群主 host_uid role=1 ==========
+        const std::string insertMemberSql = R"(
+            INSERT INTO group_chat_member(thread_id, user_id, role) VALUES (?, ?, ?)
+        )";
+        MYSQL_STMT* stmtInsertMember = mysql_stmt_init(mysql);
+        if (!stmtInsertMember)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertMember init failed: " << mysql_error(mysql) << std::endl;
+            mysql_rollback(mysql);
+            break;
+        }
+        if (mysql_stmt_prepare(stmtInsertMember, insertMemberSql.c_str(), insertMemberSql.size()) != 0)
+        {
+            std::cerr << "[CreateGroupChat] stmtInsertMember prepare error: " << mysql_stmt_error(stmtInsertMember) << std::endl;
+            mysql_stmt_close(stmtInsertMember);
+            mysql_rollback(mysql);
+            break;
+        }
+
+        // 插入群主
+        {
+            long long tid = static_cast<long long>(thread_id);
+            long long uid = static_cast<long long>(host_uid);
+            long long role = 1; // 群主role=1
+            MYSQL_BIND bindMem[3]{};
+            bindMem[0].buffer_type = MYSQL_TYPE_LONGLONG;
+            bindMem[0].buffer = &tid;
+            bindMem[1].buffer_type = MYSQL_TYPE_LONGLONG;
+            bindMem[1].buffer = &uid;
+            bindMem[2].buffer_type = MYSQL_TYPE_LONG;
+            bindMem[2].buffer = &role;
+            mysql_stmt_bind_param(stmtInsertMember, bindMem);
+            if (mysql_stmt_execute(stmtInsertMember) != 0)
+            {
+                std::cerr << "[CreateGroupChat] insert host member error: " << mysql_stmt_error(stmtInsertMember) << std::endl;
+                mysql_stmt_close(stmtInsertMember);
+                mysql_rollback(mysql);
+                break;
+            }
+        }
+
+        // 循环插入其他普通成员 role=0
+        for (uint64_t member_uid : members)
+        {
+            long long tid = static_cast<long long>(thread_id);
+            long long uid = static_cast<long long>(member_uid);
+            long long role = 0; //普通成员
+            MYSQL_BIND bindMem[3]{};
+            bindMem[0].buffer_type = MYSQL_TYPE_LONGLONG;
+            bindMem[0].buffer = &tid;
+            bindMem[1].buffer_type = MYSQL_TYPE_LONGLONG;
+            bindMem[1].buffer = &uid;
+            bindMem[2].buffer_type = MYSQL_TYPE_LONG;
+            bindMem[2].buffer = &role;
+            mysql_stmt_bind_param(stmtInsertMember, bindMem);
+            if (mysql_stmt_execute(stmtInsertMember) != 0)
+            {
+                std::cerr << "[CreateGroupChat] insert member uid=" << member_uid << " error: " << mysql_stmt_error(stmtInsertMember) << std::endl;
+                mysql_stmt_close(stmtInsertMember);
+                mysql_rollback(mysql);
+                break;
+            }
+        }
+        mysql_stmt_close(stmtInsertMember);
+
+        // 全部成功，提交事务
+        mysql_commit(mysql);
+        ret = true;
+    } while (false);
+
+    // 恢复自动提交
+    mysql_autocommit(mysql, 1);
+    return ret;
+}
+

@@ -22,11 +22,16 @@ grpc::Status StatusServiceImpl::GetChatServer(grpc::ServerContext* context, cons
     auto& cfg = ConfigMgr::Inst();
     const auto& server = getChatServer();
 
-    reply->set_chat_host("127.0.0.1");
-    reply->set_chat_port("8090");
+    // 返回负载均衡结果：当前在线连接数最少的 ChatServer 实例。
+    // 抢锁失败或配置里没有可用的 chatserver 时 host/port 为空，交给调用方返回 RPCGetFailed。
+    if (server.host.empty() || server.port.empty()) {
+        std::cout << "GetChatServer: no available chatserver" << std::endl;
+        reply->set_error(ErrorCodes::RPCFailed);
+        return grpc::Status::OK;
+    }
 
-    // reply->set_chat_host(server.host);
-    // reply->set_chat_port(server.port);
+    reply->set_chat_host(server.host);
+    reply->set_chat_port(server.port);
     reply->set_res_host(cfg["ResourceServer"]["Host"]);
     reply->set_res_port(cfg["ResourceServer"]["Port"]);
     reply->set_error(ErrorCodes::Success);

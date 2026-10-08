@@ -52,6 +52,7 @@ enum MSG_IDS {
     ID_FILE_CHAT_UPLOAD_FINISH_REQ = 1044,
     ID_CREATE_GROUP_CHAT_REQ = 1045,
     ID_CREATE_GROUP_CHAT_RSP = 1046,
+    ID_NOTIFY_CREATE_GROUP_CHAT_RSP = 1047,
 };
 
 enum ErrorCodes {
@@ -70,6 +71,7 @@ enum ErrorCodes {
     TokenInvalid = 1012,
     CREATE_CHAT_FAILED,
     LOAD_CHAT_FAILED,
+    CREATE_GROUP_FAILED,
 };
 
 enum MsgStatus {

@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# 配置模板：复制为 config.ini，放到可执行文件所在目录（构建产物目录）
+#   Windows:  copy config.ini.example config.ini
+#   Linux:    cp config.ini.example config.ini
+# 说明：所有端口需在全机范围内唯一，端口冲突会导致 bind 失败。
+# ---------------------------------------------------------------------------
+
+[GateServer]
+Host = 127.0.0.1
+Port = 8080
+
+[VarifyServer]
+Host = 127.0.0.1
+Port = 50051
+
+[RedisServer]
+Host = 127.0.0.1
+Port = 6379
+Db = 0
+Size = 8
+
+[MySQLServer]
+Host = 127.0.0.1
+Port = 3306
+User = root
+Password = CHANGE_ME
+Db = chatdb
+Pool_size = 5
+
+[StatusServer]
+Host = 127.0.0.1
+Port = 50052
+[chatservers]
+Name = chatserver1,chatserver2
+
+[chatserver1]
+Name = chatserver1
+Host = 127.0.0.1
+Port = 8090
+
+[chatserver2]
+Name = chatserver2
+Host = 127.0.0.1
+Port = 8091
+
+[ResourceServer]
+Name = ResourceServer
+Host = 127.0.0.1
+Port = 9090

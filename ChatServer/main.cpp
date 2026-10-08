@@ -5,7 +5,7 @@
 #include "CServer.h"
 #include "RedisMgr.h"
 #include "const.h"
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include "ChatServiceImpl.h"
 #include "LogicSystem.h"
 

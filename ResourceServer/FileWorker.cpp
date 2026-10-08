@@ -7,7 +7,9 @@
 #include <fstream>
 #include <filesystem>
 #include <string>
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 
 #include "ConfigMgr.h"
 #include "base64.h"
@@ -16,6 +18,7 @@
 
 namespace {
 
+#if defined(_WIN32)
 std::wstring Utf8ToWide(const std::string& utf8) {
     if (utf8.empty()) {
         return {};
@@ -30,11 +33,23 @@ std::wstring Utf8ToWide(const std::string& utf8) {
                         static_cast<int>(utf8.size()), wide.data(), len);
     return wide;
 }
+#endif
+
+// 跨平台工具：把 UTF-8 字符串转成文件系统路径
+// Windows 需要转宽字符才能正确处理中文路径；Linux 直接用原字符串
+std::filesystem::path ToPath(const std::string& utf8) {
+#if defined(_WIN32)
+    return std::filesystem::path(Utf8ToWide(utf8));
+#else
+    return std::filesystem::path(utf8);
+#endif
+}
+
 
 bool OpenUtf8File(std::ofstream& outfile,
                   const std::string& utf8_path,
                   bool truncate) {
-    std::filesystem::path file_path(Utf8ToWide(utf8_path));
+    std::filesystem::path file_path = ToPath(utf8_path);
     std::filesystem::path dir_path = file_path.parent_path();
     std::error_code ec;
     if (!dir_path.empty() && !std::filesystem::exists(dir_path, ec)) {
@@ -123,7 +138,7 @@ void FileWorker::RegisterHandlers()
     auto file_path_str = task->_file_path_str;
     auto last = task->_last;
 
-    std::filesystem::path file_path(Utf8ToWide(file_path_str));
+    std::filesystem::path file_path = ToPath(file_path_str);
     std::string filename = file_path.filename().string();
     json result;
 

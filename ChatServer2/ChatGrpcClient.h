@@ -5,7 +5,7 @@
 #ifndef CHATSERVER_CHATGRPCCLIENT_H
 #define CHATSERVER_CHATGRPCCLIENT_H
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
 #include "Singleton.h"
 #include <queue>
@@ -43,6 +43,7 @@ public:
     message::TextChatMsgRsp NotifyTextChatMsg(std::string server_ip, const message::TextChatMsgReq& req);
     message::ImageChatMsgRsp NotifyImageChatMsg(std::string server_ip, const message::ImageChatMsgReq& req);
     message::KickUserRsp NotifyKickUser(std::string server_ip, const message::KickUserReq& req);
+    message::AddGroupChatRsp NotifyAddGroupChat(std::string server_ip, const message::AddGroupChatReq &req);
 private:
     ChatGrpcClient();
     std::unordered_map<std::string, std::unique_ptr<ChatConPool>> _pools;

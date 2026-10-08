@@ -316,10 +316,13 @@ void LogicSystem::RegisterCallBacks() {
         auto contents = req_json.contains("text_array") ? req_json["text_array"] : json::array();
         std::cout << "from " << from_uid << " send msg to " << to_uid << " content is " << contents << std::endl;
 
+        const bool is_group = MysqlMgr::GetInstance()->IsGroupThread(thread_id);
+
         root["error"] = ErrorCodes::Success;
         root["fromuid"] = from_uid;
         root["touid"] = to_uid;
         root["thread_id"] = thread_id;
+        root["is_group"] = is_group;
         root["text_array"] = contents;
         std::vector<std::shared_ptr<ChatMessage>> chat_datas;
         auto timestamp = getCurrentTimestamp();
@@ -353,39 +356,51 @@ void LogicSystem::RegisterCallBacks() {
         }
 
 
-        auto touid_str = std::to_string(to_uid);
-        auto to_ip_key = USERIPPREFIX + touid_str;
-        std::string to_ip_value = "";
-        bool b_ip = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
-        if (!b_ip) {
-            session->Send(root.dump(), ID_TEXT_CHAT_MSG_RSP);
-            return;
+        std::vector<int> targets;
+        if (is_group) {
+            MysqlMgr::GetInstance()->GetGroupMembers(thread_id, targets);
+        } else {
+            targets.push_back(to_uid);
         }
+
         auto &cfg = ConfigMgr::Inst();
         auto self_name = cfg["SelfServer"]["Name"];
-        if (to_ip_value == self_name) {
-            auto to_session = UserMgr::GetInstance()->getSession(to_uid);
-            if (to_session) {
-                to_session->Send(root.dump(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+        for (int target_uid : targets) {
+            if (target_uid == from_uid) {
+                continue;
             }
-            session->Send(root.dump(), ID_TEXT_CHAT_MSG_RSP);
-            return;
+
+            auto to_ip_key = USERIPPREFIX + std::to_string(target_uid);
+            std::string to_ip_value = "";
+            if (!RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value)) {
+                continue;
+            }
+
+            if (to_ip_value == self_name) {
+                auto to_session = UserMgr::GetInstance()->getSession(target_uid);
+                if (to_session) {
+                    to_session->Send(root.dump(), ID_NOTIFY_TEXT_CHAT_MSG_REQ);
+                }
+                continue;
+            }
+
+            message::TextChatMsgReq text_msg_req;
+            text_msg_req.set_touid(target_uid);
+            text_msg_req.set_fromuid(from_uid);
+            text_msg_req.set_thread_id(thread_id);
+            text_msg_req.set_is_group(is_group);
+
+            for (const auto& chat_data : chat_datas) {
+                auto *text_content = text_msg_req.add_textmsgs();
+                text_content->set_unique_id(chat_data->unique_id);
+                text_content->set_msg_id(chat_data->message_id);
+                text_content->set_msgcontent(chat_data->content);
+                text_content->set_chat_time(chat_data->chat_time);
+            }
+
+            ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, text_msg_req);
         }
-
-        message::TextChatMsgReq text_msg_req;
-        text_msg_req.set_touid(to_uid);
-        text_msg_req.set_fromuid(from_uid);
-        text_msg_req.set_thread_id(thread_id);
-
-        for (const auto& chat_data : chat_datas) {
-            auto *text_content = text_msg_req.add_textmsgs();
-            text_content->set_unique_id(chat_data->unique_id);
-            text_content->set_msg_id(chat_data->message_id);
-            text_content->set_msgcontent(chat_data->content);
-            text_content->set_chat_time(chat_data->chat_time);
-        }
-
-        ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, text_msg_req);
+        session->Send(root.dump(), ID_TEXT_CHAT_MSG_RSP);
     };
     _fun_callbacks[ID_HEART_BEAT_REQ] = [this](std::shared_ptr<CSession> session, const short &msg_id, const std::string & msg_data) {
         json req_json = json::parse(msg_data);
@@ -421,6 +436,30 @@ void LogicSystem::RegisterCallBacks() {
             thread_obj["type"] = thread->_type;
             thread_obj["user1_id"] = thread->_user1_id;
             thread_obj["user2_id"] = thread->_user2_id;
+            thread_obj["group_name"] = thread->_group_name;
+            if (thread->_type == "group") {
+                std::vector<int> members;
+                MysqlMgr::GetInstance()->GetGroupMembers(thread->_thread_id, members);
+                json member_array = json::array();
+                for (int member : members) {
+                    member_array.push_back(member);
+                }
+                thread_obj["members"] = member_array;
+
+                json info_array = json::array();
+                for (int member : members) {
+                    json info_obj;
+                    info_obj["uid"] = member;
+                    auto member_info = MysqlMgr::GetInstance()->GetUserInfoById(member);
+                    if (member_info) {
+                        info_obj["name"] = member_info->username;
+                        info_obj["nick"] = member_info->nick;
+                        info_obj["icon"] = member_info->icon;
+                    }
+                    info_array.push_back(info_obj);
+                }
+                thread_obj["member_infos"] = info_array;
+            }
             root["threads"].emplace_back(thread_obj);
         }
         session->Send(root.dump(), ID_LOAD_CHAT_THREAD_RSP);
@@ -452,6 +491,7 @@ void LogicSystem::RegisterCallBacks() {
 
         root["error"] = ErrorCodes::Success;
         root["thread_id"] = thread_id;
+        root["is_group"] = MysqlMgr::GetInstance()->IsGroupThread(thread_id);
 
         int page_size = 10;
         std::shared_ptr<PageResult> res = MysqlMgr::GetInstance()->LoadChatMsg(thread_id, message_id, page_size);
@@ -584,48 +624,8 @@ void LogicSystem::RegisterCallBacks() {
 
         MysqlMgr::GetInstance()->UpdateChatMsgStatus(message_id, MsgStatus::UPLOAD);
 
-        json notify;
-        notify["error"] = ErrorCodes::Success;
-        notify["fromuid"] = from_uid;
-        notify["touid"] = to_uid;
-        notify["thread_id"] = thread_id;
-        notify["message_id"] = message_id;
-        notify["unique_id"] = unique_id;
-        notify["name"] = unique_name;
-        notify["md5"] = md5;
-        notify["chat_time"] = chat_time;
-        notify["status"] = MsgStatus::UPLOAD;
-        notify["type"] = MsgType::MSG_TYPE_IMG;
-
-        auto touid_str = std::to_string(to_uid);
-        auto to_ip_key = USERIPPREFIX + touid_str;
-        std::string to_ip_value = "";
-        bool b_ip = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
-        if (!b_ip) {
-            return;
-        }
-
-        auto &cfg = ConfigMgr::Inst();
-        auto self_name = cfg["SelfServer"]["Name"];
-        if (to_ip_value == self_name) {
-            auto to_session = UserMgr::GetInstance()->getSession(to_uid);
-            if (to_session) {
-                to_session->Send(notify.dump(), ID_NOTIFY_IMG_CHAT_MSG_REQ);
-            }
-        } else {
-            message::ImageChatMsgReq image_req;
-            image_req.set_fromuid(from_uid);
-            image_req.set_touid(to_uid);
-            image_req.set_thread_id(thread_id);
-            image_req.set_message_id(message_id);
-            image_req.set_unique_id(unique_id);
-            image_req.set_name(unique_name);
-            image_req.set_md5(md5);
-            image_req.set_chat_time(chat_time);
-            image_req.set_status(MsgStatus::UPLOAD);
-            image_req.set_type(MsgType::MSG_TYPE_IMG);
-            ChatGrpcClient::GetInstance()->NotifyImageChatMsg(to_ip_value, image_req);
-        }
+        NotifyFileChatMsg(from_uid, to_uid, thread_id, message_id, unique_id, unique_name, md5, chat_time,
+            MsgStatus::UPLOAD, MsgType::MSG_TYPE_IMG, 0);
     };
     _fun_callbacks[ID_FILE_CHAT_UPLOAD_FINISH_REQ] = [this](std::shared_ptr<CSession> session, const short &msg_id, const std::string & msg_data) {
         json req_json = json::parse(msg_data);
@@ -645,6 +645,72 @@ void LogicSystem::RegisterCallBacks() {
             MsgStatus::UPLOAD, MsgType::MSG_TYPE_FILE, total_size);
     };
 
+    _fun_callbacks[ID_CREATE_GROUP_CHAT_REQ] = [this](std::shared_ptr<CSession> session, const short &msg_id, const std::string & msg_data) {
+        json req_json = json::parse(msg_data);
+        json rtvalue;
+        int thread_id = -1;
+        auto host_uid = req_json["host_uid"].get<int>();
+        rtvalue["error"] = ErrorCodes::Success;
+        rtvalue["host_uid"] = host_uid;
+        std::vector<int> members;
+        for (const auto& member : req_json["members"]) {
+            auto uid = member.get<int>();
+            members.push_back(uid);
+            rtvalue["members"].push_back(member.get<int>());
+        }
+
+        bool b_success = MysqlMgr::GetInstance()->CreateGroupChat(host_uid, members, thread_id);
+        if (!b_success) {
+            rtvalue["error"] = ErrorCodes::CREATE_GROUP_FAILED;
+            rtvalue["thread_id"] = thread_id;
+            session->Send(rtvalue.dump(), ID_CREATE_GROUP_CHAT_RSP);
+            return;
+        }
+        rtvalue["thread_id"] = thread_id;
+        session->Send(rtvalue.dump(), ID_CREATE_GROUP_CHAT_RSP);
+
+        message::AddGroupChatReq req;
+        req.set_host_uid(host_uid);
+        req.set_thread_id(thread_id);
+        req.set_member_size(members.size());
+        for(auto member_uid : members) {
+            auto* member = req.add_members_uid();
+            member->set_uid(member_uid);
+        }
+
+        for (const auto& uid : members) {
+            auto touid_str = std::to_string(uid);
+            auto to_ip_key = USERIPPREFIX + touid_str;
+            std::string to_ip_value = "";
+            bool b_ip = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
+            if (!b_ip) {
+                // offline: this member will load the group from the session list at next login.
+                // Keep notifying the remaining members (never return here).
+                std::cout << "[CreateGroupChat] member " << uid << " is offline, skip notify" << std::endl;
+                continue;
+            }
+
+            auto &cfg = ConfigMgr::Inst();
+            auto self_name = cfg["SelfServer"]["Name"];
+
+            if (to_ip_value == self_name) {
+                auto to_session = UserMgr::GetInstance()->getSession(uid);
+                if (to_session) {
+                    std::cout << "[CreateGroupChat] notify member " << uid
+                        << " thread " << thread_id << std::endl;
+                    to_session->Send(rtvalue.dump(), ID_NOTIFY_CREATE_GROUP_CHAT_RSP);
+                }
+                else {
+                    std::cout << "[CreateGroupChat] member " << uid << " has no live session" << std::endl;
+                }
+            } else {
+                req.set_uid(uid);
+                ChatGrpcClient::GetInstance()->NotifyAddGroupChat(to_ip_value, req);
+            }
+        }
+
+    };
+
 
 
 
@@ -653,41 +719,55 @@ void LogicSystem::RegisterCallBacks() {
 void LogicSystem::NotifyFileChatMsg(int from_uid, int to_uid, int thread_id, int message_id,
     const std::string& unique_id, const std::string& unique_name,
     const std::string& md5, const std::string& chat_time, int status, int type, int total_size) {
-    json notify;
-    notify["error"] = ErrorCodes::Success;
-    notify["fromuid"] = from_uid;
-    notify["touid"] = to_uid;
-    notify["thread_id"] = thread_id;
-    notify["message_id"] = message_id;
-    notify["unique_id"] = unique_id;
-    notify["name"] = unique_name;
-    notify["md5"] = md5;
-    notify["chat_time"] = chat_time;
-    notify["status"] = status;
-    notify["type"] = type;
-    notify["total_size"] = total_size;
-
-    auto touid_str = std::to_string(to_uid);
-    auto to_ip_key = USERIPPREFIX + touid_str;
-    std::string to_ip_value = "";
-    bool b_ip = RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value);
-    if (!b_ip) {
-        return;
+    const bool is_group = MysqlMgr::GetInstance()->IsGroupThread(thread_id);
+    std::vector<int> targets;
+    if (is_group) {
+        MysqlMgr::GetInstance()->GetGroupMembers(thread_id, targets);
+    } else {
+        targets.push_back(to_uid);
     }
 
     auto& cfg = ConfigMgr::Inst();
     auto self_name = cfg["SelfServer"]["Name"];
-    if (to_ip_value == self_name) {
-        auto to_session = UserMgr::GetInstance()->getSession(to_uid);
-        if (to_session) {
-            to_session->Send(notify.dump(), ID_NOTIFY_IMG_CHAT_MSG_REQ);
+    for (int target_uid : targets) {
+        if (target_uid == from_uid) {
+            continue;
         }
-    }
-    else {
+
+        auto to_ip_key = USERIPPREFIX + std::to_string(target_uid);
+        std::string to_ip_value = "";
+        if (!RedisMgr::GetInstance()->Get(to_ip_key, to_ip_value)) {
+            continue;  // offline
+        }
+
+        json notify;
+        notify["error"] = ErrorCodes::Success;
+        notify["fromuid"] = from_uid;
+        notify["touid"] = target_uid;
+        notify["thread_id"] = thread_id;
+        notify["is_group"] = is_group;
+        notify["message_id"] = message_id;
+        notify["unique_id"] = unique_id;
+        notify["name"] = unique_name;
+        notify["md5"] = md5;
+        notify["chat_time"] = chat_time;
+        notify["status"] = status;
+        notify["type"] = type;
+        notify["total_size"] = total_size;
+
+        if (to_ip_value == self_name) {
+            auto to_session = UserMgr::GetInstance()->getSession(target_uid);
+            if (to_session) {
+                to_session->Send(notify.dump(), ID_NOTIFY_IMG_CHAT_MSG_REQ);
+            }
+            continue;
+        }
+
         message::ImageChatMsgReq image_req;
         image_req.set_fromuid(from_uid);
-        image_req.set_touid(to_uid);
+        image_req.set_touid(target_uid);
         image_req.set_thread_id(thread_id);
+        image_req.set_is_group(is_group);
         image_req.set_message_id(message_id);
         image_req.set_unique_id(unique_id);
         image_req.set_name(unique_name);
@@ -747,7 +827,6 @@ void LogicSystem::DealMsg() {
 void LogicSystem::PostMsgToQue(std::shared_ptr<LogicNode> msg) {
     std::unique_lock<std::mutex> unique_lk(_mutex);
     _msg_que.push(msg);
-    //鐢?鍙樹负1鍒欏彂閫侀€氱煡淇″彿
     if (_msg_que.size() == 1) {
         unique_lk.unlock();
         _consume.notify_one();

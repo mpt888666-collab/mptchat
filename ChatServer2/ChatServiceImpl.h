@@ -6,7 +6,7 @@
 #define CHATSERVER_CHATSERVICEIMPL_H
 #include <complex.h>
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
 
 #include "data.h"
@@ -29,6 +29,9 @@ public:
 
     grpc::Status NotifyKickUser(grpc::ServerContext* context,
         const message::KickUserReq* request, message::KickUserRsp* response) override;
+
+    grpc::Status NotifyAddGroupChat(grpc::ServerContext* context,
+        const message::AddGroupChatReq* request, message::AddGroupChatRsp* response) override;
 
     void RegisterServer(std::shared_ptr<CServer> pServer);
 

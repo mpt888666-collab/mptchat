@@ -7,10 +7,20 @@ if (MSVC)
     add_compile_options("/utf-8")
 endif()
 
-cmake_policy(SET CMP0167 OLD)
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
 
-set(CMAKE_TOOLCHAIN_FILE "C:/Users/mpt/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "")
-set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
+# vcpkg 工具链：优先使用命令行传入的 -DCMAKE_TOOLCHAIN_FILE（CI 与其他机器走这条），
+# 否则回退到作者本机路径；两者都不满足时需要自行指定，见 README「快速开始」
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND EXISTS "C:/Users/mpt/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    set(CMAKE_TOOLCHAIN_FILE "C:/Users/mpt/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "")
+endif()
+
+if(NOT DEFINED VCPKG_TARGET_TRIPLET AND WIN32)
+    set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
+endif()
+
 
 project(GetServer)
 set(CMAKE_CXX_STANDARD 20)
@@ -46,6 +56,8 @@ add_custom_command(
 )
 
 # 可执行程序
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 add_executable(GetServer
         main.cpp
         CServer.cpp

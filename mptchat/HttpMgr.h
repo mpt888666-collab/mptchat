@@ -22,7 +22,10 @@ public:
 private:
     friend class Singleton<HttpMgr>;
     HttpMgr();
+    //并发请求没问题，内部多个连接池
     QNetworkAccessManager _manager;
+
+
 private slots:
     void slot_http_finish(ReqId id, QString res, ErrorCodes err, Modules mod);
 signals:

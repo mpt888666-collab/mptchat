@@ -8,7 +8,7 @@
 #include "Singleton.h"
 #include <queue>
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
 class StatusConPool {
 public:

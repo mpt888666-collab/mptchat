@@ -96,6 +96,7 @@ grpc::Status ChatServiceImpl::NotifyTextChatMsg(grpc::ServerContext* context,con
     root["fromuid"] = request->fromuid();
     root["touid"] = request->touid();
     root["thread_id"] = request->thread_id();
+    root["is_group"] = request->is_group();
     root["error"] = ErrorCodes::Success;
     for (auto& text_data : request->textmsgs()) {
         json element;
@@ -129,6 +130,7 @@ grpc::Status ChatServiceImpl::NotifyImageChatMsg(grpc::ServerContext* context, c
     notify["fromuid"] = request->fromuid();
     notify["touid"] = request->touid();
     notify["thread_id"] = request->thread_id();
+    notify["is_group"] = request->is_group();
     notify["message_id"] = request->message_id();
     notify["unique_id"] = request->unique_id();
     notify["name"] = request->name();
@@ -203,6 +205,30 @@ grpc::Status ChatServiceImpl::NotifyKickUser(grpc::ServerContext* context,const 
         return grpc::Status::OK;
     }
     session->NotifyOffline(uid);
+    _p_server->ClearSession(session->GetSessionId());
+    std::cout << "kftr" << std::endl;
+
+    return grpc::Status::OK;
+}
+
+grpc::Status ChatServiceImpl::NotifyAddGroupChat(grpc::ServerContext* context,const message::AddGroupChatReq* request, message::AddGroupChatRsp* response) {
+    auto uid = request->uid();
+    auto session = UserMgr::GetInstance()->getSession(uid);
+    if(session == nullptr) {
+        response->set_error(ErrorCodes::Success);
+        response->set_uid(uid);
+        return grpc::Status::OK;
+    }
+    json notify;
+    notify["error"] = ErrorCodes::Success;
+    notify["host_uid"] = request->host_uid();
+    notify["thread_id"] = request->thread_id();
+
+    for (const auto& uids : request->members_uid()) {
+        notify["members"].push_back(uids.uid());
+    }
+
+    session->Send(notify.dump(), ID_NOTIFY_CREATE_GROUP_CHAT_RSP);
     _p_server->ClearSession(session->GetSessionId());
     std::cout << "kftr" << std::endl;
 

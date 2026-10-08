@@ -14,12 +14,10 @@
 
 namespace {
 
-// 采集 / 重采样 / 特征提取必须一致的量：不做成运行时配置。
-// 改这里必须同步 AudioRecorder 的采集格式和 AudioResampler 的目标采样率。
 constexpr int kFeatSampleRate = 16000;
 constexpr int kFeatDim = 80;
 
-} // namespace
+}
 
 void SherpaOnnxRecognizer::DestroyRecognizer(SherpaOnnxOnlineRecognizer* p)
 {
@@ -107,7 +105,7 @@ bool SherpaOnnxRecognizer::Init() {
         qWarning() << "[ASR] provider 不在白名单，回退 cpu:" << provider;
         provider = QStringLiteral("cpu");
     }
-    
+
     const QByteArray provider_utf8 = provider.toUtf8();
     const QByteArray method_utf8 =
         cfg.value(QStringLiteral("ASR"), QStringLiteral("decoding_method"),

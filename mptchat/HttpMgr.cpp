@@ -5,6 +5,7 @@
 #include "HttpMgr.h"
 #include "HttpMgr.h"
 
+#include <QTimer>
 #include <utility>
 
 void HttpMgr::PostHttpReq(QUrl url, QJsonObject json, ReqId req_id, Modules mod) {
@@ -13,9 +14,19 @@ void HttpMgr::PostHttpReq(QUrl url, QJsonObject json, ReqId req_id, Modules mod)
     QNetworkRequest req = QNetworkRequest(url);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     req.setHeader(QNetworkRequest::ContentLengthHeader, QByteArray::number(data.length()));
-
+    //req.setTransferTimeout(5000); // Qt >=5.15 / Qt6 一行设置5s传输超时，底层自动abort
     auto self = shared_from_this();
     QNetworkReply *reply = _manager.post(req, data);
+
+    auto timer = new QTimer(reply);
+    timer->setSingleShot(true);
+    timer->setInterval(5000);
+    connect(timer, &QTimer::timeout, reply, [reply](){
+        if(!reply->isFinished()){
+            reply->abort();  //终止网络请求，设置错误码 `OperationCanceledError`，发射 `finished` 信号
+        }
+    });
+    timer->start();
 
     connect(reply, &QNetworkReply::finished, this, [self, reply, req_id, mod] {
         if (reply->error() != QNetworkReply::NoError) {
@@ -38,7 +49,6 @@ HttpMgr::HttpMgr() {
 void HttpMgr::slot_http_finish(ReqId id, QString res, ErrorCodes err, Modules mod)
 {
     if(mod == Modules::REGISTERMOD){
-        //发送信号通知指定模块http响应结束
         emit sig_reg_mod_finish(id, res, err);
     }
     if (mod == Modules::RESETMOD) {

@@ -6,7 +6,7 @@
 #define GETSERVER_VARIFYGRPCCLIENT_H
 #include <queue>
 #include <grpcpp/grpcpp.h>
-#include "cmake-build-debug-visual-studio/message.grpc.pb.h"
+#include "message.grpc.pb.h"
 #include "const.h"
 #include "Singleton.h"
 

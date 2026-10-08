@@ -202,12 +202,19 @@ public:
     bool AddChatMsg(std::shared_ptr<ChatMessage> chat_msg);
 
     std::shared_ptr<PageResult> LoadChatMsg(int thread_id, int message_id, int page_size);
+    bool IsGroupThread(int thread_id);
+    bool GetGroupMembers(int thread_id, std::vector<int>& members);
 
     bool UpdateChatMsgStatus(int message_id, int status);
+
+    bool UpdateHeadInfo(int uid, const std::string &icon);
 
     bool AuthFriendApply(int from, int to);
 
     bool AddFriend(int me_uid, int peer_uid, const std::string &back_name);
+
+    bool CreateGroupChat(uint64_t host_uid, const std::vector<int>& members, int& thread_id);
+
 
 private:
     MysqlMgr() {

@@ -12,11 +12,14 @@
 #include "RedisMgr.h"
 #include <fstream>
 #include "base64.h"
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 #include <filesystem>
 
 namespace {
 
+#if defined(_WIN32)
 std::wstring Utf8ToWide(const std::string& utf8) {
     if (utf8.empty()) {
         return {};
@@ -31,6 +34,18 @@ std::wstring Utf8ToWide(const std::string& utf8) {
                         static_cast<int>(utf8.size()), wide.data(), len);
     return wide;
 }
+#endif
+
+// 跨平台工具：把 UTF-8 字符串转成文件系统路径
+// Windows 需要转宽字符才能正确处理中文路径；Linux 直接用原字符串
+std::filesystem::path ToPath(const std::string& utf8) {
+#if defined(_WIN32)
+    return std::filesystem::path(Utf8ToWide(utf8));
+#else
+    return std::filesystem::path(utf8);
+#endif
+}
+
 
 std::string WideToUtf8(const std::wstring& wide) {
     if (wide.empty()) {
@@ -53,8 +68,8 @@ std::string MakeFileOutPath(const boost::filesystem::path& base_path,
                             const std::string& uid_dir,
                             const std::string& file_name) {
     std::filesystem::path out(base_path.wstring());
-    out /= Utf8ToWide(uid_dir);
-    out /= Utf8ToWide(file_name);
+    out /= ToPath(uid_dir);
+    out /= ToPath(file_name);
     return WideToUtf8(out.wstring());
 }
 
@@ -280,7 +295,7 @@ void LogicWork::RegisterCallBacks() {
         auto file_path = ConfigMgr::Inst().GetFileOutPath();
         auto file_path_str = MakeFileOutPath(file_path, std::to_string(owner_uid), name);
 
-        std::filesystem::path infile_path(Utf8ToWide(file_path_str));
+        std::filesystem::path infile_path = ToPath(file_path_str);
         std::ifstream infile;
         infile.open(infile_path.c_str(), std::ios::binary);
         if (!infile) {

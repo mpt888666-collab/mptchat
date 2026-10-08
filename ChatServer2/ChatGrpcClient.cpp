@@ -216,6 +216,37 @@ message::KickUserRsp ChatGrpcClient::NotifyKickUser(std::string server_ip, const
     return rsp;
 }
 
+message::AddGroupChatRsp ChatGrpcClient::NotifyAddGroupChat(std::string server_ip, const message::AddGroupChatReq &req) {
+    message::AddGroupChatRsp rsp;
+    grpc::ClientContext context;
+
+    rsp.set_error(ErrorCodes::Success);
+    rsp.set_host_uid(req.host_uid());
+    rsp.set_thread_id(req.thread_id());
+    rsp.set_member_size(req.member_size());
+    rsp.set_uid(req.uid());
+    for (const auto& uids : req.members_uid()) {
+        auto *membersUid = rsp.add_members_uid();
+        membersUid->set_uid(uids.uid());
+    }
+
+    auto iter = _pools.find(server_ip);
+    if (iter == _pools.end()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+        return rsp;
+    }
+
+    auto& pool = iter->second;
+    auto stub = pool->getConnection();
+    grpc::Status status = stub->NotifyAddGroupChat(&context, req, &rsp);
+
+    if (!status.ok()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+        pool->returnConnection(std::move(stub));
+        return rsp;
+    }
+    return rsp;
+}
 
 
 

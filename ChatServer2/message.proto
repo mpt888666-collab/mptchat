@@ -61,6 +61,7 @@ message TextChatMsgReq {
   int32 touid = 2;
   int32 thread_id = 3;
   repeated TextChatData textmsgs = 4;
+  bool is_group = 5;
 }
 
 message TextChatData{
@@ -90,6 +91,7 @@ message ImageChatMsgReq {
   int32 status = 9;
   int32 type = 10;
   int32 total_size = 11;
+  bool is_group = 12;
 }
 
 message ImageChatMsgRsp {
@@ -110,11 +112,33 @@ message KickUserRsp{
   int32 uid = 2;
 }
 
+message MembersUid{
+  int32 uid = 1;
+}
+
+message AddGroupChatReq{
+  int32 host_uid = 1;
+  int32 uid = 2;
+  repeated MembersUid members_uid= 3;
+  int32 thread_id = 4;
+  int32 member_size = 5;
+}
+
+message AddGroupChatRsp{
+  int32 error = 1;
+  int32 host_uid = 2;
+  int32 uid = 3;
+  repeated MembersUid members_uid= 4;
+  int32 thread_id = 5;
+  int32 member_size = 6;
+}
+
 service ChatService{
   rpc NotifyAddFriend(AddFriendReq) returns (AddFriendRsp) {}
   rpc NotifyAuthFriend(AuthFriendReq) returns (AuthFriendRsp) {}
   rpc NotifyTextChatMsg(TextChatMsgReq) returns (TextChatMsgRsp) {}
   rpc NotifyImageChatMsg(ImageChatMsgReq) returns (ImageChatMsgRsp) {}
   rpc NotifyKickUser(KickUserReq) returns (KickUserRsp){}
+  rpc NotifyAddGroupChat(AddGroupChatReq) returns(AddGroupChatRsp){}
 }
 
