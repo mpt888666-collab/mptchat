@@ -52,12 +52,12 @@ jobs:
 
   # ---------------------------------------------------------------------------
   # 2) Windows / Linux 双平台 Release 构建
-  #    vcpkg 从源码编译 gRPC 等依赖，首次约 30-60 分钟；命中缓存后 1-3 分钟
+  #    vcpkg 首次要从源码编 gRPC / Boost，约 1-2 小时；命中缓存后 1-3 分钟
   # ---------------------------------------------------------------------------
   build:
     name: build (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
+    timeout-minutes: 240
     strategy:
       fail-fast: false
       matrix:
@@ -65,31 +65,52 @@ jobs:
           - name: windows-msvc
             os: windows-latest
             triplet: x64-windows
-            generator: "Visual Studio 17 2022"
           - name: linux-gcc
             os: ubuntu-latest
             triplet: x64-linux
-            generator: "Ninja"
     env:
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-cache,readwrite"
-      VCPKG_DOWNLOADS: ${{ github.workspace }}/vcpkg-downloads
     steps:
       - uses: actions/checkout@v4
 
+      # 先打印环境：失败时一眼看出是哪台机器、哪个 triplet、有没有 ninja / VS
+      - name: Environment info
+        shell: bash
+        run: |
+          set -e
+          echo "runner.os = $RUNNER_OS"
+          echo "triplet   = $VCPKG_DEFAULT_TRIPLET"
+          cmake --version | head -n 1
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            echo "gcc       = $(command -v gcc || echo MISSING)"
+            echo "ninja     = $(command -v ninja || echo 'MISSING (下面会装)')"
+            [ "$VCPKG_DEFAULT_TRIPLET" = "x64-linux" ] || { echo "::error::Linux job 的 triplet 必须是 x64-linux"; exit 1; }
+          else
+            echo "vswhere   = $(ls '/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe' 2>/dev/null || echo MISSING)"
+            [ "$VCPKG_DEFAULT_TRIPLET" = "x64-windows" ] || { echo "::error::Windows job 的 triplet 必须是 x64-windows"; exit 1; }
+          fi
+
+      # vcpkg 在 Linux 上不会自己下载 ninja，它要求系统里有
+      # （否则报 unable to find a build program corresponding to "Ninja"）
       - name: Install Linux toolchain
         if: runner.os == 'Linux'
         run: |
+          set -e
           sudo apt-get update
           sudo apt-get install -y ninja-build build-essential
+          test -x "$(command -v ninja)"
+          ninja --version
 
-      - name: Cache vcpkg (installed + binary cache + downloads)
-        uses: actions/cache@v4
+      # 用 restore/save 分开写：job 失败也能把二进制缓存留下来，
+      # 下一次不用再从源码编一遍 gRPC
+      - name: Restore vcpkg cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ${{ env.VCPKG_ROOT }}/installed
             ${{ github.workspace }}/vcpkg-cache
-            ${{ github.workspace }}/vcpkg-downloads
           key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
             vcpkg-${{ matrix.name }}-
@@ -98,7 +119,7 @@ jobs:
         shell: bash
         run: |
           set -e
-          mkdir -p "${{ github.workspace }}/vcpkg-cache" "${{ github.workspace }}/vcpkg-downloads"
+          mkdir -p "${{ github.workspace }}/vcpkg-cache"
           if [ ! -d "$VCPKG_ROOT" ]; then
             git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
           fi
@@ -108,29 +129,62 @@ jobs:
             "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
           fi
 
-      - name: Configure and build services
+      # ---- Linux：bash + Ninja ----
+      - name: Configure and build services (Linux)
+        if: runner.os == 'Linux'
         shell: bash
         run: |
           set -e
           for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
             echo "::group::build $svc"
             cmake -S "$svc" -B "build/$svc" \
-              -G "${{ matrix.generator }}" \
+              -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
               -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
-              -DVCPKG_MANIFEST_DIR="$PWD" \
+              -DVCPKG_MANIFEST_DIR="$GITHUB_WORKSPACE" \
               -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed"
             cmake --build "build/$svc" --config Release --parallel
             echo "::endgroup::"
           done
 
+      # ---- Windows：改用 pwsh 跑（Git Bash 下 CMake 找不到 Visual Studio）----
+      - name: Configure and build services (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($svc in 'StatusServer','GetServer','ChatServer','ChatServer2','ResourceServer') {
+            Write-Host "::group::build $svc"
+            cmake -S $svc -B "build/$svc" `
+              -G "Visual Studio 17 2022" -A x64 `
+              -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
+              -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} `
+              -DVCPKG_MANIFEST_DIR="$env:GITHUB_WORKSPACE" `
+              -DVCPKG_INSTALLED_DIR="$env:VCPKG_ROOT/installed"
+            if ($LASTEXITCODE -ne 0) { throw "cmake configure failed: $svc" }
+            cmake --build "build/$svc" --config Release --parallel
+            if ($LASTEXITCODE -ne 0) { throw "cmake build failed: $svc" }
+            Write-Host "::endgroup::"
+          }
+
       - name: Show artifacts
+        if: always()
         shell: bash
         run: |
           find build -maxdepth 4 -type f \( -name '*.exe' -o -name 'StatusServer' -o -name 'GetServer' -o -name 'ChatServer' -o -name 'ChatServer2' -o -name 'ResourceServer' \) -printf '%p  %s bytes\n' 2>/dev/null || true
 
+      - name: Save vcpkg cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ env.VCPKG_ROOT }}/installed
+            ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
+
       - name: Upload server binaries
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: chatdemo-${{ matrix.name }}
