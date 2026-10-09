@@ -51,8 +51,8 @@ jobs:
           test "$n" -eq 8
 
   # ---------------------------------------------------------------------------
-  # 2) Windows / Linux 双平台 Release 构建
-  #    vcpkg 首次要从源码编 gRPC / Boost，约 1-2 小时；命中缓存后 1-3 分钟
+  # 2) Windows / Linux 双平台 Release 构建（统一用 Ninja）
+  #    vcpkg 首次要从源码编 gRPC / Boost，约 1-2 小时；命中二进制缓存后 1-3 分钟
   # ---------------------------------------------------------------------------
   build:
     name: build (${{ matrix.name }})
@@ -74,36 +74,56 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 先打印环境：失败时一眼看出是哪台机器、哪个 triplet、有没有 ninja / VS
+      # 先把环境打出来：以后失败一眼就能看出是哪台机器、哪个 triplet、工具在哪
       - name: Environment info
         shell: bash
         run: |
           set -e
           echo "runner.os = $RUNNER_OS"
           echo "triplet   = $VCPKG_DEFAULT_TRIPLET"
+          echo "PATH      = $PATH"
           cmake --version | head -n 1
           if [ "$RUNNER_OS" = "Linux" ]; then
-            echo "gcc       = $(command -v gcc || echo MISSING)"
-            echo "ninja     = $(command -v ninja || echo 'MISSING (下面会装)')"
             [ "$VCPKG_DEFAULT_TRIPLET" = "x64-linux" ] || { echo "::error::Linux job 的 triplet 必须是 x64-linux"; exit 1; }
           else
-            echo "vswhere   = $(ls '/c/Program Files (x86)/Microsoft Visual Studio/Installer/vswhere.exe' 2>/dev/null || echo MISSING)"
             [ "$VCPKG_DEFAULT_TRIPLET" = "x64-windows" ] || { echo "::error::Windows job 的 triplet 必须是 x64-windows"; exit 1; }
           fi
 
-      # vcpkg 在 Linux 上不会自己下载 ninja，它要求系统里有
-      # （否则报 unable to find a build program corresponding to "Ninja"）
+      # Linux：vcpkg 不会自己下载 ninja，必须系统里有；顺便把 ninja 路径显式导出，
+      # 免得 vcpkg 端口构建里的 CMake 在 PATH 里找不到它（就是上次那个报错）
       - name: Install Linux toolchain
         if: runner.os == 'Linux'
         run: |
           set -e
           sudo apt-get update
           sudo apt-get install -y ninja-build build-essential
-          test -x "$(command -v ninja)"
+          NINJA_BIN="$(command -v ninja)"
+          test -x "$NINJA_BIN"
+          "$NINJA_BIN" --version
+          echo "NINJA=$NINJA_BIN" >> "$GITHUB_ENV"
+          echo "CMAKE_MAKE_PROGRAM=$NINJA_BIN" >> "$GITHUB_ENV"
+          echo "VCPKG_FORCE_SYSTEM_BINARIES=1" >> "$GITHUB_ENV"
+
+      # Windows：不再让 CMake 自己去找 Visual Studio（上次就是它找不到），
+      # 改成先用 vcvars 把 MSVC 环境准备好，再用 Ninja 构建
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
+            choco install ninja -y --no-progress
+          }
           ninja --version
 
-      # 用 restore/save 分开写：job 失败也能把二进制缓存留下来，
-      # 下一次不用再从源码编一遍 gRPC
+      # restore / save 分开写：job 失败也把 vcpkg 二进制缓存留下来，
+      # 这样不用每次提交都从头编 1-2 小时
       - name: Restore vcpkg cache
         id: vcpkg-cache
         uses: actions/cache/restore@v4
@@ -120,7 +140,10 @@ jobs:
         run: |
           set -e
           mkdir -p "${{ github.workspace }}/vcpkg-cache"
-          if [ ! -d "$VCPKG_ROOT" ]; then
+          # 注意：缓存可能先恢复了 installed/，所以不能只判断目录是否存在，
+          # 要判断 bootstrap 脚本在不在，否则会把 clone 跳过
+          if [ ! -f "$VCPKG_ROOT/bootstrap-vcpkg.sh" ]; then
+            rm -rf "$VCPKG_ROOT"
             git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
           fi
           if [ "$RUNNER_OS" = "Windows" ]; then
@@ -129,9 +152,16 @@ jobs:
             "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
           fi
 
-      # ---- Linux：bash + Ninja ----
-      - name: Configure and build services (Linux)
-        if: runner.os == 'Linux'
+      # 依赖单独一步装：装坏了就是这一步红，不会跟后面的配置混在一起
+      - name: Install vcpkg dependencies
+        shell: bash
+        run: |
+          set -e
+          echo "ninja -> $(command -v ninja || echo MISSING)"
+          cd "$GITHUB_WORKSPACE"
+          "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --clean-after-build
+
+      - name: Configure and build services
         shell: bash
         run: |
           set -e
@@ -140,6 +170,7 @@ jobs:
             cmake -S "$svc" -B "build/$svc" \
               -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_MAKE_PROGRAM="${CMAKE_MAKE_PROGRAM:-ninja}" \
               -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
               -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
               -DVCPKG_MANIFEST_DIR="$GITHUB_WORKSPACE" \
@@ -147,26 +178,6 @@ jobs:
             cmake --build "build/$svc" --config Release --parallel
             echo "::endgroup::"
           done
-
-      # ---- Windows：改用 pwsh 跑（Git Bash 下 CMake 找不到 Visual Studio）----
-      - name: Configure and build services (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          foreach ($svc in 'StatusServer','GetServer','ChatServer','ChatServer2','ResourceServer') {
-            Write-Host "::group::build $svc"
-            cmake -S $svc -B "build/$svc" `
-              -G "Visual Studio 17 2022" -A x64 `
-              -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
-              -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} `
-              -DVCPKG_MANIFEST_DIR="$env:GITHUB_WORKSPACE" `
-              -DVCPKG_INSTALLED_DIR="$env:VCPKG_ROOT/installed"
-            if ($LASTEXITCODE -ne 0) { throw "cmake configure failed: $svc" }
-            cmake --build "build/$svc" --config Release --parallel
-            if ($LASTEXITCODE -ne 0) { throw "cmake build failed: $svc" }
-            Write-Host "::endgroup::"
-          }
 
       - name: Show artifacts
         if: always()
@@ -190,11 +201,11 @@ jobs:
           name: chatdemo-${{ matrix.name }}
           if-no-files-found: warn
           path: |
-            build/StatusServer/**/Release/*.exe
-            build/GetServer/**/Release/*.exe
-            build/ChatServer/**/Release/*.exe
-            build/ChatServer2/**/Release/*.exe
-            build/ResourceServer/**/Release/*.exe
+            build/StatusServer/StatusServer.exe
+            build/GetServer/GetServer.exe
+            build/ChatServer/ChatServer.exe
+            build/ChatServer2/ChatServer2.exe
+            build/ResourceServer/ResourceServer.exe
             build/StatusServer/StatusServer
             build/GetServer/GetServer
             build/ChatServer/ChatServer
