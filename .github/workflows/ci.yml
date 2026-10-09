@@ -11,6 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  # 钉死 vcpkg 版本：以前每次跑都 clone 最新 master，master 一漂移、port 一变，
+  # 所有依赖的 ABI 就跟着变，缓存虽然恢复成功也判定过期 → 整棵树重编。
+  VCPKG_REF: "0699a19d0c6386247ce50d4dedbb8217d484d536"
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
 jobs:
@@ -66,7 +69,7 @@ jobs:
         include:
           - name: windows-msvc
             os: windows-2022
-            triplet: x64-windows
+            triplet: x64-windows-release
           - name: linux-gcc
             os: ubuntu-latest
             triplet: x64-linux
@@ -84,12 +87,13 @@ jobs:
           echo "runner.os = $RUNNER_OS"
           echo "triplet   = $VCPKG_DEFAULT_TRIPLET"
           echo "VCPKG_ROOT = $VCPKG_ROOT"
+          echo "VCPKG_REF  = $VCPKG_REF"
           echo "PATH      = $PATH"
           cmake --version | head -n 1
           if [ "$RUNNER_OS" = "Linux" ]; then
             [ "$VCPKG_DEFAULT_TRIPLET" = "x64-linux" ] || { echo "::error::Linux job 的 triplet 必须是 x64-linux"; exit 1; }
           else
-            [ "$VCPKG_DEFAULT_TRIPLET" = "x64-windows" ] || { echo "::error::Windows job 的 triplet 必须是 x64-windows"; exit 1; }
+            [ "$VCPKG_DEFAULT_TRIPLET" = "x64-windows-release" ] || { echo "::error::Windows job 的 triplet 必须是 x64-windows-release"; exit 1; }
           fi
 
       # Linux：vcpkg 不会自己下载 ninja，必须系统里有；顺便把 ninja 路径显式导出，
@@ -134,6 +138,13 @@ jobs:
 
       # restore / save 分开写：job 失败也把 vcpkg 二进制缓存留下来，
       # 这样不用每次提交都从头编 1-2 小时
+      # 缓存 key 里带上 runner 镜像版本：镜像一更新（MSVC 版本变了）ABI 就变，
+      # 那时要换新 key，而不是一直"命中旧缓存但重建"
+      - name: Runner image version
+        id: image
+        shell: bash
+        run: echo "version=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
+
       - name: Restore vcpkg cache
         id: vcpkg-cache
         uses: actions/cache/restore@v4
@@ -141,8 +152,9 @@ jobs:
           path: |
             ${{ env.VCPKG_ROOT }}/installed
             ${{ github.workspace }}/vcpkg-cache
-          key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}
+          key: vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-${{ steps.image.outputs.version }}-${{ hashFiles('vcpkg.json') }}
           restore-keys: |
+            vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-
             vcpkg-${{ matrix.name }}-
 
       - name: Bootstrap vcpkg
@@ -152,10 +164,16 @@ jobs:
           mkdir -p "${{ github.workspace }}/vcpkg-cache"
           # 注意：缓存可能先恢复了 installed/，所以不能只判断目录是否存在，
           # 要判断 bootstrap 脚本在不在，否则会把 clone 跳过
-          if [ ! -f "$VCPKG_ROOT/bootstrap-vcpkg.sh" ]; then
+          # 只有脚本不在、或者当前 checkout 不是钉住的那个 commit 时才重新拉；
+          # 指定 commit 拉比 clone 整个 master 更小更快，版本也稳定
+          if [ ! -f "$VCPKG_ROOT/bootstrap-vcpkg.sh" ] || [ "$(git -C "$VCPKG_ROOT" rev-parse HEAD 2>/dev/null)" != "$VCPKG_REF" ]; then
             rm -rf "$VCPKG_ROOT"
-            git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+            git init -q "$VCPKG_ROOT"
+            git -C "$VCPKG_ROOT" remote add origin https://github.com/microsoft/vcpkg.git
+            git -C "$VCPKG_ROOT" fetch --depth 1 -q origin "$VCPKG_REF"
+            git -C "$VCPKG_ROOT" checkout -q --detach FETCH_HEAD
           fi
+          echo "vcpkg commit = $(git -C "$VCPKG_ROOT" rev-parse HEAD)"
           if [ "$RUNNER_OS" = "Windows" ]; then
             "$VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
           else
@@ -169,7 +187,7 @@ jobs:
           set -e
           echo "ninja -> $(command -v ninja || echo MISSING)"
           cd "$GITHUB_WORKSPACE"
-          "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --clean-after-build
+          "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --overlay-triplets="$GITHUB_WORKSPACE/ci/triplets" --clean-after-build
 
       - name: Configure and build services
         shell: bash
@@ -183,6 +201,7 @@ jobs:
               -DCMAKE_MAKE_PROGRAM="${CMAKE_MAKE_PROGRAM:-ninja}" \
               -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
               -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
+              -DVCPKG_OVERLAY_TRIPLETS="$GITHUB_WORKSPACE/ci/triplets" \
               -DVCPKG_MANIFEST_DIR="$GITHUB_WORKSPACE" \
               -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed"
             cmake --build "build/$svc" --config Release --parallel
@@ -195,6 +214,10 @@ jobs:
         run: |
           find build -maxdepth 4 -type f \( -name '*.exe' -o -name 'StatusServer' -o -name 'GetServer' -o -name 'ChatServer' -o -name 'ChatServer2' -o -name 'ResourceServer' \) -printf '%p  %s bytes\n' 2>/dev/null || true
 
+      # 每次都存，key 带 run_id 不会撞车：万一恢复到的缓存是旧的、或者不完整，
+      # 这一轮重建出来的结果会覆盖进来，下一轮才是热的；不存的话可能永远卡在
+      # "命中旧缓存但缺包"上。仓库缓存总上限 10GB，超了 GitHub 按最久未使用淘汰，
+      # 正好淘汰掉旧的那份。
       - name: Save vcpkg cache
         if: always()
         uses: actions/cache/save@v4
@@ -202,7 +225,7 @@ jobs:
           path: |
             ${{ env.VCPKG_ROOT }}/installed
             ${{ github.workspace }}/vcpkg-cache
-          key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
+          key: vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-${{ steps.image.outputs.version }}-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
 
       - name: Upload server binaries
         if: always()

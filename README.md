@@ -473,7 +473,7 @@ ChatServer 38% / 54% / 92%，GetServer 27% / 62% / 72%，StatusServer 33% / 46% 
 | Job | 作用 |
 | --- | --- |
 | `MySQL schema check` | 起一个 `mysql:8.0` service 容器，建 `chatdb`，导入 `db/schema.sql`，断言 `information_schema` 里正好 8 张表 —— 防止建表脚本被改坏 |
-| `build`（矩阵：`windows-latest` + `ubuntu-latest`） | 双平台 Release 构建 5 个服务。Windows 用 MSVC（`x64-windows`）、Linux 用 GCC + Ninja（`x64-linux`） |
+| `build`（矩阵：`windows-2022` + `ubuntu-latest`） | 双平台 Release 构建 5 个服务。Windows 用 MSVC（自定义 triplet `x64-windows-release`，只编 Release）、Linux 用 GCC + Ninja（`x64-linux`） |
 
 vcpkg 依赖用 `actions/cache` 缓存 `installed/` + binary cache + downloads：首次编译 gRPC 等依赖约 30–60 分钟，
 命中缓存后 1–3 分钟。构建产物通过 `upload-artifact` 留存。
