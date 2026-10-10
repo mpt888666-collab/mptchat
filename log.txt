@@ -1,0 +1,2722 @@
+run=38032630230 sha=e14efb17c95b99aa13cb3e38392e2cae4e976f44 branch=ci-logs-linux-gcc
+
+===== ci-install.log (tail 3000) =====
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[codegen,core]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+Additional packages (*) will be modified to complete this operation.
+Restored 112 package(s) from /home/runner/work/mptchat/mptchat/vcpkg-cache in 20 s. Use --debug to see more details.
+Installing 1/112 vcpkg-cmake-config:x64-linux@2026-07-21...
+vcpkg-cmake-config:x64-linux@2026-07-21 package ABI: 1fe2b3e89bf936d3ca4a1da67308e95d33ba8aaa6c691fd9d56c2e6237b19a8e
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 1.14 ms
+Installing 2/112 vcpkg-cmake:x64-linux@2025-08-07...
+vcpkg-cmake:x64-linux@2025-08-07 package ABI: 73813f8f6a46e99309077be37bc53ccb320a9ac1cb9848a543ef25143f3117ab
+Elapsed time to handle vcpkg-cmake:x64-linux: 891 us
+Installing 3/112 vcpkg-boost:x64-linux@2026-08-21...
+vcpkg-boost:x64-linux@2026-08-21 package ABI: 037f3e5cb327b69c33f9c268cb6bef2b828dfa450aa74dd9abf329b81bce92e1
+Elapsed time to handle vcpkg-boost:x64-linux: 914 us
+Installing 4/112 boost-uninstall:x64-linux@1.92.0...
+boost-uninstall:x64-linux@1.92.0 package ABI: af5a02d357cfe825bdec37137ea4ad21aa67e86e176479c888d8f624999bfe7d
+Elapsed time to handle boost-uninstall:x64-linux: 891 us
+Installing 5/112 boost-cmake:x64-linux@1.92.0...
+boost-cmake:x64-linux@1.92.0 package ABI: 1a210b09a255038c21996b292d5efecc41c41d70607becabc527bbc356095e17
+Elapsed time to handle boost-cmake:x64-linux: 1.1 ms
+Installing 6/112 boost-headers:x64-linux@1.92.0...
+boost-headers:x64-linux@1.92.0 package ABI: 391c77a6a77757f75fb4c8b802e7617ab6a15c763a9e7868ebb23bcf6aeeb5a2
+Elapsed time to handle boost-headers:x64-linux: 1.15 ms
+Installing 7/112 boost-config:x64-linux@1.92.0...
+boost-config:x64-linux@1.92.0 package ABI: d1e655aa07f26d0f93c369bfef33a8104bfa34f0867b618a16ade463c7886874
+Elapsed time to handle boost-config:x64-linux: 7.01 ms
+Installing 8/112 boost-assert:x64-linux@1.92.0...
+boost-assert:x64-linux@1.92.0 package ABI: df5dc1bba6257e8699dd7d107dbcaf5222bcef301dc8043b10266c83b8aba68b
+Elapsed time to handle boost-assert:x64-linux: 1.45 ms
+Installing 9/112 boost-throw-exception:x64-linux@1.92.0...
+boost-throw-exception:x64-linux@1.92.0 package ABI: 67d4f65f9745987cdfd8ccd629ae15f0d205d5aafa2294a0baed3ec770d3970a
+Elapsed time to handle boost-throw-exception:x64-linux: 1.29 ms
+Installing 10/112 boost-core:x64-linux@1.92.0...
+boost-core:x64-linux@1.92.0 package ABI: 8ae41be9e3f6c9e0d88f9638cd7b1d2b26ed35e4f6521722b1e1779e724a7b2e
+Elapsed time to handle boost-core:x64-linux: 2.89 ms
+
+...... [middle truncated] ......
+
+run=38032630230 sha=e14efb17c95b99aa13cb3e38392e2cae4e976f44 branch=ci-logs-linux-gcc
+
+===== ci-install.log (tail 3000) =====
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[codegen,core]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+Additional packages (*) will be modified to complete this operation.
+Restored 112 package(s) from /home/runner/work/mptchat/mptchat/vcpkg-cache in 20 s. Use --debug to see more details.
+Installing 1/112 vcpkg-cmake-config:x64-linux@2026-07-21...
+vcpkg-cmake-config:x64-linux@2026-07-21 package ABI: 1fe2b3e89bf936d3ca4a1da67308e95d33ba8aaa6c691fd9d56c2e6237b19a8e
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 1.14 ms
+Installing 2/112 vcpkg-cmake:x64-linux@2025-08-07...
+vcpkg-cmake:x64-linux@2025-08-07 package ABI: 73813f8f6a46e99309077be37bc53ccb320a9ac1cb9848a543ef25143f3117ab
+Elapsed time to handle vcpkg-cmake:x64-linux: 891 us
+Installing 3/112 vcpkg-boost:x64-linux@2026-08-21...
+vcpkg-boost:x64-linux@2026-08-21 package ABI: 037f3e5cb327b69c33f9c268cb6bef2b828dfa450aa74dd9abf329b81bce92e1
+Elapsed time to handle vcpkg-boost:x64-linux: 914 us
+Installing 4/112 boost-uninstall:x64-linux@1.92.0...
+boost-uninstall:x64-linux@1.92.0 package ABI: af5a02d357cfe825bdec37137ea4ad21aa67e86e176479c888d8f624999bfe7d
+Elapsed time to handle boost-uninstall:x64-linux: 891 us
+Installing 5/112 boost-cmake:x64-linux@1.92.0...
+boost-cmake:x64-linux@1.92.0 package ABI: 1a210b09a255038c21996b292d5efecc41c41d70607becabc527bbc356095e17
+Elapsed time to handle boost-cmake:x64-linux: 1.1 ms
+Installing 6/112 boost-headers:x64-linux@1.92.0...
+boost-headers:x64-linux@1.92.0 package ABI: 391c77a6a77757f75fb4c8b802e7617ab6a15c763a9e7868ebb23bcf6aeeb5a2
+Elapsed time to handle boost-headers:x64-linux: 1.15 ms
+Installing 7/112 boost-config:x64-linux@1.92.0...
+boost-config:x64-linux@1.92.0 package ABI: d1e655aa07f26d0f93c369bfef33a8104bfa34f0867b618a16ade463c7886874
+Elapsed time to handle boost-config:x64-linux: 7.01 ms
+Installing 8/112 boost-assert:x64-linux@1.92.0...
+boost-assert:x64-linux@1.92.0 package ABI: df5dc1bba6257e8699dd7d107dbcaf5222bcef301dc8043b10266c83b8aba68b
+Elapsed time to handle boost-assert:x64-linux: 1.45 ms
+Installing 9/112 boost-throw-exception:x64-linux@1.92.0...
+boost-throw-exception:x64-linux@1.92.0 package ABI: 67d4f65f9745987cdfd8ccd629ae15f0d205d5aafa2294a0baed3ec770d3970a
+Elapsed time to handle boost-throw-exception:x64-linux: 1.29 ms
+Installing 10/112 boost-core:x64-linux@1.92.0...
+boost-core:x64-linux@1.92.0 package ABI: 8ae41be9e3f6c9e0d88f9638cd7b1d2b26ed35e4f6521722b1e1779e724a7b2e
+Elapsed time to handle boost-core:x64-linux: 2.89 ms
+Installing 11/112 boost-smart-ptr:x64-linux@1.92.0...
+boost-smart-ptr:x64-linux@1.92.0 package ABI: 4a2f1a02432dc5133801639589526e9b25159e322893d5456ac85bad25768f4c
+Elapsed time to handle boost-smart-ptr:x64-linux: 2.59 ms
+Installing 12/112 boost-predef:x64-linux@1.92.0...
+boost-predef:x64-linux@1.92.0 package ABI: a21a1a289b66c30c66877d0b235bfa42c6c0bea2c457fb54e24b6763afe72b76
+Elapsed time to handle boost-predef:x64-linux: 5.23 ms
+Installing 13/112 boost-winapi:x64-linux@1.92.0...
+boost-winapi:x64-linux@1.92.0 package ABI: 21e345c28b29b3d58197bdf20f92397272ffda52a6363bb7066816e8543f2143
+Elapsed time to handle boost-winapi:x64-linux: 3.98 ms
+Installing 14/112 boost-type-traits:x64-linux@1.92.0...
+boost-type-traits:x64-linux@1.92.0 package ABI: 956eff0f0cc5699e108c8da3d6fa566412a632b2c9d51e9ac1a700e475333d89
+Elapsed time to handle boost-type-traits:x64-linux: 6.09 ms
+Installing 15/112 boost-integer:x64-linux@1.92.0...
+boost-integer:x64-linux@1.92.0 package ABI: 2c2c20a45a34d4805983459e1588670a907b262c6815739c05ff357b0fbc7a51
+Elapsed time to handle boost-integer:x64-linux: 1.87 ms
+Installing 16/112 boost-pool:x64-linux@1.92.0...
+boost-pool:x64-linux@1.92.0 package ABI: 8e5e0dde3182cff2636f17f025c4945b226c9fbee0ab3eda78d09ee919ae53be
+Elapsed time to handle boost-pool:x64-linux: 1.79 ms
+Installing 17/112 boost-mp11:x64-linux@1.92.0...
+boost-mp11:x64-linux@1.92.0 package ABI: ad12e4f046d53b24b0ae5a4dfe008cf1242a1f2a46a792d7a76778e69aa2f040
+Elapsed time to handle boost-mp11:x64-linux: 34.8 ms
+Installing 18/112 boost-context:x64-linux@1.92.0...
+boost-context:x64-linux@1.92.0 package ABI: 46f11f8edaefbf9a96f91bb45637bcd86a476397a103cf2c6a29f4298cb7cb84
+Elapsed time to handle boost-context:x64-linux: 2.8 ms
+Installing 19/112 boost-preprocessor:x64-linux@1.92.0...
+boost-preprocessor:x64-linux@1.92.0 package ABI: 277c16d961a0c4bcc9d958804752a9f0c84a82a62aacdc858d4dc2a6eeeea5e2
+Elapsed time to handle boost-preprocessor:x64-linux: 11.4 ms
+Installing 20/112 boost-io:x64-linux@1.92.0...
+boost-io:x64-linux@1.92.0 package ABI: 912a801f924004ba49df15d12299cd2428a88fe44c5288bc7122610c4bc34066
+Elapsed time to handle boost-io:x64-linux: 2.25 ms
+Installing 21/112 boost-utility:x64-linux@1.92.0...
+boost-utility:x64-linux@1.92.0 package ABI: 07f4ea1590df92c0deb526fa4a6c12934954454b78ef40ff9f0b21947f14ef25
+Elapsed time to handle boost-utility:x64-linux: 2.45 ms
+Installing 22/112 boost-optional:x64-linux@1.92.0...
+boost-optional:x64-linux@1.92.0 package ABI: f2a9c8ff181e96b4025a6346385cd26fc6edda562ccc24010dd18709c4148941
+Elapsed time to handle boost-optional:x64-linux: 2.31 ms
+Installing 23/112 boost-mpl:x64-linux@1.92.0...
+boost-mpl:x64-linux@1.92.0 package ABI: 193950c775edbd01813a3564321c1767adaaa5226233c709c4bbcd2aa77d1f7a
+Elapsed time to handle boost-mpl:x64-linux: 25.2 ms
+Installing 24/112 boost-typeof:x64-linux@1.92.0...
+boost-typeof:x64-linux@1.92.0 package ABI: 21fc0e003dcd677527e7370d03dfb417496808a2a98a8e66a83fbdcae83b7c99
+Elapsed time to handle boost-typeof:x64-linux: 3.82 ms
+Installing 25/112 boost-tuple:x64-linux@1.92.0...
+boost-tuple:x64-linux@1.92.0 package ABI: a5072d18249ef194494ed68f53ba2a0a5aa7ffd850414a8ac7e86f2b629bbffe
+Elapsed time to handle boost-tuple:x64-linux: 3.05 ms
+Installing 26/112 boost-detail:x64-linux@1.92.0...
+boost-detail:x64-linux@1.92.0 package ABI: dc8cf906e069d7d9ec21601f441115c542c28890b5645e39346c65fa7b98f05d
+Elapsed time to handle boost-detail:x64-linux: 3.19 ms
+Installing 27/112 boost-function-types:x64-linux@1.92.0...
+boost-function-types:x64-linux@1.92.0 package ABI: 3f4f6cfdf267ca11ab18528edd6344946f55c421621aa246cee05f634d95e710
+Elapsed time to handle boost-function-types:x64-linux: 4.57 ms
+Installing 28/112 boost-describe:x64-linux@1.92.0...
+boost-describe:x64-linux@1.92.0 package ABI: 23dca47dddc65cee92e93f6fa2bf23a6a1effd7456ee18ad5471f07f91659279
+Elapsed time to handle boost-describe:x64-linux: 3.51 ms
+Installing 29/112 boost-container-hash:x64-linux@1.92.0...
+boost-container-hash:x64-linux@1.92.0 package ABI: 4db529a8a1058f44094c6cb2e20d16a2b2fccaec321746cf7aeafc111a87f04a
+Elapsed time to handle boost-container-hash:x64-linux: 3.29 ms
+Installing 30/112 boost-fusion:x64-linux@1.92.0...
+boost-fusion:x64-linux@1.92.0 package ABI: cf4024f17735917261a1ebcfd41281e41b84735c7f50c98bb4bd90d7813a2200
+Elapsed time to handle boost-fusion:x64-linux: 27.8 ms
+Installing 31/112 boost-concept-check:x64-linux@1.92.0...
+boost-concept-check:x64-linux@1.92.0 package ABI: 51a177541b2e208a55f8806e4374ededd24eed65d1917c82fe958593f4365ef0
+Elapsed time to handle boost-concept-check:x64-linux: 4.34 ms
+Installing 32/112 boost-iterator:x64-linux@1.92.0...
+boost-iterator:x64-linux@1.92.0 package ABI: 0f8f339829816b59069eab1a929f4491fe01847e57cede9aff91d4afe4d29282
+Elapsed time to handle boost-iterator:x64-linux: 4.62 ms
+Installing 33/112 boost-tokenizer:x64-linux@1.92.0...
+boost-tokenizer:x64-linux@1.92.0 package ABI: 1bbf697e26722ae17256af7f0e8debd41643b67c9b6e4acce95f1cb70d4cb92f
+Elapsed time to handle boost-tokenizer:x64-linux: 3.84 ms
+Installing 34/112 boost-static-assert:x64-linux@1.92.0...
+boost-static-assert:x64-linux@1.92.0 package ABI: 8019c65dbfb7a07ddd70d575211211ed1e8686425235579e531c799c3641ceec
+Elapsed time to handle boost-static-assert:x64-linux: 3.74 ms
+Installing 35/112 boost-regex:x64-linux@1.92.0...
+boost-regex:x64-linux@1.92.0 package ABI: 0c4c6c6a821fa15362d71025266f8a16e070a939591a18426cb997715efd5f51
+Elapsed time to handle boost-regex:x64-linux: 5.76 ms
+Installing 36/112 boost-conversion:x64-linux@1.92.0...
+boost-conversion:x64-linux@1.92.0 package ABI: 7734e8f10a33121bdc091540c284ed1c8717e76b9df3966802ab6a1145616586
+Elapsed time to handle boost-conversion:x64-linux: 3.96 ms
+Installing 37/112 boost-array:x64-linux@1.92.0...
+boost-array:x64-linux@1.92.0 package ABI: 6c3ffb0203a225ea837d3f20a2259fdee4d9447c97c0979f6d162e243ecd8cab
+Elapsed time to handle boost-array:x64-linux: 3.73 ms
+Installing 38/112 boost-range:x64-linux@1.92.0...
+boost-range:x64-linux@1.92.0 package ABI: b7390253c0e475ac4cacac9a6aaa00404fea69cc99e02927323f972be905d944
+Elapsed time to handle boost-range:x64-linux: 7.05 ms
+Installing 39/112 boost-numeric-conversion:x64-linux@1.92.0...
+boost-numeric-conversion:x64-linux@1.92.0 package ABI: 303619ba01af2da0e3fe0cc3a287515cee420dc4829aac741fe67a2d588573d2
+Elapsed time to handle boost-numeric-conversion:x64-linux: 4.8 ms
+Installing 40/112 boost-move:x64-linux@1.92.0...
+boost-move:x64-linux@1.92.0 package ABI: c679bd0e0733738880a0f7ebbf995857d0fe7535f66c6d368faab86b3156cd13
+Elapsed time to handle boost-move:x64-linux: 4.84 ms
+Installing 41/112 boost-intrusive:x64-linux@1.92.0...
+boost-intrusive:x64-linux@1.92.0 package ABI: 02b3a6d0857df6ab7e7791c21d98a68a90063bc299d8caa036a2945f072b6ee0
+Elapsed time to handle boost-intrusive:x64-linux: 5.67 ms
+Installing 42/112 boost-container:x64-linux@1.92.0...
+boost-container:x64-linux@1.92.0 package ABI: ccea6a9753835befc991d5cb8267972df7c6770be03ea12a394de1c3e2e81dd5
+Elapsed time to handle boost-container:x64-linux: 7.43 ms
+Installing 43/112 boost-lexical-cast:x64-linux@1.92.0...
+boost-lexical-cast:x64-linux@1.92.0 package ABI: 817c564bc439efaab8cfd1d2cccdb91cdfea24b2d918998ffe47686b55c95459
+Elapsed time to handle boost-lexical-cast:x64-linux: 4.39 ms
+Installing 44/112 boost-unordered:x64-linux@1.92.0...
+boost-unordered:x64-linux@1.92.0 package ABI: f584daff66a8481c31b92316d2e9c6c5cae096262a6dba4785afc7621f2f991e
+Elapsed time to handle boost-unordered:x64-linux: 5.01 ms
+Installing 45/112 boost-bind:x64-linux@1.92.0...
+boost-bind:x64-linux@1.92.0 package ABI: 444307bc26831814b09a26d78f9d2de9275a71e0d726575db3310d823fe59251
+Elapsed time to handle boost-bind:x64-linux: 4.43 ms
+Installing 46/112 boost-function:x64-linux@1.92.0...
+boost-function:x64-linux@1.92.0 package ABI: 251ca8a4fe8acc2924aa13540c2981c0ec2dff92588124ae2a43566c5ea2c470
+Elapsed time to handle boost-function:x64-linux: 4.2 ms
+Installing 47/112 boost-exception:x64-linux@1.92.0...
+boost-exception:x64-linux@1.92.0 package ABI: daa6488187cc66273822454f77f3cb5c40d12828f094957addbe97a563efbdb1
+Elapsed time to handle boost-exception:x64-linux: 4.37 ms
+Installing 48/112 boost-algorithm:x64-linux@1.92.0...
+boost-algorithm:x64-linux@1.92.0 package ABI: a0ecf83c6ab9ba1ba73303b98b09c678cb8ff8a8890b7e690c0a006d194df919
+Elapsed time to handle boost-algorithm:x64-linux: 5.83 ms
+Installing 49/112 boost-date-time:x64-linux@1.92.0...
+boost-date-time:x64-linux@1.92.0 package ABI: 4a3f90eeedbaabaa46752a4e09407f27a9c606ae5e78221e4b0b04dce13ef275
+Elapsed time to handle boost-date-time:x64-linux: 6.42 ms
+Installing 50/112 boost-variant2:x64-linux@1.92.0...
+boost-variant2:x64-linux@1.92.0 package ABI: a379d6fd19992bf9cddefbdd20017c91877069598ebe4ea6e34df14684d2c727
+Elapsed time to handle boost-variant2:x64-linux: 4.31 ms
+Installing 51/112 boost-compat:x64-linux@1.92.0...
+boost-compat:x64-linux@1.92.0 package ABI: 2f9f518e0d6a008fc933accd0c22f39346d5f01ae6de9174326c24144ab38e76
+Elapsed time to handle boost-compat:x64-linux: 4.58 ms
+Installing 52/112 boost-system:x64-linux@1.92.0...
+boost-system:x64-linux@1.92.0 package ABI: 073ee245ca4135835af3915570ffe81e830758224004940b89749b324e35289b
+Elapsed time to handle boost-system:x64-linux: 5.1 ms
+Installing 53/112 boost-align:x64-linux@1.92.0...
+boost-align:x64-linux@1.92.0 package ABI: 8dd13945092d3a030d246deb1278d96d363147a3fecd3b0184d87792f8923f87
+Elapsed time to handle boost-align:x64-linux: 5.36 ms
+Installing 54/112 boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0...
+boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0 package ABI: 64c95286bb261d269cd748259069fc9e8b5fc2022f57743b379f8b7949d264b0
+Elapsed time to handle boost-asio:x64-linux: 19.4 ms
+Installing 55/112 boost-type-index:x64-linux@1.92.0...
+boost-type-index:x64-linux@1.92.0 package ABI: ecba0a88bf82892e4f464df07dd16def4905020298774ec2440f7c363892ca2c
+Elapsed time to handle boost-type-index:x64-linux: 5.74 ms
+Installing 56/112 boost-static-string:x64-linux@1.92.0...
+boost-static-string:x64-linux@1.92.0 package ABI: 42b1f48a74755cb6d3700956b9c0e3fa783ae8f83a84f2884f0dab9bdc042f49
+Elapsed time to handle boost-static-string:x64-linux: 5.18 ms
+Installing 57/112 boost-logic:x64-linux@1.92.0...
+boost-logic:x64-linux@1.92.0 package ABI: ecd2c8c9fe540f821aa9cca9ee0500352e42f70572a124c4f400e89a9687e2df
+Elapsed time to handle boost-logic:x64-linux: 4.85 ms
+Installing 58/112 boost-endian:x64-linux@1.92.0...
+boost-endian:x64-linux@1.92.0 package ABI: e19c07b4f402f47272784f3205b11edda05a9d2753896583120f3b22b945dd2c
+Elapsed time to handle boost-endian:x64-linux: 5.08 ms
+Installing 59/112 boost-beast:x64-linux@1.92.0...
+boost-beast:x64-linux@1.92.0 package ABI: 4e5e0be50f4212ffdc93947bb984d468ee956f5ab62a8cf853f994f4204533bc
+Elapsed time to handle boost-beast:x64-linux: 10.5 ms
+Installing 60/112 boost-scope:x64-linux@1.92.0...
+boost-scope:x64-linux@1.92.0 package ABI: cd38d3960a6292e676a20161514fc40ad30178dc9572159c73cf082a9c706cff
+Elapsed time to handle boost-scope:x64-linux: 6.12 ms
+Installing 61/112 boost-atomic:x64-linux@1.92.0...
+boost-atomic:x64-linux@1.92.0 package ABI: 6fe8f517a1e9511c118736aef4e9db3c7fbe1fcf41db1ed11357e75d4d084ef4
+Elapsed time to handle boost-atomic:x64-linux: 9.18 ms
+Installing 62/112 boost-filesystem:x64-linux@1.92.0...
+boost-filesystem:x64-linux@1.92.0 package ABI: 08760e9f80f19e5af1145d66fa2e1ed12f73e1bed6a04b4202eba8a19e8397ab
+Elapsed time to handle boost-filesystem:x64-linux: 5.92 ms
+Installing 63/112 boost-variant:x64-linux@1.92.0...
+boost-variant:x64-linux@1.92.0 package ABI: 50250902c848416a81aabc8e2d0cf6bbbb541a1379e0ccc7b84d41c9836c8628
+Elapsed time to handle boost-variant:x64-linux: 5.82 ms
+Installing 64/112 boost-ratio:x64-linux@1.92.0...
+boost-ratio:x64-linux@1.92.0 package ABI: 7e3e3ca3b0818f60077ae78df6dfc89aa39e91bc6c0d276d03492aa2c9ffcfcb
+Elapsed time to handle boost-ratio:x64-linux: 5.53 ms
+Installing 65/112 boost-chrono:x64-linux@1.92.0...
+boost-chrono:x64-linux@1.92.0 package ABI: 00100a0b75a199c4c130fcf1a12c765aed5b60803ce3bea08e57e298fd624e65
+Elapsed time to handle boost-chrono:x64-linux: 7.16 ms
+Installing 66/112 boost-thread:x64-linux@1.92.0...
+boost-thread:x64-linux@1.92.0 package ABI: ec2b8152c7e9b23a8fe9e0f01f307bbea4aee2a9a256b1badccf0bdfae66d047
+Elapsed time to handle boost-thread:x64-linux: 9.3 ms
+Installing 67/112 boost-proto:x64-linux@1.92.0...
+boost-proto:x64-linux@1.92.0 package ABI: 45fbec524bc1339d4eaa48a112f96627da6c3075cd86c458b2e08444601ac289
+Elapsed time to handle boost-proto:x64-linux: 37.6 ms
+Installing 68/112 boost-phoenix:x64-linux@1.92.0...
+boost-phoenix:x64-linux@1.92.0 package ABI: d19e2441711f3dad64c76d4a099dcabd2559682ffa94a7839122cc5beeac6e89
+Elapsed time to handle boost-phoenix:x64-linux: 14.2 ms
+Installing 69/112 boost-spirit:x64-linux@1.92.0...
+boost-spirit:x64-linux@1.92.0 package ABI: 93feb6b975748f7aee49cd2041ec1236a598deff26256c06d0618f1135aaa887
+Elapsed time to handle boost-spirit:x64-linux: 34.8 ms
+Installing 70/112 boost-serialization:x64-linux@1.92.0...
+boost-serialization:x64-linux@1.92.0 package ABI: 28c5e26a71fe30c26c6dbe3f5a50eced98e0665cdad05ea810b015781e358f8d
+Elapsed time to handle boost-serialization:x64-linux: 11.7 ms
+Installing 71/112 boost-multi-index:x64-linux@1.92.0...
+boost-multi-index:x64-linux@1.92.0 package ABI: b64ab23e3681957aeb735752596c8fbdc18fc02ca805d82d9871ad7e8cd41842
+Elapsed time to handle boost-multi-index:x64-linux: 8.87 ms
+Installing 72/112 boost-any:x64-linux@1.92.0...
+boost-any:x64-linux@1.92.0 package ABI: 2d287174e568f8f3a9f6bd4eab0304a5e6c717272a8cd04e8bbfc05fd9151258
+Elapsed time to handle boost-any:x64-linux: 6.88 ms
+Installing 73/112 boost-property-tree:x64-linux@1.92.0...
+boost-property-tree:x64-linux@1.92.0 package ABI: 7d93861d68b049197f284a2320d66e177f99cb5d197776743b7834c4a236b174
+Elapsed time to handle boost-property-tree:x64-linux: 7.51 ms
+Installing 74/112 boost-uuid:x64-linux@1.92.0...
+boost-uuid:x64-linux@1.92.0 package ABI: 4fa68535e62ae5af0278c3c7531a242e0f73b1cf4b56e1c5b7cbaf520c10b3b2
+Elapsed time to handle boost-uuid:x64-linux: 13.1 ms
+Installing 75/112 zlib:x64-linux@1.3.2#2...
+zlib:x64-linux@1.3.2#2 package ABI: f18f80edc933e618c7b92d023690f97852f840c49232a3e3d76ea7accdc83709
+Elapsed time to handle zlib:x64-linux: 33.4 ms
+Installing 76/112 abseil:x64-linux@20260107.1#3...
+abseil:x64-linux@20260107.1#3 package ABI: ee44046a9e42cac7ebd71e61cd9a8768424814b18dc6e436cec349673b1bd28a
+Elapsed time to handle abseil:x64-linux: 30.3 ms
+Installing 77/112 utf8-range:x64-linux@6.33.4...
+utf8-range:x64-linux@6.33.4 package ABI: a4ff00b02fac5842bd815e8139b7398b76e446504de97d0035d77ba74ff8a8e0
+Elapsed time to handle utf8-range:x64-linux: 8.15 ms
+Installing 78/112 re2:x64-linux@2025-11-05...
+re2:x64-linux@2025-11-05 package ABI: 1e41c57b63fe6b5427a3fc0ea4019659d75a7507080d218f302d5a86e33f4b1e
+Elapsed time to handle re2:x64-linux: 7.79 ms
+Installing 79/112 protobuf[core,libprotoc]:x64-linux@6.33.4#2...
+protobuf[core,libprotoc]:x64-linux@6.33.4#2 package ABI: 9ca90275b8ee562ed2cfa0f58607194b8eec4a0e84a86e63cdbee75058ade631
+Elapsed time to handle protobuf:x64-linux: 12.2 ms
+Installing 80/112 vcpkg-cmake-get-vars:x64-linux@2025-05-29...
+vcpkg-cmake-get-vars:x64-linux@2025-05-29 package ABI: e4c22e86da37e5b55c6137c11eb0d578aebdfde9f5072b7846a14d70dfa5bf06
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux: 7.88 ms
+Installing 81/112 openssl:x64-linux@3.6.5#1...
+openssl:x64-linux@3.6.5#1 package ABI: 5d3a7054b3f823d5ac281ae0fe47f08cf119fc9f2ac42d93409108d9a86f7408
+Elapsed time to handle openssl:x64-linux: 11.7 ms
+Installing 82/112 c-ares:x64-linux@1.34.8...
+c-ares:x64-linux@1.34.8 package ABI: f8de7eeed10decadb32850d47781fa0e34156599a2e68a64b5bf23e36e9e5853
+Elapsed time to handle c-ares:x64-linux: 8.18 ms
+Installing 83/112 grpc[codegen,core]:x64-linux@1.81.1...
+grpc[codegen,core]:x64-linux@1.81.1 package ABI: d0d1fd534752bd1564895bdb1d7eb2bd4d423bbde86cf52b2fd61e871be8686b
+Elapsed time to handle grpc:x64-linux: 16 ms
+Installing 84/112 hiredis:x64-linux@1.4.1...
+hiredis:x64-linux@1.4.1 package ABI: 36c0b902d67ba4bbfc48841ffa681fe94eb367958823830ff8d4673a27e6d37a
+Elapsed time to handle hiredis:x64-linux: 16.3 ms
+Installing 85/112 zstd:x64-linux@1.5.7...
+zstd:x64-linux@1.5.7 package ABI: 8c5825dfecbb170e96efe7f1064907f418c05fa3ae32bc603b836ce15f6057d9
+Elapsed time to handle zstd:x64-linux: 8.83 ms
+Installing 86/112 rapidjson:x64-linux@2025-02-26#1...
+rapidjson:x64-linux@2025-02-26#1 package ABI: a15d50a0f6180085ac7e83640aa4331c6b629f28c7aab9981f27601a4d57cb6a
+Elapsed time to handle rapidjson:x64-linux: 8.89 ms
+Installing 87/112 vcpkg-make:x64-linux@2026-07-09#1...
+vcpkg-make:x64-linux@2026-07-09#1 package ABI: 700e4c91c37e8d3cd015632a13acdb7a8c9d2d5860af3cb7862732671a0854d3
+Elapsed time to handle vcpkg-make:x64-linux: 7.89 ms
+Installing 88/112 ncurses:x64-linux@6.5#3...
+ncurses:x64-linux@6.5#3 package ABI: dbdb01dd4c4759b07da9dcddb3536ea5f2775afc83542d2a980e96bb78ed247e
+Elapsed time to handle ncurses:x64-linux: 9.26 ms
+Installing 89/112 lz4:x64-linux@1.10.0...
+lz4:x64-linux@1.10.0 package ABI: 43ef05e988ef9a7292f2146ecb8a583b964323bb7f6c50f9b5747420bfc40240
+Elapsed time to handle lz4:x64-linux: 8.24 ms
+Installing 90/112 boost-xpressive:x64-linux@1.92.0...
+boost-xpressive:x64-linux@1.92.0 package ABI: 2954f6b952de24bac8a2ee0f019ae3e570fce2781f521ee8a7b6c7d3c036244e
+Elapsed time to handle boost-xpressive:x64-linux: 12.3 ms
+Installing 91/112 boost-tti:x64-linux@1.92.0...
+boost-tti:x64-linux@1.92.0 package ABI: 89ccc0164d8f6d93d0a72d71b9146aea1c5e97f8fce990bde1d5734e59a0ca47
+Elapsed time to handle boost-tti:x64-linux: 14.3 ms
+Installing 92/112 boost-dynamic-bitset:x64-linux@1.92.0...
+boost-dynamic-bitset:x64-linux@1.92.0 package ABI: 01c1cfb0df8bbd2a4aa6542a5ba0025babfd2103b749c63427ddcb1d4c019f52
+Elapsed time to handle boost-dynamic-bitset:x64-linux: 8.47 ms
+Installing 93/112 boost-random:x64-linux@1.92.0...
+boost-random:x64-linux@1.92.0 package ABI: eb9b85f83e4bce3f8addd12a121bee231bc933aac93ea32199977315a68a30e8
+Elapsed time to handle boost-random:x64-linux: 10.4 ms
+Installing 94/112 boost-property-map:x64-linux@1.92.0...
+boost-property-map:x64-linux@1.92.0 package ABI: 4d84cbf92ff4a48946ce31338b79747fc82a8ea69e44826a56fa6c40956cffcc
+Elapsed time to handle boost-property-map:x64-linux: 21.4 ms
+Installing 95/112 boost-parameter:x64-linux@1.92.0...
+boost-parameter:x64-linux@1.92.0 package ABI: 2307fb8cf5a00b7b3db9b57925729c079b0f16760fefd92855a221b51e310aae
+Elapsed time to handle boost-parameter:x64-linux: 11.1 ms
+Installing 96/112 boost-math:x64-linux@1.92.0...
+boost-math:x64-linux@1.92.0 package ABI: cf6e313cafc95e416c56ef94bf9801a594f079e3857269c9f8676156ff0276ad
+Elapsed time to handle boost-math:x64-linux: 19.8 ms
+Installing 97/112 boost-multiprecision:x64-linux@1.92.0...
+boost-multiprecision:x64-linux@1.92.0 package ABI: ceafd4a5e7255943627138a884798ff264b6cad1834b00afc315d60e3337a8e5
+Elapsed time to handle boost-multiprecision:x64-linux: 11.3 ms
+Installing 98/112 boost-foreach:x64-linux@1.92.0...
+boost-foreach:x64-linux@1.92.0 package ABI: e8551f51ed372daf8eda8391d70e74a746e7e9a15058cb8196c38893c9faef79
+Elapsed time to handle boost-foreach:x64-linux: 9.03 ms
+Installing 99/112 boost-lambda:x64-linux@1.92.0...
+boost-lambda:x64-linux@1.92.0 package ABI: ffa4138034c3ff1f2643dfba25bc4a6535f2fa330ae9302180790768961e37b3
+Elapsed time to handle boost-lambda:x64-linux: 9.29 ms
+Installing 100/112 boost-bimap:x64-linux@1.92.0...
+boost-bimap:x64-linux@1.92.0 package ABI: 0a15bc73b2f0fb92a56cf04e4aafe5e7389aa77001d9265b4f225a2ffbe53ad1
+Elapsed time to handle boost-bimap:x64-linux: 11.5 ms
+Installing 101/112 boost-graph:x64-linux@1.92.0...
+boost-graph:x64-linux@1.92.0 package ABI: f7e56331bb4e9a8c8bbac8fdd3bf5dbc6b799b5f8a6fe1dab45ad2e7b5f76dc8
+Elapsed time to handle boost-graph:x64-linux: 14.2 ms
+Installing 102/112 boost-rational:x64-linux@1.92.0...
+boost-rational:x64-linux@1.92.0 package ABI: 69c50b3ab4ae571cc0cff0a19f43855544e33b7bd0f1cf1a361b5a813f623b31
+Elapsed time to handle boost-rational:x64-linux: 8.98 ms
+Installing 103/112 boost-qvm:x64-linux@1.92.0...
+boost-qvm:x64-linux@1.92.0 package ABI: 229a86ea57589b7eaacc286724d1ee18159a4965f8d12dd3513e71c0a6d71039
+Elapsed time to handle boost-qvm:x64-linux: 10.4 ms
+Installing 104/112 boost-program-options:x64-linux@1.92.0...
+boost-program-options:x64-linux@1.92.0 package ABI: fe09d84c4184abecad867cbef078e5f8ac987a900e35af3a7bac69d1b0996d1d
+Elapsed time to handle boost-program-options:x64-linux: 25.4 ms
+Installing 105/112 boost-polygon:x64-linux@1.92.0...
+boost-polygon:x64-linux@1.92.0 package ABI: 4b20402822ad73cab3b6c6a3cf99762ff79dc0abfd3338f6a25439db4726df97
+Elapsed time to handle boost-polygon:x64-linux: 10.7 ms
+Installing 106/112 boost-crc:x64-linux@1.92.0...
+boost-crc:x64-linux@1.92.0 package ABI: f08bdc2bae944399369130c498d37381ab26f97a94a8aab1786f1a6c60bdcb11
+Elapsed time to handle boost-crc:x64-linux: 9.05 ms
+Installing 107/112 boost-geometry:x64-linux@1.92.0...
+boost-geometry:x64-linux@1.92.0 package ABI: 4a8c2598e92cbef53fed99c80820116964d510061751693faa9fc6fab0729b4f
+Elapsed time to handle boost-geometry:x64-linux: 37.3 ms
+Installing 108/112 boost-functional:x64-linux@1.92.0...
+boost-functional:x64-linux@1.92.0 package ABI: 2c88077914aa3c0f8a23c5149ad17ab6cc04fd0c2fe14016e037b996eff5fe90
+Elapsed time to handle boost-functional:x64-linux: 12.2 ms
+Installing 109/112 libmysql:x64-linux@8.0.46...
+libmysql:x64-linux@8.0.46 package ABI: e095f4345508b092c7198f3be7c41e3c437a2c2773654142d074cf4f93bb2f0a
+Elapsed time to handle libmysql:x64-linux: 14.5 ms
+Installing 110/112 libsamplerate:x64-linux@0.2.2#1...
+libsamplerate:x64-linux@0.2.2#1 package ABI: d807e86b4e8261487e4630d51e037f2192982843a9b09e79b9d5ae4af5b200c7
+Elapsed time to handle libsamplerate:x64-linux: 10.1 ms
+Installing 111/112 nlohmann-json:x64-linux@3.12.0#2...
+nlohmann-json:x64-linux@3.12.0#2 package ABI: e3bc23dbc0139533b3ae8233d5bb31e6b59468b492546d5a719fc259b6ddfcd7
+Elapsed time to handle nlohmann-json:x64-linux: 11 ms
+Installing 112/112 redis-plus-plus:x64-linux@1.3.15...
+redis-plus-plus:x64-linux@1.3.15 package ABI: bac8ca2c0dcd58b9acafedf01a65c71c761ae7822418acda361a7816b4bc82c1
+Elapsed time to handle redis-plus-plus:x64-linux: 10.9 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Some packages did not declare an SPDX license. Check the `copyright` file for each package for more information about their licensing.
+Packages installed in this vcpkg installation declare the following licenses:
+(BSD-3-Clause OR GPL-2.0-only)
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+BSL-1.0
+GPL-2.0-or-later
+MIT
+Zlib
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 1 s
+
+===== ci-build.log (tail 3000) =====
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages will be built and installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[codegen,core]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+Additional packages (*) will be modified to complete this operation.
+Restored 112 package(s) from /home/runner/work/mptchat/mptchat/vcpkg-cache in 21 s. Use --debug to see more details.
+Installing 1/112 vcpkg-cmake-config:x64-linux@2026-07-21...
+vcpkg-cmake-config:x64-linux@2026-07-21 package ABI: 1fe2b3e89bf936d3ca4a1da67308e95d33ba8aaa6c691fd9d56c2e6237b19a8e
+Elapsed time to handle vcpkg-cmake-config:x64-linux: 711 us
+Installing 2/112 vcpkg-cmake:x64-linux@2025-08-07...
+vcpkg-cmake:x64-linux@2025-08-07 package ABI: 73813f8f6a46e99309077be37bc53ccb320a9ac1cb9848a543ef25143f3117ab
+Elapsed time to handle vcpkg-cmake:x64-linux: 466 us
+Installing 3/112 vcpkg-boost:x64-linux@2026-08-21...
+vcpkg-boost:x64-linux@2026-08-21 package ABI: 037f3e5cb327b69c33f9c268cb6bef2b828dfa450aa74dd9abf329b81bce92e1
+Elapsed time to handle vcpkg-boost:x64-linux: 440 us
+Installing 4/112 boost-uninstall:x64-linux@1.92.0...
+boost-uninstall:x64-linux@1.92.0 package ABI: af5a02d357cfe825bdec37137ea4ad21aa67e86e176479c888d8f624999bfe7d
+Elapsed time to handle boost-uninstall:x64-linux: 506 us
+Installing 5/112 boost-cmake:x64-linux@1.92.0...
+boost-cmake:x64-linux@1.92.0 package ABI: 1a210b09a255038c21996b292d5efecc41c41d70607becabc527bbc356095e17
+Elapsed time to handle boost-cmake:x64-linux: 588 us
+Installing 6/112 boost-headers:x64-linux@1.92.0...
+boost-headers:x64-linux@1.92.0 package ABI: 391c77a6a77757f75fb4c8b802e7617ab6a15c763a9e7868ebb23bcf6aeeb5a2
+Elapsed time to handle boost-headers:x64-linux: 595 us
+Installing 7/112 boost-config:x64-linux@1.92.0...
+boost-config:x64-linux@1.92.0 package ABI: d1e655aa07f26d0f93c369bfef33a8104bfa34f0867b618a16ade463c7886874
+Elapsed time to handle boost-config:x64-linux: 4.66 ms
+Installing 8/112 boost-assert:x64-linux@1.92.0...
+boost-assert:x64-linux@1.92.0 package ABI: df5dc1bba6257e8699dd7d107dbcaf5222bcef301dc8043b10266c83b8aba68b
+Elapsed time to handle boost-assert:x64-linux: 905 us
+Installing 9/112 boost-throw-exception:x64-linux@1.92.0...
+boost-throw-exception:x64-linux@1.92.0 package ABI: 67d4f65f9745987cdfd8ccd629ae15f0d205d5aafa2294a0baed3ec770d3970a
+Elapsed time to handle boost-throw-exception:x64-linux: 740 us
+Installing 10/112 boost-core:x64-linux@1.92.0...
+boost-core:x64-linux@1.92.0 package ABI: 8ae41be9e3f6c9e0d88f9638cd7b1d2b26ed35e4f6521722b1e1779e724a7b2e
+Elapsed time to handle boost-core:x64-linux: 1.82 ms
+Installing 11/112 boost-smart-ptr:x64-linux@1.92.0...
+boost-smart-ptr:x64-linux@1.92.0 package ABI: 4a2f1a02432dc5133801639589526e9b25159e322893d5456ac85bad25768f4c
+Elapsed time to handle boost-smart-ptr:x64-linux: 1.68 ms
+Installing 12/112 boost-predef:x64-linux@1.92.0...
+boost-predef:x64-linux@1.92.0 package ABI: a21a1a289b66c30c66877d0b235bfa42c6c0bea2c457fb54e24b6763afe72b76
+Elapsed time to handle boost-predef:x64-linux: 3.1 ms
+Installing 13/112 boost-winapi:x64-linux@1.92.0...
+boost-winapi:x64-linux@1.92.0 package ABI: 21e345c28b29b3d58197bdf20f92397272ffda52a6363bb7066816e8543f2143
+Elapsed time to handle boost-winapi:x64-linux: 2.7 ms
+Installing 14/112 boost-type-traits:x64-linux@1.92.0...
+boost-type-traits:x64-linux@1.92.0 package ABI: 956eff0f0cc5699e108c8da3d6fa566412a632b2c9d51e9ac1a700e475333d89
+Elapsed time to handle boost-type-traits:x64-linux: 4.57 ms
+Installing 15/112 boost-integer:x64-linux@1.92.0...
+boost-integer:x64-linux@1.92.0 package ABI: 2c2c20a45a34d4805983459e1588670a907b262c6815739c05ff357b0fbc7a51
+Elapsed time to handle boost-integer:x64-linux: 1.27 ms
+Installing 16/112 boost-pool:x64-linux@1.92.0...
+boost-pool:x64-linux@1.92.0 package ABI: 8e5e0dde3182cff2636f17f025c4945b226c9fbee0ab3eda78d09ee919ae53be
+Elapsed time to handle boost-pool:x64-linux: 1.32 ms
+Installing 17/112 boost-mp11:x64-linux@1.92.0...
+boost-mp11:x64-linux@1.92.0 package ABI: ad12e4f046d53b24b0ae5a4dfe008cf1242a1f2a46a792d7a76778e69aa2f040
+Elapsed time to handle boost-mp11:x64-linux: 1.69 ms
+Installing 18/112 boost-context:x64-linux@1.92.0...
+boost-context:x64-linux@1.92.0 package ABI: 46f11f8edaefbf9a96f91bb45637bcd86a476397a103cf2c6a29f4298cb7cb84
+Elapsed time to handle boost-context:x64-linux: 1.72 ms
+Installing 19/112 boost-preprocessor:x64-linux@1.92.0...
+boost-preprocessor:x64-linux@1.92.0 package ABI: 277c16d961a0c4bcc9d958804752a9f0c84a82a62aacdc858d4dc2a6eeeea5e2
+Elapsed time to handle boost-preprocessor:x64-linux: 7.1 ms
+Installing 20/112 boost-io:x64-linux@1.92.0...
+boost-io:x64-linux@1.92.0 package ABI: 912a801f924004ba49df15d12299cd2428a88fe44c5288bc7122610c4bc34066
+Elapsed time to handle boost-io:x64-linux: 1.66 ms
+Installing 21/112 boost-utility:x64-linux@1.92.0...
+boost-utility:x64-linux@1.92.0 package ABI: 07f4ea1590df92c0deb526fa4a6c12934954454b78ef40ff9f0b21947f14ef25
+Elapsed time to handle boost-utility:x64-linux: 1.75 ms
+Installing 22/112 boost-optional:x64-linux@1.92.0...
+boost-optional:x64-linux@1.92.0 package ABI: f2a9c8ff181e96b4025a6346385cd26fc6edda562ccc24010dd18709c4148941
+Elapsed time to handle boost-optional:x64-linux: 1.73 ms
+Installing 23/112 boost-mpl:x64-linux@1.92.0...
+boost-mpl:x64-linux@1.92.0 package ABI: 193950c775edbd01813a3564321c1767adaaa5226233c709c4bbcd2aa77d1f7a
+Elapsed time to handle boost-mpl:x64-linux: 17.3 ms
+Installing 24/112 boost-typeof:x64-linux@1.92.0...
+boost-typeof:x64-linux@1.92.0 package ABI: 21fc0e003dcd677527e7370d03dfb417496808a2a98a8e66a83fbdcae83b7c99
+Elapsed time to handle boost-typeof:x64-linux: 3.02 ms
+Installing 25/112 boost-tuple:x64-linux@1.92.0...
+boost-tuple:x64-linux@1.92.0 package ABI: a5072d18249ef194494ed68f53ba2a0a5aa7ffd850414a8ac7e86f2b629bbffe
+Elapsed time to handle boost-tuple:x64-linux: 2.58 ms
+Installing 26/112 boost-detail:x64-linux@1.92.0...
+boost-detail:x64-linux@1.92.0 package ABI: dc8cf906e069d7d9ec21601f441115c542c28890b5645e39346c65fa7b98f05d
+Elapsed time to handle boost-detail:x64-linux: 2.61 ms
+Installing 27/112 boost-function-types:x64-linux@1.92.0...
+boost-function-types:x64-linux@1.92.0 package ABI: 3f4f6cfdf267ca11ab18528edd6344946f55c421621aa246cee05f634d95e710
+Elapsed time to handle boost-function-types:x64-linux: 3.3 ms
+Installing 28/112 boost-describe:x64-linux@1.92.0...
+boost-describe:x64-linux@1.92.0 package ABI: 23dca47dddc65cee92e93f6fa2bf23a6a1effd7456ee18ad5471f07f91659279
+Elapsed time to handle boost-describe:x64-linux: 2.69 ms
+Installing 29/112 boost-container-hash:x64-linux@1.92.0...
+boost-container-hash:x64-linux@1.92.0 package ABI: 4db529a8a1058f44094c6cb2e20d16a2b2fccaec321746cf7aeafc111a87f04a
+Elapsed time to handle boost-container-hash:x64-linux: 2.59 ms
+Installing 30/112 boost-fusion:x64-linux@1.92.0...
+boost-fusion:x64-linux@1.92.0 package ABI: cf4024f17735917261a1ebcfd41281e41b84735c7f50c98bb4bd90d7813a2200
+Elapsed time to handle boost-fusion:x64-linux: 18.9 ms
+Installing 31/112 boost-concept-check:x64-linux@1.92.0...
+boost-concept-check:x64-linux@1.92.0 package ABI: 51a177541b2e208a55f8806e4374ededd24eed65d1917c82fe958593f4365ef0
+Elapsed time to handle boost-concept-check:x64-linux: 3.65 ms
+Installing 32/112 boost-iterator:x64-linux@1.92.0...
+boost-iterator:x64-linux@1.92.0 package ABI: 0f8f339829816b59069eab1a929f4491fe01847e57cede9aff91d4afe4d29282
+Elapsed time to handle boost-iterator:x64-linux: 3.83 ms
+Installing 33/112 boost-tokenizer:x64-linux@1.92.0...
+boost-tokenizer:x64-linux@1.92.0 package ABI: 1bbf697e26722ae17256af7f0e8debd41643b67c9b6e4acce95f1cb70d4cb92f
+Elapsed time to handle boost-tokenizer:x64-linux: 3.52 ms
+Installing 34/112 boost-static-assert:x64-linux@1.92.0...
+boost-static-assert:x64-linux@1.92.0 package ABI: 8019c65dbfb7a07ddd70d575211211ed1e8686425235579e531c799c3641ceec
+Elapsed time to handle boost-static-assert:x64-linux: 3.34 ms
+Installing 35/112 boost-regex:x64-linux@1.92.0...
+boost-regex:x64-linux@1.92.0 package ABI: 0c4c6c6a821fa15362d71025266f8a16e070a939591a18426cb997715efd5f51
+Elapsed time to handle boost-regex:x64-linux: 4 ms
+Installing 36/112 boost-conversion:x64-linux@1.92.0...
+boost-conversion:x64-linux@1.92.0 package ABI: 7734e8f10a33121bdc091540c284ed1c8717e76b9df3966802ab6a1145616586
+Elapsed time to handle boost-conversion:x64-linux: 3.46 ms
+Installing 37/112 boost-array:x64-linux@1.92.0...
+boost-array:x64-linux@1.92.0 package ABI: 6c3ffb0203a225ea837d3f20a2259fdee4d9447c97c0979f6d162e243ecd8cab
+Elapsed time to handle boost-array:x64-linux: 3.22 ms
+Installing 38/112 boost-range:x64-linux@1.92.0...
+boost-range:x64-linux@1.92.0 package ABI: b7390253c0e475ac4cacac9a6aaa00404fea69cc99e02927323f972be905d944
+Elapsed time to handle boost-range:x64-linux: 5.64 ms
+Installing 39/112 boost-numeric-conversion:x64-linux@1.92.0...
+boost-numeric-conversion:x64-linux@1.92.0 package ABI: 303619ba01af2da0e3fe0cc3a287515cee420dc4829aac741fe67a2d588573d2
+Elapsed time to handle boost-numeric-conversion:x64-linux: 3.87 ms
+Installing 40/112 boost-move:x64-linux@1.92.0...
+boost-move:x64-linux@1.92.0 package ABI: c679bd0e0733738880a0f7ebbf995857d0fe7535f66c6d368faab86b3156cd13
+Elapsed time to handle boost-move:x64-linux: 3.7 ms
+Installing 41/112 boost-intrusive:x64-linux@1.92.0...
+boost-intrusive:x64-linux@1.92.0 package ABI: 02b3a6d0857df6ab7e7791c21d98a68a90063bc299d8caa036a2945f072b6ee0
+Elapsed time to handle boost-intrusive:x64-linux: 4.41 ms
+Installing 42/112 boost-container:x64-linux@1.92.0...
+boost-container:x64-linux@1.92.0 package ABI: ccea6a9753835befc991d5cb8267972df7c6770be03ea12a394de1c3e2e81dd5
+Elapsed time to handle boost-container:x64-linux: 5.97 ms
+Installing 43/112 boost-lexical-cast:x64-linux@1.92.0...
+boost-lexical-cast:x64-linux@1.92.0 package ABI: 817c564bc439efaab8cfd1d2cccdb91cdfea24b2d918998ffe47686b55c95459
+Elapsed time to handle boost-lexical-cast:x64-linux: 3.69 ms
+Installing 44/112 boost-unordered:x64-linux@1.92.0...
+boost-unordered:x64-linux@1.92.0 package ABI: f584daff66a8481c31b92316d2e9c6c5cae096262a6dba4785afc7621f2f991e
+Elapsed time to handle boost-unordered:x64-linux: 4.05 ms
+Installing 45/112 boost-bind:x64-linux@1.92.0...
+boost-bind:x64-linux@1.92.0 package ABI: 444307bc26831814b09a26d78f9d2de9275a71e0d726575db3310d823fe59251
+Elapsed time to handle boost-bind:x64-linux: 3.78 ms
+Installing 46/112 boost-function:x64-linux@1.92.0...
+boost-function:x64-linux@1.92.0 package ABI: 251ca8a4fe8acc2924aa13540c2981c0ec2dff92588124ae2a43566c5ea2c470
+Elapsed time to handle boost-function:x64-linux: 3.57 ms
+Installing 47/112 boost-exception:x64-linux@1.92.0...
+boost-exception:x64-linux@1.92.0 package ABI: daa6488187cc66273822454f77f3cb5c40d12828f094957addbe97a563efbdb1
+Elapsed time to handle boost-exception:x64-linux: 3.63 ms
+Installing 48/112 boost-algorithm:x64-linux@1.92.0...
+boost-algorithm:x64-linux@1.92.0 package ABI: a0ecf83c6ab9ba1ba73303b98b09c678cb8ff8a8890b7e690c0a006d194df919
+Elapsed time to handle boost-algorithm:x64-linux: 4.71 ms
+Installing 49/112 boost-date-time:x64-linux@1.92.0...
+boost-date-time:x64-linux@1.92.0 package ABI: 4a3f90eeedbaabaa46752a4e09407f27a9c606ae5e78221e4b0b04dce13ef275
+Elapsed time to handle boost-date-time:x64-linux: 5.02 ms
+Installing 50/112 boost-variant2:x64-linux@1.92.0...
+boost-variant2:x64-linux@1.92.0 package ABI: a379d6fd19992bf9cddefbdd20017c91877069598ebe4ea6e34df14684d2c727
+Elapsed time to handle boost-variant2:x64-linux: 3.6 ms
+Installing 51/112 boost-compat:x64-linux@1.92.0...
+boost-compat:x64-linux@1.92.0 package ABI: 2f9f518e0d6a008fc933accd0c22f39346d5f01ae6de9174326c24144ab38e76
+Elapsed time to handle boost-compat:x64-linux: 3.82 ms
+Installing 52/112 boost-system:x64-linux@1.92.0...
+boost-system:x64-linux@1.92.0 package ABI: 073ee245ca4135835af3915570ffe81e830758224004940b89749b324e35289b
+Elapsed time to handle boost-system:x64-linux: 4.07 ms
+Installing 53/112 boost-align:x64-linux@1.92.0...
+boost-align:x64-linux@1.92.0 package ABI: 8dd13945092d3a030d246deb1278d96d363147a3fecd3b0184d87792f8923f87
+Elapsed time to handle boost-align:x64-linux: 4.42 ms
+Installing 54/112 boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0...
+boost-asio[core,deadline-timer,spawn]:x64-linux@1.92.0 package ABI: 64c95286bb261d269cd748259069fc9e8b5fc2022f57743b379f8b7949d264b0
+Elapsed time to handle boost-asio:x64-linux: 13.9 ms
+Installing 55/112 boost-type-index:x64-linux@1.92.0...
+boost-type-index:x64-linux@1.92.0 package ABI: ecba0a88bf82892e4f464df07dd16def4905020298774ec2440f7c363892ca2c
+Elapsed time to handle boost-type-index:x64-linux: 4.67 ms
+Installing 56/112 boost-static-string:x64-linux@1.92.0...
+boost-static-string:x64-linux@1.92.0 package ABI: 42b1f48a74755cb6d3700956b9c0e3fa783ae8f83a84f2884f0dab9bdc042f49
+Elapsed time to handle boost-static-string:x64-linux: 4.47 ms
+Installing 57/112 boost-logic:x64-linux@1.92.0...
+boost-logic:x64-linux@1.92.0 package ABI: ecd2c8c9fe540f821aa9cca9ee0500352e42f70572a124c4f400e89a9687e2df
+Elapsed time to handle boost-logic:x64-linux: 4.35 ms
+Installing 58/112 boost-endian:x64-linux@1.92.0...
+boost-endian:x64-linux@1.92.0 package ABI: e19c07b4f402f47272784f3205b11edda05a9d2753896583120f3b22b945dd2c
+Elapsed time to handle boost-endian:x64-linux: 4.46 ms
+Installing 59/112 boost-beast:x64-linux@1.92.0...
+boost-beast:x64-linux@1.92.0 package ABI: 4e5e0be50f4212ffdc93947bb984d468ee956f5ab62a8cf853f994f4204533bc
+Elapsed time to handle boost-beast:x64-linux: 8.3 ms
+Installing 60/112 boost-scope:x64-linux@1.92.0...
+boost-scope:x64-linux@1.92.0 package ABI: cd38d3960a6292e676a20161514fc40ad30178dc9572159c73cf082a9c706cff
+Elapsed time to handle boost-scope:x64-linux: 4.94 ms
+Installing 61/112 boost-atomic:x64-linux@1.92.0...
+boost-atomic:x64-linux@1.92.0 package ABI: 6fe8f517a1e9511c118736aef4e9db3c7fbe1fcf41db1ed11357e75d4d084ef4
+Elapsed time to handle boost-atomic:x64-linux: 7.1 ms
+Installing 62/112 boost-filesystem:x64-linux@1.92.0...
+boost-filesystem:x64-linux@1.92.0 package ABI: 08760e9f80f19e5af1145d66fa2e1ed12f73e1bed6a04b4202eba8a19e8397ab
+Elapsed time to handle boost-filesystem:x64-linux: 5.07 ms
+Installing 63/112 boost-variant:x64-linux@1.92.0...
+boost-variant:x64-linux@1.92.0 package ABI: 50250902c848416a81aabc8e2d0cf6bbbb541a1379e0ccc7b84d41c9836c8628
+Elapsed time to handle boost-variant:x64-linux: 5.13 ms
+Installing 64/112 boost-ratio:x64-linux@1.92.0...
+boost-ratio:x64-linux@1.92.0 package ABI: 7e3e3ca3b0818f60077ae78df6dfc89aa39e91bc6c0d276d03492aa2c9ffcfcb
+Elapsed time to handle boost-ratio:x64-linux: 4.82 ms
+Installing 65/112 boost-chrono:x64-linux@1.92.0...
+boost-chrono:x64-linux@1.92.0 package ABI: 00100a0b75a199c4c130fcf1a12c765aed5b60803ce3bea08e57e298fd624e65
+Elapsed time to handle boost-chrono:x64-linux: 5.81 ms
+Installing 66/112 boost-thread:x64-linux@1.92.0...
+boost-thread:x64-linux@1.92.0 package ABI: ec2b8152c7e9b23a8fe9e0f01f307bbea4aee2a9a256b1badccf0bdfae66d047
+Elapsed time to handle boost-thread:x64-linux: 7.32 ms
+Installing 67/112 boost-proto:x64-linux@1.92.0...
+boost-proto:x64-linux@1.92.0 package ABI: 45fbec524bc1339d4eaa48a112f96627da6c3075cd86c458b2e08444601ac289
+Elapsed time to handle boost-proto:x64-linux: 7.03 ms
+Installing 68/112 boost-phoenix:x64-linux@1.92.0...
+boost-phoenix:x64-linux@1.92.0 package ABI: d19e2441711f3dad64c76d4a099dcabd2559682ffa94a7839122cc5beeac6e89
+Elapsed time to handle boost-phoenix:x64-linux: 9.82 ms
+Installing 69/112 boost-spirit:x64-linux@1.92.0...
+boost-spirit:x64-linux@1.92.0 package ABI: 93feb6b975748f7aee49cd2041ec1236a598deff26256c06d0618f1135aaa887
+Elapsed time to handle boost-spirit:x64-linux: 22.6 ms
+Installing 70/112 boost-serialization:x64-linux@1.92.0...
+boost-serialization:x64-linux@1.92.0 package ABI: 28c5e26a71fe30c26c6dbe3f5a50eced98e0665cdad05ea810b015781e358f8d
+Elapsed time to handle boost-serialization:x64-linux: 9.13 ms
+Installing 71/112 boost-multi-index:x64-linux@1.92.0...
+boost-multi-index:x64-linux@1.92.0 package ABI: b64ab23e3681957aeb735752596c8fbdc18fc02ca805d82d9871ad7e8cd41842
+Elapsed time to handle boost-multi-index:x64-linux: 7.32 ms
+Installing 72/112 boost-any:x64-linux@1.92.0...
+boost-any:x64-linux@1.92.0 package ABI: 2d287174e568f8f3a9f6bd4eab0304a5e6c717272a8cd04e8bbfc05fd9151258
+Elapsed time to handle boost-any:x64-linux: 6.23 ms
+Installing 73/112 boost-property-tree:x64-linux@1.92.0...
+boost-property-tree:x64-linux@1.92.0 package ABI: 7d93861d68b049197f284a2320d66e177f99cb5d197776743b7834c4a236b174
+Elapsed time to handle boost-property-tree:x64-linux: 6.51 ms
+Installing 74/112 boost-uuid:x64-linux@1.92.0...
+boost-uuid:x64-linux@1.92.0 package ABI: 4fa68535e62ae5af0278c3c7531a242e0f73b1cf4b56e1c5b7cbaf520c10b3b2
+Elapsed time to handle boost-uuid:x64-linux: 6.94 ms
+Installing 75/112 zlib:x64-linux@1.3.2#2...
+zlib:x64-linux@1.3.2#2 package ABI: f18f80edc933e618c7b92d023690f97852f840c49232a3e3d76ea7accdc83709
+Elapsed time to handle zlib:x64-linux: 6.84 ms
+Installing 76/112 abseil:x64-linux@20260107.1#3...
+abseil:x64-linux@20260107.1#3 package ABI: ee44046a9e42cac7ebd71e61cd9a8768424814b18dc6e436cec349673b1bd28a
+Elapsed time to handle abseil:x64-linux: 22.6 ms
+Installing 77/112 utf8-range:x64-linux@6.33.4...
+utf8-range:x64-linux@6.33.4 package ABI: a4ff00b02fac5842bd815e8139b7398b76e446504de97d0035d77ba74ff8a8e0
+Elapsed time to handle utf8-range:x64-linux: 7.63 ms
+Installing 78/112 re2:x64-linux@2025-11-05...
+re2:x64-linux@2025-11-05 package ABI: 1e41c57b63fe6b5427a3fc0ea4019659d75a7507080d218f302d5a86e33f4b1e
+Elapsed time to handle re2:x64-linux: 7.85 ms
+Installing 79/112 protobuf[core,libprotoc]:x64-linux@6.33.4#2...
+protobuf[core,libprotoc]:x64-linux@6.33.4#2 package ABI: 9ca90275b8ee562ed2cfa0f58607194b8eec4a0e84a86e63cdbee75058ade631
+Elapsed time to handle protobuf:x64-linux: 10 ms
+Installing 80/112 vcpkg-cmake-get-vars:x64-linux@2025-05-29...
+vcpkg-cmake-get-vars:x64-linux@2025-05-29 package ABI: e4c22e86da37e5b55c6137c11eb0d578aebdfde9f5072b7846a14d70dfa5bf06
+Elapsed time to handle vcpkg-cmake-get-vars:x64-linux: 6.9 ms
+Installing 81/112 openssl:x64-linux@3.6.5#1...
+openssl:x64-linux@3.6.5#1 package ABI: 5d3a7054b3f823d5ac281ae0fe47f08cf119fc9f2ac42d93409108d9a86f7408
+Elapsed time to handle openssl:x64-linux: 10.1 ms
+Installing 82/112 c-ares:x64-linux@1.34.8...
+c-ares:x64-linux@1.34.8 package ABI: f8de7eeed10decadb32850d47781fa0e34156599a2e68a64b5bf23e36e9e5853
+Elapsed time to handle c-ares:x64-linux: 7.58 ms
+Installing 83/112 grpc[codegen,core]:x64-linux@1.81.1...
+grpc[codegen,core]:x64-linux@1.81.1 package ABI: d0d1fd534752bd1564895bdb1d7eb2bd4d423bbde86cf52b2fd61e871be8686b
+Elapsed time to handle grpc:x64-linux: 12.7 ms
+Installing 84/112 hiredis:x64-linux@1.4.1...
+hiredis:x64-linux@1.4.1 package ABI: 36c0b902d67ba4bbfc48841ffa681fe94eb367958823830ff8d4673a27e6d37a
+Elapsed time to handle hiredis:x64-linux: 7.75 ms
+Installing 85/112 zstd:x64-linux@1.5.7...
+zstd:x64-linux@1.5.7 package ABI: 8c5825dfecbb170e96efe7f1064907f418c05fa3ae32bc603b836ce15f6057d9
+Elapsed time to handle zstd:x64-linux: 7.95 ms
+Installing 86/112 rapidjson:x64-linux@2025-02-26#1...
+rapidjson:x64-linux@2025-02-26#1 package ABI: a15d50a0f6180085ac7e83640aa4331c6b629f28c7aab9981f27601a4d57cb6a
+Elapsed time to handle rapidjson:x64-linux: 8.52 ms
+Installing 87/112 vcpkg-make:x64-linux@2026-07-09#1...
+vcpkg-make:x64-linux@2026-07-09#1 package ABI: 700e4c91c37e8d3cd015632a13acdb7a8c9d2d5860af3cb7862732671a0854d3
+Elapsed time to handle vcpkg-make:x64-linux: 7.48 ms
+Installing 88/112 ncurses:x64-linux@6.5#3...
+ncurses:x64-linux@6.5#3 package ABI: dbdb01dd4c4759b07da9dcddb3536ea5f2775afc83542d2a980e96bb78ed247e
+Elapsed time to handle ncurses:x64-linux: 8.6 ms
+Installing 89/112 lz4:x64-linux@1.10.0...
+lz4:x64-linux@1.10.0 package ABI: 43ef05e988ef9a7292f2146ecb8a583b964323bb7f6c50f9b5747420bfc40240
+Elapsed time to handle lz4:x64-linux: 7.84 ms
+Installing 90/112 boost-xpressive:x64-linux@1.92.0...
+boost-xpressive:x64-linux@1.92.0 package ABI: 2954f6b952de24bac8a2ee0f019ae3e570fce2781f521ee8a7b6c7d3c036244e
+Elapsed time to handle boost-xpressive:x64-linux: 11.6 ms
+Installing 91/112 boost-tti:x64-linux@1.92.0...
+boost-tti:x64-linux@1.92.0 package ABI: 89ccc0164d8f6d93d0a72d71b9146aea1c5e97f8fce990bde1d5734e59a0ca47
+Elapsed time to handle boost-tti:x64-linux: 8.93 ms
+Installing 92/112 boost-dynamic-bitset:x64-linux@1.92.0...
+boost-dynamic-bitset:x64-linux@1.92.0 package ABI: 01c1cfb0df8bbd2a4aa6542a5ba0025babfd2103b749c63427ddcb1d4c019f52
+Elapsed time to handle boost-dynamic-bitset:x64-linux: 8.13 ms
+Installing 93/112 boost-random:x64-linux@1.92.0...
+boost-random:x64-linux@1.92.0 package ABI: eb9b85f83e4bce3f8addd12a121bee231bc933aac93ea32199977315a68a30e8
+Elapsed time to handle boost-random:x64-linux: 9.49 ms
+Installing 94/112 boost-property-map:x64-linux@1.92.0...
+boost-property-map:x64-linux@1.92.0 package ABI: 4d84cbf92ff4a48946ce31338b79747fc82a8ea69e44826a56fa6c40956cffcc
+Elapsed time to handle boost-property-map:x64-linux: 8.35 ms
+Installing 95/112 boost-parameter:x64-linux@1.92.0...
+boost-parameter:x64-linux@1.92.0 package ABI: 2307fb8cf5a00b7b3db9b57925729c079b0f16760fefd92855a221b51e310aae
+Elapsed time to handle boost-parameter:x64-linux: 9.9 ms
+Installing 96/112 boost-math:x64-linux@1.92.0...
+boost-math:x64-linux@1.92.0 package ABI: cf6e313cafc95e416c56ef94bf9801a594f079e3857269c9f8676156ff0276ad
+Elapsed time to handle boost-math:x64-linux: 16.1 ms
+Installing 97/112 boost-multiprecision:x64-linux@1.92.0...
+boost-multiprecision:x64-linux@1.92.0 package ABI: ceafd4a5e7255943627138a884798ff264b6cad1834b00afc315d60e3337a8e5
+Elapsed time to handle boost-multiprecision:x64-linux: 10.6 ms
+Installing 98/112 boost-foreach:x64-linux@1.92.0...
+boost-foreach:x64-linux@1.92.0 package ABI: e8551f51ed372daf8eda8391d70e74a746e7e9a15058cb8196c38893c9faef79
+Elapsed time to handle boost-foreach:x64-linux: 8.77 ms
+Installing 99/112 boost-lambda:x64-linux@1.92.0...
+boost-lambda:x64-linux@1.92.0 package ABI: ffa4138034c3ff1f2643dfba25bc4a6535f2fa330ae9302180790768961e37b3
+Elapsed time to handle boost-lambda:x64-linux: 8.77 ms
+Installing 100/112 boost-bimap:x64-linux@1.92.0...
+boost-bimap:x64-linux@1.92.0 package ABI: 0a15bc73b2f0fb92a56cf04e4aafe5e7389aa77001d9265b4f225a2ffbe53ad1
+Elapsed time to handle boost-bimap:x64-linux: 10.8 ms
+Installing 101/112 boost-graph:x64-linux@1.92.0...
+boost-graph:x64-linux@1.92.0 package ABI: f7e56331bb4e9a8c8bbac8fdd3bf5dbc6b799b5f8a6fe1dab45ad2e7b5f76dc8
+Elapsed time to handle boost-graph:x64-linux: 12.4 ms
+Installing 102/112 boost-rational:x64-linux@1.92.0...
+boost-rational:x64-linux@1.92.0 package ABI: 69c50b3ab4ae571cc0cff0a19f43855544e33b7bd0f1cf1a361b5a813f623b31
+Elapsed time to handle boost-rational:x64-linux: 8.59 ms
+Installing 103/112 boost-qvm:x64-linux@1.92.0...
+boost-qvm:x64-linux@1.92.0 package ABI: 229a86ea57589b7eaacc286724d1ee18159a4965f8d12dd3513e71c0a6d71039
+Elapsed time to handle boost-qvm:x64-linux: 9.37 ms
+Installing 104/112 boost-program-options:x64-linux@1.92.0...
+boost-program-options:x64-linux@1.92.0 package ABI: fe09d84c4184abecad867cbef078e5f8ac987a900e35af3a7bac69d1b0996d1d
+Elapsed time to handle boost-program-options:x64-linux: 8.6 ms
+Installing 105/112 boost-polygon:x64-linux@1.92.0...
+boost-polygon:x64-linux@1.92.0 package ABI: 4b20402822ad73cab3b6c6a3cf99762ff79dc0abfd3338f6a25439db4726df97
+Elapsed time to handle boost-polygon:x64-linux: 9.59 ms
+Installing 106/112 boost-crc:x64-linux@1.92.0...
+boost-crc:x64-linux@1.92.0 package ABI: f08bdc2bae944399369130c498d37381ab26f97a94a8aab1786f1a6c60bdcb11
+Elapsed time to handle boost-crc:x64-linux: 8.35 ms
+Installing 107/112 boost-geometry:x64-linux@1.92.0...
+boost-geometry:x64-linux@1.92.0 package ABI: 4a8c2598e92cbef53fed99c80820116964d510061751693faa9fc6fab0729b4f
+Elapsed time to handle boost-geometry:x64-linux: 23.9 ms
+Installing 108/112 boost-functional:x64-linux@1.92.0...
+boost-functional:x64-linux@1.92.0 package ABI: 2c88077914aa3c0f8a23c5149ad17ab6cc04fd0c2fe14016e037b996eff5fe90
+Elapsed time to handle boost-functional:x64-linux: 9.76 ms
+Installing 109/112 libmysql:x64-linux@8.0.46...
+libmysql:x64-linux@8.0.46 package ABI: e095f4345508b092c7198f3be7c41e3c437a2c2773654142d074cf4f93bb2f0a
+Elapsed time to handle libmysql:x64-linux: 11.9 ms
+Installing 110/112 libsamplerate:x64-linux@0.2.2#1...
+libsamplerate:x64-linux@0.2.2#1 package ABI: d807e86b4e8261487e4630d51e037f2192982843a9b09e79b9d5ae4af5b200c7
+Elapsed time to handle libsamplerate:x64-linux: 9.31 ms
+Installing 111/112 nlohmann-json:x64-linux@3.12.0#2...
+nlohmann-json:x64-linux@3.12.0#2 package ABI: e3bc23dbc0139533b3ae8233d5bb31e6b59468b492546d5a719fc259b6ddfcd7
+Elapsed time to handle nlohmann-json:x64-linux: 10 ms
+Installing 112/112 redis-plus-plus:x64-linux@1.3.15...
+redis-plus-plus:x64-linux@1.3.15 package ABI: bac8ca2c0dcd58b9acafedf01a65c71c761ae7822418acda361a7816b4bc82c1
+Elapsed time to handle redis-plus-plus:x64-linux: 9.9 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Some packages did not declare an SPDX license. Check the `copyright` file for each package for more information about their licensing.
+Packages installed in this vcpkg installation declare the following licenses:
+(BSD-3-Clause OR GPL-2.0-only)
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+BSL-1.0
+GPL-2.0-or-later
+MIT
+Zlib
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 735 ms
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/boost/BoostConfig.cmake (found version "1.92.0") found components: system thread filesystem
+-- Found nlohmann_json: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Found ZLIB: optimized;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/debug/lib/libz.a (found version "1.3.2")
+-- Found Threads: TRUE
+-- Found Protobuf: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/tools/protobuf/protoc (found version "33.4.0")
+-- Found OpenSSL: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libcrypto.a (found version "3.6.5")
+-- Found c-ares: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/c-ares/c-ares-config.cmake (found version "1.34.8")
+-- Found RE2 via CMake.
+-- Configuring done (28.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/mptchat/mptchat/build/StatusServer
+[1/10] Generating message.grpc.pb.cc, message.grpc.pb.h
+[2/10] Running cpp protocol buffer compiler on /home/runner/work/mptchat/mptchat/StatusServer/message.proto
+[3/10] Building CXX object CMakeFiles/StatusServer.dir/message.pb.cc.o
+[4/10] Building CXX object CMakeFiles/StatusServer.dir/ConfigMgr.cpp.o
+[5/10] Building CXX object CMakeFiles/StatusServer.dir/AsioIOServicePool.cpp.o
+[6/10] Building CXX object CMakeFiles/StatusServer.dir/message.grpc.pb.cc.o
+[7/10] Building CXX object CMakeFiles/StatusServer.dir/RedisMgr.cpp.o
+[8/10] Building CXX object CMakeFiles/StatusServer.dir/StatusServiceImpl.cpp.o
+[9/10] Building CXX object CMakeFiles/StatusServer.dir/main.cpp.o
+[10/10] Linking CXX executable StatusServer
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages are already installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,spawn,deadline-timer]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[core,codegen]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 838 us
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/boost/BoostConfig.cmake (found version "1.92.0") found components: system thread filesystem
+-- Found nlohmann_json: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Found ZLIB: optimized;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/debug/lib/libz.a (found version "1.3.2")
+-- Found Threads: TRUE
+-- Found Protobuf: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/tools/protobuf/protoc (found version "33.4.0")
+-- Found OpenSSL: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libcrypto.a (found version "3.6.5")
+-- Found c-ares: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/c-ares/c-ares-config.cmake (found version "1.34.8")
+-- Found RE2 via CMake.
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/mptchat/mptchat/build/GetServer
+[1/15] Generating message.grpc.pb.cc, message.grpc.pb.h
+[2/15] Running cpp protocol buffer compiler on /home/runner/work/mptchat/mptchat/GetServer/message.proto
+[3/15] Building CXX object CMakeFiles/GetServer.dir/message.pb.cc.o
+[4/15] Building CXX object CMakeFiles/GetServer.dir/message.grpc.pb.cc.o
+[5/15] Building CXX object CMakeFiles/GetServer.dir/ConfigMgr.cpp.o
+[6/15] Building CXX object CMakeFiles/GetServer.dir/main.cpp.o
+[7/15] Building CXX object CMakeFiles/GetServer.dir/AsioIOServicePool.cpp.o
+[8/15] Building CXX object CMakeFiles/GetServer.dir/CServer.cpp.o
+[9/15] Building CXX object CMakeFiles/GetServer.dir/LogicSystem.cpp.o
+[10/15] Building CXX object CMakeFiles/GetServer.dir/RedisMgr.cpp.o
+[11/15] Building CXX object CMakeFiles/GetServer.dir/MysqlMgr.cpp.o
+[12/15] Building CXX object CMakeFiles/GetServer.dir/HttpConnection.cpp.o
+[13/15] Building CXX object CMakeFiles/GetServer.dir/VarifyGrpcClient.cpp.o
+[14/15] Building CXX object CMakeFiles/GetServer.dir/StatusGrpcClient.cpp.o
+[15/15] Linking CXX executable GetServer
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages are already installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,spawn,deadline-timer]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[core,codegen]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 597 us
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/boost/BoostConfig.cmake (found version "1.92.0") found components: system thread filesystem
+-- Found nlohmann_json: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Found ZLIB: optimized;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/debug/lib/libz.a (found version "1.3.2")
+-- Found Threads: TRUE
+-- Found Protobuf: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/tools/protobuf/protoc (found version "33.4.0")
+-- Found OpenSSL: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libcrypto.a (found version "3.6.5")
+-- Found c-ares: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/c-ares/c-ares-config.cmake (found version "1.34.8")
+-- Found RE2 via CMake.
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/mptchat/mptchat/build/ChatServer
+[1/20] Generating message.grpc.pb.cc, message.grpc.pb.h
+[2/20] Running cpp protocol buffer compiler on /home/runner/work/mptchat/mptchat/ChatServer/message.proto
+[3/20] Building CXX object CMakeFiles/ChatServer.dir/AsioIOServicePool.cpp.o
+[4/20] Building CXX object CMakeFiles/ChatServer.dir/message.pb.cc.o
+[5/20] Building CXX object CMakeFiles/ChatServer.dir/message.grpc.pb.cc.o
+[6/20] Building CXX object CMakeFiles/ChatServer.dir/CServer.cpp.o
+[7/20] Building CXX object CMakeFiles/ChatServer.dir/ConfigMgr.cpp.o
+[8/20] Building CXX object CMakeFiles/ChatServer.dir/MsgNode.cpp.o
+[9/20] Building CXX object CMakeFiles/ChatServer.dir/CSession.cpp.o
+[10/20] Building CXX object CMakeFiles/ChatServer.dir/main.cpp.o
+[11/20] Building CXX object CMakeFiles/ChatServer.dir/StatusGrpcClient.cpp.o
+[12/20] Building CXX object CMakeFiles/ChatServer.dir/RedisMgr.cpp.o
+[13/20] Building CXX object CMakeFiles/ChatServer.dir/data.cpp.o
+[14/20] Building CXX object CMakeFiles/ChatServer.dir/UserMgr.cpp.o
+[15/20] Building CXX object CMakeFiles/ChatServer.dir/utils.cpp.o
+[16/20] Building CXX object CMakeFiles/ChatServer.dir/ChatGrpcClient.cpp.o
+[17/20] Building CXX object CMakeFiles/ChatServer.dir/ChatServiceImpl.cpp.o
+[18/20] Building CXX object CMakeFiles/ChatServer.dir/LogicSystem.cpp.o
+[19/20] Building CXX object CMakeFiles/ChatServer.dir/MysqlMgr.cpp.o
+[20/20] Linking CXX executable ChatServer
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages are already installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,spawn,deadline-timer]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[core,codegen]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 800 us
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/boost/BoostConfig.cmake (found version "1.92.0") found components: system thread filesystem
+-- Found nlohmann_json: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Found ZLIB: optimized;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/debug/lib/libz.a (found version "1.3.2")
+-- Found Threads: TRUE
+-- Found Protobuf: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/tools/protobuf/protoc (found version "33.4.0")
+-- Found OpenSSL: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libcrypto.a (found version "3.6.5")
+-- Found c-ares: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/c-ares/c-ares-config.cmake (found version "1.34.8")
+-- Found RE2 via CMake.
+-- Configuring done (0.8s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/mptchat/mptchat/build/ChatServer2
+[1/20] Generating message.grpc.pb.cc, message.grpc.pb.h
+[2/20] Running cpp protocol buffer compiler on /home/runner/work/mptchat/mptchat/ChatServer2/message.proto
+[3/20] Building CXX object CMakeFiles/ChatServer2.dir/message.pb.cc.o
+[4/20] Building CXX object CMakeFiles/ChatServer2.dir/ConfigMgr.cpp.o
+[5/20] Building CXX object CMakeFiles/ChatServer2.dir/AsioIOServicePool.cpp.o
+[6/20] Building CXX object CMakeFiles/ChatServer2.dir/CServer.cpp.o
+[7/20] Building CXX object CMakeFiles/ChatServer2.dir/message.grpc.pb.cc.o
+[8/20] Building CXX object CMakeFiles/ChatServer2.dir/MsgNode.cpp.o
+[9/20] Building CXX object CMakeFiles/ChatServer2.dir/main.cpp.o
+[10/20] Building CXX object CMakeFiles/ChatServer2.dir/RedisMgr.cpp.o
+[11/20] Building CXX object CMakeFiles/ChatServer2.dir/StatusGrpcClient.cpp.o
+[12/20] Building CXX object CMakeFiles/ChatServer2.dir/CSession.cpp.o
+[13/20] Building CXX object CMakeFiles/ChatServer2.dir/data.cpp.o
+[14/20] Building CXX object CMakeFiles/ChatServer2.dir/UserMgr.cpp.o
+[15/20] Building CXX object CMakeFiles/ChatServer2.dir/ChatGrpcClient.cpp.o
+[16/20] Building CXX object CMakeFiles/ChatServer2.dir/utils.cpp.o
+[17/20] Building CXX object CMakeFiles/ChatServer2.dir/MysqlMgr.cpp.o
+[18/20] Building CXX object CMakeFiles/ChatServer2.dir/LogicSystem.cpp.o
+[19/20] Building CXX object CMakeFiles/ChatServer2.dir/ChatServiceImpl.cpp.o
+[20/20] Linking CXX executable ChatServer2
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-linux...
+Compiler found: /usr/bin/c++
+The following packages are already installed:
+  * abseil:x64-linux@20260107.1#3
+  * boost-algorithm:x64-linux@1.92.0
+  * boost-align:x64-linux@1.92.0
+  * boost-any:x64-linux@1.92.0
+  * boost-array:x64-linux@1.92.0
+    boost-asio[core,spawn,deadline-timer]:x64-linux@1.92.0
+  * boost-assert:x64-linux@1.92.0
+  * boost-atomic:x64-linux@1.92.0
+    boost-beast:x64-linux@1.92.0
+  * boost-bimap:x64-linux@1.92.0
+  * boost-bind:x64-linux@1.92.0
+  * boost-chrono:x64-linux@1.92.0
+  * boost-cmake:x64-linux@1.92.0
+  * boost-compat:x64-linux@1.92.0
+  * boost-concept-check:x64-linux@1.92.0
+  * boost-config:x64-linux@1.92.0
+  * boost-container:x64-linux@1.92.0
+  * boost-container-hash:x64-linux@1.92.0
+  * boost-context:x64-linux@1.92.0
+  * boost-conversion:x64-linux@1.92.0
+  * boost-core:x64-linux@1.92.0
+  * boost-crc:x64-linux@1.92.0
+    boost-date-time:x64-linux@1.92.0
+  * boost-describe:x64-linux@1.92.0
+  * boost-detail:x64-linux@1.92.0
+  * boost-dynamic-bitset:x64-linux@1.92.0
+  * boost-endian:x64-linux@1.92.0
+  * boost-exception:x64-linux@1.92.0
+    boost-filesystem:x64-linux@1.92.0
+  * boost-foreach:x64-linux@1.92.0
+  * boost-function:x64-linux@1.92.0
+  * boost-function-types:x64-linux@1.92.0
+  * boost-functional:x64-linux@1.92.0
+  * boost-fusion:x64-linux@1.92.0
+  * boost-geometry:x64-linux@1.92.0
+  * boost-graph:x64-linux@1.92.0
+  * boost-headers:x64-linux@1.92.0
+  * boost-integer:x64-linux@1.92.0
+  * boost-intrusive:x64-linux@1.92.0
+  * boost-io:x64-linux@1.92.0
+  * boost-iterator:x64-linux@1.92.0
+  * boost-lambda:x64-linux@1.92.0
+  * boost-lexical-cast:x64-linux@1.92.0
+  * boost-logic:x64-linux@1.92.0
+  * boost-math:x64-linux@1.92.0
+  * boost-move:x64-linux@1.92.0
+  * boost-mp11:x64-linux@1.92.0
+    boost-mpl:x64-linux@1.92.0
+  * boost-multi-index:x64-linux@1.92.0
+  * boost-multiprecision:x64-linux@1.92.0
+  * boost-numeric-conversion:x64-linux@1.92.0
+  * boost-optional:x64-linux@1.92.0
+  * boost-parameter:x64-linux@1.92.0
+  * boost-phoenix:x64-linux@1.92.0
+  * boost-polygon:x64-linux@1.92.0
+  * boost-pool:x64-linux@1.92.0
+  * boost-predef:x64-linux@1.92.0
+  * boost-preprocessor:x64-linux@1.92.0
+  * boost-program-options:x64-linux@1.92.0
+  * boost-property-map:x64-linux@1.92.0
+    boost-property-tree:x64-linux@1.92.0
+  * boost-proto:x64-linux@1.92.0
+  * boost-qvm:x64-linux@1.92.0
+  * boost-random:x64-linux@1.92.0
+    boost-range:x64-linux@1.92.0
+  * boost-ratio:x64-linux@1.92.0
+  * boost-rational:x64-linux@1.92.0
+  * boost-regex:x64-linux@1.92.0
+  * boost-scope:x64-linux@1.92.0
+  * boost-serialization:x64-linux@1.92.0
+  * boost-smart-ptr:x64-linux@1.92.0
+  * boost-spirit:x64-linux@1.92.0
+  * boost-static-assert:x64-linux@1.92.0
+  * boost-static-string:x64-linux@1.92.0
+    boost-system:x64-linux@1.92.0
+    boost-thread:x64-linux@1.92.0
+  * boost-throw-exception:x64-linux@1.92.0
+  * boost-tokenizer:x64-linux@1.92.0
+  * boost-tti:x64-linux@1.92.0
+  * boost-tuple:x64-linux@1.92.0
+  * boost-type-index:x64-linux@1.92.0
+  * boost-type-traits:x64-linux@1.92.0
+  * boost-typeof:x64-linux@1.92.0
+  * boost-uninstall:x64-linux@1.92.0
+  * boost-unordered:x64-linux@1.92.0
+  * boost-utility:x64-linux@1.92.0
+    boost-uuid:x64-linux@1.92.0
+  * boost-variant:x64-linux@1.92.0
+  * boost-variant2:x64-linux@1.92.0
+  * boost-winapi:x64-linux@1.92.0
+  * boost-xpressive:x64-linux@1.92.0
+  * c-ares:x64-linux@1.34.8
+    grpc[core,codegen]:x64-linux@1.81.1
+    hiredis:x64-linux@1.4.1
+    libmysql:x64-linux@8.0.46
+    libsamplerate:x64-linux@0.2.2#1
+  * lz4:x64-linux@1.10.0
+  * ncurses:x64-linux@6.5#3
+    nlohmann-json:x64-linux@3.12.0#2
+  * openssl:x64-linux@3.6.5#1
+    protobuf[core,libprotoc]:x64-linux@6.33.4#2
+  * rapidjson:x64-linux@2025-02-26#1
+  * re2:x64-linux@2025-11-05
+    redis-plus-plus:x64-linux@1.3.15
+  * utf8-range:x64-linux@6.33.4
+  * vcpkg-boost:x64-linux@2026-08-21
+  * vcpkg-cmake:x64-linux@2025-08-07
+  * vcpkg-cmake-config:x64-linux@2026-07-21
+  * vcpkg-cmake-get-vars:x64-linux@2025-05-29
+  * vcpkg-make:x64-linux@2026-07-09#1
+  * zlib:x64-linux@1.3.2#2
+  * zstd:x64-linux@1.5.7
+boost-mpl provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_mpl CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::mpl)
+
+boost-range provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_range CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::range)
+
+boost-date-time provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_date_time CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::date_time)
+
+boost-system provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_system CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::system)
+
+boost-asio provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_asio CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio)
+
+  find_package(boost_asio_core CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_core)
+
+  find_package(boost_asio_deadline_timer CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_deadline_timer)
+
+  find_package(boost_asio_spawn CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::asio_spawn)
+
+boost-beast provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_beast CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::beast)
+
+boost-filesystem provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_filesystem CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::filesystem)
+
+boost-thread provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_thread CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::thread)
+
+boost-property-tree provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_property_tree CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::property_tree)
+
+boost-uuid provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(boost_uuid CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE Boost::uuid)
+
+protobuf provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(protobuf CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE protobuf::libupb protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+protobuf provides pkg-config modules:
+
+  # Google's Data Interchange Format
+  protobuf-lite
+
+  # Google's Data Interchange Format
+  protobuf
+
+  # Google's Data Interchange Format
+  upb
+
+grpc provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(gRPC CONFIG REQUIRED)
+  # note: 20 additional targets are not displayed.
+  target_link_libraries(main PRIVATE gRPC::gpr gRPC::grpc gRPC::grpc++ gRPC::grpc++_alts)
+
+grpc provides pkg-config modules:
+
+  # gRPC platform support library
+  gpr
+
+  # C++ wrapper for gRPC
+  grpc++
+
+  # C++ wrapper for gRPC without SSL
+  grpc++_unsecure
+
+  # high performance general RPC framework
+  grpc
+
+  # high performance general RPC framework without SSL
+  grpc_unsecure
+
+hiredis provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(hiredis CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE hiredis::hiredis)
+
+hiredis provides pkg-config modules:
+
+  # Minimalistic C client library for Redis.
+  hiredis
+
+libmysql provides CMake targets:
+
+    find_package(unofficial-libmysql REQUIRED)
+    target_link_libraries(main PRIVATE unofficial::libmysql::libmysql)
+
+libsamplerate provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(SampleRate CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE SampleRate::samplerate)
+
+libsamplerate provides pkg-config modules:
+
+  # An audio Sample Rate Conversion library
+  samplerate
+
+The package nlohmann-json provides CMake targets:
+
+    find_package(nlohmann_json CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
+
+The package nlohmann-json can be configured to not provide implicit conversions via a custom triplet file:
+
+    set(nlohmann-json_IMPLICIT_CONVERSIONS OFF)
+
+For more information, see the docs here:
+    
+    https://json.nlohmann.me/api/macros/json_use_implicit_conversions/
+
+redis-plus-plus provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(redis++ CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE redis++::redis++_static)
+
+redis-plus-plus provides pkg-config modules:
+
+  # This is a Redis client, based on hiredis and written in C++11. It supports scritpting, pub/sub, pipeline, transaction, Redis Cluster, Redis Sentinel, connection pool, ACL, SSL and thread safety.
+  redis++
+
+All requested installations completed successfully in: 576 us
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/boost/BoostConfig.cmake (found version "1.92.0") found components: system thread filesystem
+-- Found nlohmann_json: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/nlohmann_json/nlohmann_jsonConfig.cmake (found version "3.12.0")
+-- Found ZLIB: optimized;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libz.a;debug;/home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/debug/lib/libz.a (found version "1.3.2")
+-- Found Threads: TRUE
+-- Found Protobuf: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/tools/protobuf/protoc (found version "33.4.0")
+-- Found OpenSSL: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/lib/libcrypto.a (found version "3.6.5")
+-- Found c-ares: /home/runner/work/mptchat/mptchat/vcpkg/installed/x64-linux/share/c-ares/c-ares-config.cmake (found version "1.34.8")
+-- Found RE2 via CMake.
+-- Configuring done (0.7s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/mptchat/mptchat/build/ResourceServer
+[1/14] Building CXX object CMakeFiles/ResourceServer.dir/MsgNode.cpp.o
+[2/14] Building CXX object CMakeFiles/ResourceServer.dir/ConfigMgr.cpp.o
+[3/14] Building CXX object CMakeFiles/ResourceServer.dir/AsioIOServicePool.cpp.o
+[4/14] Building CXX object CMakeFiles/ResourceServer.dir/CSession.cpp.o
+[5/14] Building CXX object CMakeFiles/ResourceServer.dir/main.cpp.o
+[6/14] Building CXX object CMakeFiles/ResourceServer.dir/CServer.cpp.o
+[7/14] Building CXX object CMakeFiles/ResourceServer.dir/base64.cpp.o
+[8/14] Building CXX object CMakeFiles/ResourceServer.dir/data.cpp.o
+[9/14] Building CXX object CMakeFiles/ResourceServer.dir/FileSystem.cpp.o
+[10/14] Building CXX object CMakeFiles/ResourceServer.dir/MysqlMgr.cpp.o
+[11/14] Building CXX object CMakeFiles/ResourceServer.dir/FileWorker.cpp.o
+[12/14] Building CXX object CMakeFiles/ResourceServer.dir/RedisMgr.cpp.o
+[13/14] Building CXX object CMakeFiles/ResourceServer.dir/LogicSystem.cpp.o
+[14/14] Linking CXX executable ResourceServer
