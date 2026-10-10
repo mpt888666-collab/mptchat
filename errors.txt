@@ -1,0 +1,406 @@
+run=38032630230 sha=e14efb17c95b99aa13cb3e38392e2cae4e976f44 branch=ci-logs-windows-msvc
+
+===== ci-errors.log（前 250 行）=====
+(none)
+
+===== 编译日志开头 400 行（首个错误在这里）=====
+run=38032630230 sha=e14efb17c95b99aa13cb3e38392e2cae4e976f44 branch=ci-logs-windows-msvc
+
+===== ci-install.log (tail 3000) =====
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_city.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_civil_time.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cleanup.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cleanup_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_common_policy_traits.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_compare.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_compressed_tuple.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_config.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_constexpr_testing_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_container_common.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_container_memory.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cord.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cord_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_functions.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_handle.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_info.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_statistics.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_core_headers.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_crc32c.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_crc_cord_state.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_crc_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_debugging.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_debugging_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_decode_rust_punycode.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_demangle_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_demangle_rust.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_die_if_null.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_endian.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_errno_saver.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_examine_stack.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_exponential_biased.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_fast_type_id.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_fixed_array.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_config.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_marshalling.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_parse.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_path_util.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_program_name.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_reflection.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_usage.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flat_hash_map.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_flat_hash_set.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_function_ref.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_generic_printer_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_has_ostream_operator.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hash.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hash_container_defaults.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hashtable_control_bytes.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hashtable_debug.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hashtable_profiler.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_inlined_vector.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_int128.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_iterator_traits_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_iterator_traits_test_helper_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_layout.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_leak_check.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_linked_hash_map.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_linked_hash_set.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_entry.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_flags.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_globals.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_initialize.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_config.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_container.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_flags.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_fnmatch.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_format.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_globals.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_message.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_proto.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_strip.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_structured.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_structured_proto.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_severity.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_sink.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_sink_registry.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_streamer.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_log_structured.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_malloc_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_memory.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_meta.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_no_destructor.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_node_hash_map.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_node_hash_set.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_node_slot_policy.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_nullability.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_nullability_traits_internal.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_numeric.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_numeric_representation.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_optional.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_overload.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_periodic_sampler.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_poison.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_prefetch.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_pretty_function.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_profile_builder.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_distributions.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_entropy_pool.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_platform.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_randen.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Fixing pkgconfig file: D:/a/mptchat/mptchat/vcpkg/packages/abseil_x64-windows-release/lib/pkgconfig/absl_random_internal_seed_material.pc
+
+...... [middle truncated] ......
+
+Installing 4/204 boost-uninstall:x64-windows-release@1.92.0...
+boost-uninstall:x64-windows-release@1.92.0 package ABI: d5f503ddf24bebcd332a46dcab416318d8aa9a4968655bf135f123065375e052
+Elapsed time to handle boost-uninstall:x64-windows-release: 1.66 ms
+Installing 5/204 boost-cmake:x64-windows-release@1.92.0...
+boost-cmake:x64-windows-release@1.92.0 package ABI: 7ee77d691352ce91fd38c350d4f1a03eb677893a79308b59d2979e2b4ba24929
+Elapsed time to handle boost-cmake:x64-windows-release: 3.03 ms
+Installing 6/204 boost-headers:x64-windows-release@1.92.0...
+boost-headers:x64-windows-release@1.92.0 package ABI: f6aeb65e491f63ce2651f217be658de6ab9f72c2ff8cea00531bc83db89c9736
+Elapsed time to handle boost-headers:x64-windows-release: 2.12 ms
+Installing 7/204 boost-config:x64-windows-release@1.92.0...
+boost-config:x64-windows-release@1.92.0 package ABI: 77dac2f6e9b8bb2452cc9fdc3cfcd23e8df05ab93aba38eb9d6b2d82a4de8259
+Elapsed time to handle boost-config:x64-windows-release: 34.2 ms
+Installing 8/204 boost-assert:x64-windows-release@1.92.0...
+boost-assert:x64-windows-release@1.92.0 package ABI: 4b77584bf08c533ddeb8d7158f94c106f37a3f69fd755fca395bccfa1c57624d
+Elapsed time to handle boost-assert:x64-windows-release: 2.9 ms
+Installing 9/204 boost-throw-exception:x64-windows-release@1.92.0...
+boost-throw-exception:x64-windows-release@1.92.0 package ABI: 70477196f87a9dead15cd0fffb4560d93abb0d43a5a2a8303bae57f9e61b4137
+Elapsed time to handle boost-throw-exception:x64-windows-release: 2.61 ms
+Installing 10/204 boost-core:x64-windows-release@1.92.0...
+boost-core:x64-windows-release@1.92.0 package ABI: 56431cb4dc1fbe7962e2c3b55fcbec40f1c16c5e3ae01f573030fb5fbd222540
+Elapsed time to handle boost-core:x64-windows-release: 12.1 ms
+Installing 11/204 boost-smart-ptr:x64-windows-release@1.92.0...
+boost-smart-ptr:x64-windows-release@1.92.0 package ABI: b498b65995a0f8a6f5b7605bc10e8123ab26a76ba2937cb2946e8c6b3e0545da
+Elapsed time to handle boost-smart-ptr:x64-windows-release: 11.2 ms
+Installing 12/204 boost-predef:x64-windows-release@1.92.0...
+boost-predef:x64-windows-release@1.92.0 package ABI: 186e3ee8bfdf3d6fe9d29f8fbcc5c7df1af8c68ef396611c8b1f448a50164994
+Elapsed time to handle boost-predef:x64-windows-release: 19.6 ms
+Installing 13/204 boost-winapi:x64-windows-release@1.92.0...
+boost-winapi:x64-windows-release@1.92.0 package ABI: c4bddb206a5849e8b72b58e41ca0ea65c67881202a8a22bef85f50fe0fd83ac8
+Elapsed time to handle boost-winapi:x64-windows-release: 21.3 ms
+Installing 14/204 boost-type-traits:x64-windows-release@1.92.0...
+boost-type-traits:x64-windows-release@1.92.0 package ABI: fd776b7c328f2681d0ffc836e6ed809a5d066610d4b04013d65c3254e7ab87c6
+Elapsed time to handle boost-type-traits:x64-windows-release: 29.9 ms
+Installing 15/204 boost-integer:x64-windows-release@1.92.0...
+boost-integer:x64-windows-release@1.92.0 package ABI: c13d499955df354b11beb0d2158aecc48199166079223608800e9c2a66e05487
+Elapsed time to handle boost-integer:x64-windows-release: 5 ms
+Installing 16/204 boost-pool:x64-windows-release@1.92.0...
+boost-pool:x64-windows-release@1.92.0 package ABI: df3a91c23c30fb4592eacb2077c56423d2153708f70f2d5f5244b0d6f0a04d14
+Elapsed time to handle boost-pool:x64-windows-release: 5.86 ms
+Installing 17/204 boost-mp11:x64-windows-release@1.92.0...
+boost-mp11:x64-windows-release@1.92.0 package ABI: fc7003b33766586038e8023fdf12f1ed9760dd027023bbc1027a17e1ecc6501e
+Elapsed time to handle boost-mp11:x64-windows-release: 7.83 ms
+Installing 18/204 boost-context:x64-windows-release@1.92.0...
+boost-context:x64-windows-release@1.92.0 package ABI: c3df78449840bd0ec59fb74c26c7a3eda0c9c85e2b3da29032c0a76bb137ecbc
+Elapsed time to handle boost-context:x64-windows-release: 7.7 ms
+Installing 19/204 boost-preprocessor:x64-windows-release@1.92.0...
+boost-preprocessor:x64-windows-release@1.92.0 package ABI: 5cfeb6148ba62beb28edb328afcd2e1eafe1a08a5e5cc7f86891e0c064c48425
+Elapsed time to handle boost-preprocessor:x64-windows-release: 45.1 ms
+Installing 20/204 boost-io:x64-windows-release@1.92.0...
+boost-io:x64-windows-release@1.92.0 package ABI: 336bb843a0d548a134f2b7852c1615533f6f129453d181c81c3ffe42843ef60c
+Elapsed time to handle boost-io:x64-windows-release: 5.49 ms
+Installing 21/204 boost-utility:x64-windows-release@1.92.0...
+boost-utility:x64-windows-release@1.92.0 package ABI: 158936a8a42a9f875bc392b4de202db5ece4e337e5b575dce08e5fe42f0b7aad
+Elapsed time to handle boost-utility:x64-windows-release: 7.24 ms
+Installing 22/204 boost-optional:x64-windows-release@1.92.0...
+boost-optional:x64-windows-release@1.92.0 package ABI: 76448e2a83d33f5d942e137dd89e4d4af5831c8492e9a12b2bbb9231a3d6bfa8
+Elapsed time to handle boost-optional:x64-windows-release: 6.76 ms
+Installing 23/204 boost-mpl:x64-windows-release@1.92.0...
+boost-mpl:x64-windows-release@1.92.0 package ABI: e5b0402861864d9ac5670facba7dab7f2d3046b384cb5a94071cd23d97ff6981
+Elapsed time to handle boost-mpl:x64-windows-release: 139 ms
+Installing 24/204 boost-typeof:x64-windows-release@1.92.0...
+boost-typeof:x64-windows-release@1.92.0 package ABI: 6ad651c85090e0103f03c2718d5b4c55027b801ddb5b2742d7d90d42be5e04a8
+Elapsed time to handle boost-typeof:x64-windows-release: 10.4 ms
+Installing 25/204 boost-tuple:x64-windows-release@1.92.0...
+boost-tuple:x64-windows-release@1.92.0 package ABI: a436b448219ede4af20a384fcb2a892a4b572bbbc5b0e76c5bd76d32eb696f8a
+Elapsed time to handle boost-tuple:x64-windows-release: 7.46 ms
+Installing 26/204 boost-detail:x64-windows-release@1.92.0...
+boost-detail:x64-windows-release@1.92.0 package ABI: 9de5a997b48d3c24ecd5787fa183f32a36936839de382d8ba730ab0e932af88c
+Elapsed time to handle boost-detail:x64-windows-release: 9.55 ms
+Installing 27/204 boost-function-types:x64-windows-release@1.92.0...
+boost-function-types:x64-windows-release@1.92.0 package ABI: 0525f297b7d42477d696450756bdab91b2619b9692926b98ae2336847dc7391b
+Elapsed time to handle boost-function-types:x64-windows-release: 15.6 ms
+Installing 28/204 boost-describe:x64-windows-release@1.92.0...
+boost-describe:x64-windows-release@1.92.0 package ABI: 8ea6eb75e3c8f1dc7ba65d910bb95dd4670cca33ef42ec3aaf2f77c4c93244aa
+Elapsed time to handle boost-describe:x64-windows-release: 9.43 ms
+Installing 29/204 boost-container-hash:x64-windows-release@1.92.0...
+boost-container-hash:x64-windows-release@1.92.0 package ABI: 2c397ad7006b873dbb508e10a0ec968ffeacc3e78b3267db4ebbe3af7496cd49
+Elapsed time to handle boost-container-hash:x64-windows-release: 9.63 ms
+Installing 30/204 boost-fusion:x64-windows-release@1.92.0...
+boost-fusion:x64-windows-release@1.92.0 package ABI: 5027a774d69234ec458fe208ecc2696c1f028f969cd209be63cb2b0867d614a2
+Elapsed time to handle boost-fusion:x64-windows-release: 463 ms
+Installing 31/204 boost-concept-check:x64-windows-release@1.92.0...
+boost-concept-check:x64-windows-release@1.92.0 package ABI: dcf76ce19ba60a71156ccda9c2a31102a7faf95599bd1911bf6ac3ef01f0e4cc
+Elapsed time to handle boost-concept-check:x64-windows-release: 11.7 ms
+Installing 32/204 boost-iterator:x64-windows-release@1.92.0...
+boost-iterator:x64-windows-release@1.92.0 package ABI: 395441cb6c7d8e73ea31160520fe68b711e6cf26ae080f85c01cab5ffda2ea07
+Elapsed time to handle boost-iterator:x64-windows-release: 14.4 ms
+Installing 33/204 boost-tokenizer:x64-windows-release@1.92.0...
+boost-tokenizer:x64-windows-release@1.92.0 package ABI: 8dfa3c91b92e00b5d4f9047fdfdd982af48923b70bd8057bd669ce435480847d
+Elapsed time to handle boost-tokenizer:x64-windows-release: 9.79 ms
+Installing 34/204 boost-static-assert:x64-windows-release@1.92.0...
+boost-static-assert:x64-windows-release@1.92.0 package ABI: 9bc5043ced7129702bf669ca14b502a5e8787cd5ebceaeffaf26ffeed5520fc6
+Elapsed time to handle boost-static-assert:x64-windows-release: 9.76 ms
+Installing 35/204 boost-regex:x64-windows-release@1.92.0...
+boost-regex:x64-windows-release@1.92.0 package ABI: 49c112e14c7b84d3f29d0f421e12dd3c1f3b4e1e84e0681af2cfb78dd10adcd0
+Elapsed time to handle boost-regex:x64-windows-release: 16.6 ms
+Installing 36/204 boost-conversion:x64-windows-release@1.92.0...
+boost-conversion:x64-windows-release@1.92.0 package ABI: e53a12922035c4ae6e3d9c1f066413d068529dbe80d9e096019599f4e1ba1a52
+Elapsed time to handle boost-conversion:x64-windows-release: 10 ms
+Installing 37/204 boost-array:x64-windows-release@1.92.0...
+boost-array:x64-windows-release@1.92.0 package ABI: 99415d0e55c41a6a56ac2461c2c3e3fa15568895fa8af4446ee90a7b378407a1
+Elapsed time to handle boost-array:x64-windows-release: 9.56 ms
+Installing 38/204 boost-range:x64-windows-release@1.92.0...
+boost-range:x64-windows-release@1.92.0 package ABI: acb80a29c9289c57b70010816770e7c7afa8b1086d05a0be095e84fd92fad618
+Elapsed time to handle boost-range:x64-windows-release: 29.3 ms
+Installing 39/204 boost-numeric-conversion:x64-windows-release@1.92.0...
+boost-numeric-conversion:x64-windows-release@1.92.0 package ABI: a071b0312ded183cf457c29fa4a364075ca7ef678d017f71c2986df3085de25b
+Elapsed time to handle boost-numeric-conversion:x64-windows-release: 13.9 ms
+Installing 40/204 boost-move:x64-windows-release@1.92.0...
+boost-move:x64-windows-release@1.92.0 package ABI: cdd85b9c13dedcd882fc7a09401b6b1e548c605ad1093a515e5f6e8a61dadf1a
+Elapsed time to handle boost-move:x64-windows-release: 15.8 ms
+Installing 41/204 boost-intrusive:x64-windows-release@1.92.0...
+boost-intrusive:x64-windows-release@1.92.0 package ABI: c93e4b3894400f890624d70c1c624aa99f3dfb717986bccabefffe786e0df398
+Elapsed time to handle boost-intrusive:x64-windows-release: 22.1 ms
+Installing 42/204 boost-container:x64-windows-release@1.92.0...
+boost-container:x64-windows-release@1.92.0 package ABI: 2200b3f99b1ce08aaeba7816d17e6e149c051a28d32764a04dded4f65e28a032
+Elapsed time to handle boost-container:x64-windows-release: 30 ms
+Installing 43/204 boost-lexical-cast:x64-windows-release@1.92.0...
+boost-lexical-cast:x64-windows-release@1.92.0 package ABI: dd85e09bdc88b7deb95044ba20b1cae7dea9f5008e2259f18e396b56099a79d6
+Elapsed time to handle boost-lexical-cast:x64-windows-release: 12.8 ms
+Installing 44/204 boost-unordered:x64-windows-release@1.92.0...
+boost-unordered:x64-windows-release@1.92.0 package ABI: 383afc843d8958c454352ba3747a7795aecb96211cdf8112c2580251ecadf548
+Elapsed time to handle boost-unordered:x64-windows-release: 17.8 ms
+Installing 45/204 boost-bind:x64-windows-release@1.92.0...
+boost-bind:x64-windows-release@1.92.0 package ABI: fe53a9847b83f79fbcd8755e2d6d4cc0b96ebd0b05d794997f7b674c512e6eb5
+Elapsed time to handle boost-bind:x64-windows-release: 12.2 ms
+Installing 46/204 boost-function:x64-windows-release@1.92.0...
+boost-function:x64-windows-release@1.92.0 package ABI: 7bb2eef66066d321cef54f261af93bd790a22ac5a03125dcf9c48b6d9c024dfc
+Elapsed time to handle boost-function:x64-windows-release: 13 ms
+Installing 47/204 boost-exception:x64-windows-release@1.92.0...
+boost-exception:x64-windows-release@1.92.0 package ABI: 7e7a10c1d53fc6ef80e2b2fadf1a83f435fe84c1b1148f8832dfc9fecae911ce
+Elapsed time to handle boost-exception:x64-windows-release: 14.8 ms
+Installing 48/204 boost-algorithm:x64-windows-release@1.92.0...
+boost-algorithm:x64-windows-release@1.92.0 package ABI: c80c4700044252367c9b991645daed5651f53127d486fac1e5744751b2e8c91b
+Elapsed time to handle boost-algorithm:x64-windows-release: 19.9 ms
+Installing 49/204 boost-date-time:x64-windows-release@1.92.0...
+boost-date-time:x64-windows-release@1.92.0 package ABI: c1206cb290068b6ec75ce2bbb2000a27043f4816de440be2b6798329bc3262f8
+Elapsed time to handle boost-date-time:x64-windows-release: 23.6 ms
+Installing 50/204 boost-variant2:x64-windows-release@1.92.0...
+boost-variant2:x64-windows-release@1.92.0 package ABI: 1217670bb0deae36c4d5d2bbcc982badda52e7d43b39b6bf1a01b9475fab532a
+Elapsed time to handle boost-variant2:x64-windows-release: 12.1 ms
+Installing 51/204 boost-compat:x64-windows-release@1.92.0...
+boost-compat:x64-windows-release@1.92.0 package ABI: c4b2fc9f53e49b79e27a1d34fa3dac3fdf9dd2791ae50570f3033c7eee93baad
+Elapsed time to handle boost-compat:x64-windows-release: 12.8 ms
+Installing 52/204 boost-system:x64-windows-release@1.92.0...
+boost-system:x64-windows-release@1.92.0 package ABI: 203f9466e4dd23e1515d14c0945e764ad0a69ad9557de2f62edd7ea6cd74da15
+Elapsed time to handle boost-system:x64-windows-release: 16.4 ms
+Installing 53/204 boost-align:x64-windows-release@1.92.0...
+boost-align:x64-windows-release@1.92.0 package ABI: 32fc3e66f623a5716e2d166cf0e96fa573ceaefb7bda3edda10c06d51e81a1fe
+Elapsed time to handle boost-align:x64-windows-release: 18.8 ms
+Installing 54/204 boost-asio[core,deadline-timer,spawn]:x64-windows-release@1.92.0...
+boost-asio[core,deadline-timer,spawn]:x64-windows-release@1.92.0 package ABI: 29360873b6b9c03437fb73b660eaa25dabaf2b38bd2960b5857b5859ab0bf079
+Elapsed time to handle boost-asio:x64-windows-release: 91.2 ms
+Installing 55/204 boost-type-index:x64-windows-release@1.92.0...
+boost-type-index:x64-windows-release@1.92.0 package ABI: a5a255d67541a06c3bf8deeb7714b11df426541054abfb97f4b7535baf3c47f9
+Elapsed time to handle boost-type-index:x64-windows-release: 15.1 ms
+Installing 56/204 boost-static-string:x64-windows-release@1.92.0...
+boost-static-string:x64-windows-release@1.92.0 package ABI: fe1bccb1493fb64550db32ae3653b999b42dc636612047e71c34f939200713b9
+Elapsed time to handle boost-static-string:x64-windows-release: 13.8 ms
+Installing 57/204 boost-logic:x64-windows-release@1.92.0...
+boost-logic:x64-windows-release@1.92.0 package ABI: d3128fc4e596286825fbbc0c77813666b7eb3436619a104feef829b3a10edf77
+Elapsed time to handle boost-logic:x64-windows-release: 13.5 ms
+Installing 58/204 boost-endian:x64-windows-release@1.92.0...
+boost-endian:x64-windows-release@1.92.0 package ABI: b0b553acbe81f01e72bffd2e8e1f6c9714193b37956131d5cb594edfd942fc9c
+Elapsed time to handle boost-endian:x64-windows-release: 15.6 ms
+Installing 59/204 boost-beast:x64-windows-release@1.92.0...
+boost-beast:x64-windows-release@1.92.0 package ABI: 261554d31612f388d25bcb75a2e9e5f4d84fd721731a71cdd29bbb1c1460e876
+Elapsed time to handle boost-beast:x64-windows-release: 43 ms
+Installing 60/204 boost-scope:x64-windows-release@1.92.0...
+boost-scope:x64-windows-release@1.92.0 package ABI: b116c3f7b2844bed460e66d35bc983ce7e83164f46cfda7ea36e3ff150ccd8de
+Elapsed time to handle boost-scope:x64-windows-release: 17.8 ms
+Installing 61/204 boost-atomic:x64-windows-release@1.92.0...
+boost-atomic:x64-windows-release@1.92.0 package ABI: cf8910685fd4fd7fc0d8e8d2eaf7591e2e5db958867f0fcce7103483d4494e3f
+Elapsed time to handle boost-atomic:x64-windows-release: 31.1 ms
+Installing 62/204 boost-filesystem:x64-windows-release@1.92.0...
+boost-filesystem:x64-windows-release@1.92.0 package ABI: eb1a3930ff1893196bdafe721c6cf72538f14be55c9367cc990e2396eac10dda
+Elapsed time to handle boost-filesystem:x64-windows-release: 15.8 ms
+Installing 63/204 boost-variant:x64-windows-release@1.92.0...
+boost-variant:x64-windows-release@1.92.0 package ABI: 9661204c5718f6c9af96c3652cbd83f5439fce6dae499886a9f19f435907c188
+Elapsed time to handle boost-variant:x64-windows-release: 18.1 ms
+Installing 64/204 boost-ratio:x64-windows-release@1.92.0...
+boost-ratio:x64-windows-release@1.92.0 package ABI: ce162cc04859711f3442c337ba727d5444a7d600297c70c036667ca41584b7fd
+Elapsed time to handle boost-ratio:x64-windows-release: 14.8 ms
+Installing 65/204 boost-chrono:x64-windows-release@1.92.0...
+boost-chrono:x64-windows-release@1.92.0 package ABI: 17da12b97eb9e34120143ae239b36154f12354dd27f8d6cfc69a75e8ec120657
+Elapsed time to handle boost-chrono:x64-windows-release: 19.1 ms
+Installing 66/204 boost-thread:x64-windows-release@1.92.0...
+boost-thread:x64-windows-release@1.92.0 package ABI: 934b7f408c7d309fc23233c6abc747fad4782b29999580e194684a2c36616895
+Elapsed time to handle boost-thread:x64-windows-release: 34.2 ms
+Installing 67/204 boost-proto:x64-windows-release@1.92.0...
+boost-proto:x64-windows-release@1.92.0 package ABI: 07b38c24192d8aaa61ad1eb2bfa70258ce9bbe2db40a78ded513f921a555d336
+Elapsed time to handle boost-proto:x64-windows-release: 109 ms
+Installing 68/204 boost-phoenix:x64-windows-release@1.92.0...
+boost-phoenix:x64-windows-release@1.92.0 package ABI: 7f0b345b4278c4a00c216380282ebab1f7ff766c734356c254cc890f5912d0c4
+Elapsed time to handle boost-phoenix:x64-windows-release: 55.2 ms
+Installing 69/204 boost-spirit:x64-windows-release@1.92.0...
+boost-spirit:x64-windows-release@1.92.0 package ABI: aaf677d16e6cc5261cbb103655722ef5f5e6c07cd28ffda875abd07acf6d5d8b
+Elapsed time to handle boost-spirit:x64-windows-release: 381 ms
+Installing 70/204 boost-serialization:x64-windows-release@1.92.0...
+boost-serialization:x64-windows-release@1.92.0 package ABI: 256c43826af61cf0d431867cc89da8897b9b13c0448d4da125df114ea8752be0
+Elapsed time to handle boost-serialization:x64-windows-release: 47.6 ms
+Installing 71/204 boost-multi-index:x64-windows-release@1.92.0...
+boost-multi-index:x64-windows-release@1.92.0 package ABI: b977ee274027feafaaeff25e5fbf9ac2cc8913287803fb81d3acd75f84a64645
+Elapsed time to handle boost-multi-index:x64-windows-release: 29.5 ms
+Installing 72/204 boost-any:x64-windows-release@1.92.0...
+boost-any:x64-windows-release@1.92.0 package ABI: 78c49502df321d7caefde565452f14a256bd3ce1c09d9d25d74ec1b0bfbc5de3
+Elapsed time to handle boost-any:x64-windows-release: 19.3 ms
+Installing 73/204 boost-property-tree:x64-windows-release@1.92.0...
+boost-property-tree:x64-windows-release@1.92.0 package ABI: 36af978b9489f798bf8684fa5be0670da56e52fbb0299827fb988bd6627421bd
+Elapsed time to handle boost-property-tree:x64-windows-release: 22.6 ms
+Installing 74/204 boost-uuid:x64-windows-release@1.92.0...
+boost-uuid:x64-windows-release@1.92.0 package ABI: c23b50bbaa83c715b2b65c999918ef36eb9d259a0e1ca38d101dde5146227004
+Elapsed time to handle boost-uuid:x64-windows-release: 24.8 ms
+Installing 75/204 zlib:x64-windows-release@1.3.2#2...
+zlib:x64-windows-release@1.3.2#2 package ABI: 4479b05e1db8470560bd58d083a5a9516658acc92bf6705da2cfc824f0a1fd76
+Elapsed time to handle zlib:x64-windows-release: 21.6 ms
+Installing 76/204 abseil:x64-windows-release@20260107.1#3...
+abseil:x64-windows-release@20260107.1#3 package ABI: 561cd2eb0f3ec6db98f068304151072f3944fc1da18030cac4a1adf06fd75256
+Elapsed time to handle abseil:x64-windows-release: 99.4 ms
+Installing 77/204 utf8-range:x64-windows-release@6.33.4...
+utf8-range:x64-windows-release@6.33.4 package ABI: 2192ab98242318dd5d3176bc0a6971b0bb62b6756b99e06d144c137e59acd82c
+Elapsed time to handle utf8-range:x64-windows-release: 20.7 ms
+Installing 78/204 re2:x64-windows-release@2025-11-05...
+re2:x64-windows-release@2025-11-05 package ABI: c9639e1039e5ebda455d0a9566a46e53923f878431770b5c982b0fda3164857c
+Elapsed time to handle re2:x64-windows-release: 21.6 ms
+Installing 79/204 abseil:x64-windows@20260107.1#3...
+abseil:x64-windows@20260107.1#3 package ABI: 5894307179dce21dad0b17496f958d820d340e4d6a28541f89175abb7b96e591
+Elapsed time to handle abseil:x64-windows: 121 ms
+Installing 80/204 utf8-range:x64-windows@6.33.4...
+utf8-range:x64-windows@6.33.4 package ABI: fcb96ed9ea2f769f58ae19c1372db069ffbac697f0dda0a92146689a6e139623
+Elapsed time to handle utf8-range:x64-windows: 8.47 ms
+Installing 81/204 protobuf[core,libprotoc]:x64-windows@6.33.4#2...
+protobuf[core,libprotoc]:x64-windows@6.33.4#2 package ABI: c3756dc795714538be6552c0be446035dcb18eaf1d55ef00b0b20da9bf1c6ca4
+Elapsed time to handle protobuf:x64-windows: 31.6 ms
+Installing 82/204 protobuf:x64-windows-release@6.33.4#2...
+protobuf:x64-windows-release@6.33.4#2 package ABI: 2c12cfdbe40bbc3ebec72c5acf97bca64327cd3e138af052ef113eafd1d053bf
+Elapsed time to handle protobuf:x64-windows-release: 42 ms
+Installing 83/204 vcpkg-cmake-get-vars:x64-windows@2025-05-29...
+vcpkg-cmake-get-vars:x64-windows@2025-05-29 package ABI: fc039b1fb6072f443a56902cf7668b6974c831ca6951f12dfce1cf53bc8ad5f9
+Elapsed time to handle vcpkg-cmake-get-vars:x64-windows: 8.26 ms
+Installing 84/204 openssl:x64-windows-release@3.6.5#1...
+openssl:x64-windows-release@3.6.5#1 package ABI: 02fa93cd9d7e935cb68b3bcb2a4da9a8fe27751218fb6f28bc20f5be617a7ed9
+Elapsed time to handle openssl:x64-windows-release: 42.4 ms
+Installing 85/204 zlib:x64-windows@1.3.2#2...
+zlib:x64-windows@1.3.2#2 package ABI: f7b187d97178d555a765f221ea7b714f61a9985186d6a1f4ef49f459bbed309a
+Elapsed time to handle zlib:x64-windows: 11.7 ms
+Installing 86/204 re2:x64-windows@2025-11-05...
