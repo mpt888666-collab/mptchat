@@ -492,6 +492,102 @@ git tag v1.0.0
 git push origin v1.0.0
 ```
 
+### 8.3 CI 排错历程（当前双平台全绿）
+
+CI 最初是「推一次红一次」，Windows 与 Linux 交替暴雷，前后 14 轮才修到双平台全绿。
+前 13 轮有个共同点：**编译器遇到第一个错误就停下**，所以每轮只能看见一个错误，
+修掉之后下一轮才暴露下一个 —— 这也是后来改成「先静态扫描、一次改完再推」的原因。
+
+| # | 提交 | 平台 | 现象 → 根因 / 修法 |
+| --- | --- | --- | --- |
+| 1 | `c1a71da` | 双平台 | Windows 定位不到 Visual Studio、Linux 没有 ninja → Windows 改用 pwsh 定位 VS，Linux 显式指定 ninja，依赖安装单独成步，失败也保留 vcpkg 缓存 |
+| 2 | `7174205` | 双平台 | VS 生成器在 CI 上不稳定 → Windows 改成 `vcvars64 + Ninja`，Linux 强制 vcpkg 用系统二进制 |
+| 3 | `09d7b78` | Windows | `windows-latest` 已换成 VS 18 / MSVC 14.51，编 gRPC 头文件直接挂，且与本机 VS 2022 差异过大 → 钉死 `windows-2022`，并在 `vcvars` 之后重新钉住 `VCPKG_ROOT` |
+| 4 | `1e6aee6` | 双平台 | **提速**：原来每次都 clone vcpkg master，master 一漂移 port 就变、依赖树 ABI 跟着变，二进制缓存虽然恢复成功仍判定过期 → 整棵树重编（冷编 1–2 小时）。改成钉死 vcpkg commit；Windows 用自定义 triplet `x64-windows-release` 只编 Release；缓存 key 带上 vcpkg 版本 + runner 镜像版本 |
+| 5 | `f34e660` | 双平台 | 看失败原因要翻网页日志 → 失败时把报错行打成 `::error::` annotation，直接显示在页面上 |
+| 6 | `9863c1e` | 双平台 | configure 阶段找不到 `gRPC::grpc++_reflection`：gRPC 1.81 起不再导出这个 target（1.71 时代有），硬链直接失败 → 改成 `if(TARGET ...)`，有就链、没有就跳过，新旧两代 gRPC 都能编 |
+| 7 | `400d539` | 双平台 | vcpkg 下 Boost 已拆成细粒度 port，只写 `boost-system` 会缺 `boost/asio.hpp` 等头 → 补 `boost-asio` / `boost-beast` / `boost-date-time` / `boost-mpl` / `boost-property-tree` / `boost-range` / `boost-uuid` |
+| 8 | `966db8a` | 双平台 | `RedisMgr.cpp` 里有个多余的 jsoncpp `#include <json/json.h>`，本机装了 jsoncpp 才没暴露 → 删掉（该文件用的是 `nlohmann::json`） |
+| 9 | `c3b6c92` | Linux | 缺 `rpc/rpc.h`：libmysql 端口在 Linux 上要系统提供 → 装 `libtirpc-dev`，并兜底装 `autoconf` / `automake` / `libtool` / `bison` / `flex` |
+| 10 | `52979bb` | Linux | `redis-plus-plus` 导出的 target 名跟链接方式绑定：Windows 动态库是 `redis++::redis++`，Linux（vcpkg 默认静态）是 `redis++::redis++_static` → 按实际存在的 target 选，两个平台都能 configure |
+| 11 | `8580091` | Linux | MSVC 的 STL 会隐式带入大量标准库头，GCC 不会：`std::thread` / `condition_variable` / `atomic` / `system_error` 全缺 → 按文件补齐；顺带修 `ConfigMgr::operator=` 少 `return *this` 的未定义行为 |
+| 12 | `d4f0932` | Linux | 同类问题继续暴露：`Singleton.h` 缺 `<memory>`、`AsioIOServicePool.h` 缺 `<thread>`…… 一共补了约 **320 处** include |
+| 13 | `f1a2bdc` | Linux | 最隐蔽的一条，见下面「① 一个宏炸掉整棵依赖树」 |
+| 14 | `8ba0095` | Linux | Windows 专用 API 泄漏到公共代码 + `friend` 少写 `class`，见下面「② Windows 专用 API 泄漏到公共代码」 |
+
+#### ① 一个宏炸掉整棵依赖树：`#include <complex.h>`
+
+ChatServer 编译期挂在 abseil 内部，报错长这样：
+
+```text
+absl/container/internal/inlined_vector.h:364:68: error: 'using ...::Storage<...>::Metadata =
+  class absl::...::container_internal::CompressedTuple<std::allocator<...>, long unsigned int>'
+  {aka 'class ...::CompressedTuple<...>'} has no member named 'get'
+absl/container/internal/compressed_tuple.h:241:71: error: no type named 'CompressedTupleImpl'
+  in 'class absl::...::container_internal::CompressedTuple<...>'
+```
+
+报错全在 `vcpkg/installed/.../absl/` 和 `boost/beast/` 里，**一行自己的代码都没有**，看起来像库自己的 bug。
+真正的线索是日志里那行不起眼的 `could not convert '(__complex__ float){__real__ (__complex__ float){0.0f, 1.0e+0f} - ...'`：
+
+glibc 的 `<complex.h>` 会定义 `#define I _Complex_I`（展开为 `(__extension__ 1.0iF)`），
+而 abseil 的 `CompressedTuple`、Boost.Beast 的 `buffers_cat` 都把 `I` 当模板参数名用，
+于是 `get<I>()` 被替换成 `get<(__extension__ 1.0iF)>()`，整棵依赖树一起炸。
+
+对照关系完全吻合：有 `<complex.h>` 的 ChatServer 挂了，没有的 StatusServer / GetServer 全过
+（ChatServer2 / ResourceServer 当时还没轮到就中断了）。
+
+这些 `#include <complex.h>` 是用 AI 生成代码骨架时留下的垃圾头（大概本来想写 `<complex>`），
+项目里没有任何地方用到复数，删掉即可 —— 一共 7 处（3 个服务端 + 4 个 Qt 客户端文件）。
+
+> **教训**：报错全落在第三方头文件里、看着像「库自己编译不过」，先怀疑自己 TU 里的**宏污染**。
+> 用 `git grep` 找 `#include <xxx.h>` 形式的 C 头：`complex.h`、`tgmath.h`、`sys/types.h` 都是宏污染惯犯。
+
+#### ② Windows 专用 API 泄漏到公共代码
+
+`ResourceServer/LogicSystem.cpp` 的 `WideToUtf8` 直接调了 `WideCharToMultiByte(CP_UTF8, ...)` ——
+同一文件里的 `Utf8ToWide` / `ToPath` 都规规矩矩用 `#if defined(_WIN32)` 包了，唯独这个漏了。
+
+顺带发现 `MakeFileOutPath` 在 POSIX 下绕了 `boost::filesystem::path::wstring()`，
+而 boost 在 POSIX 下是按 locale 转换的，中文路径会被按字节展开、再转回 UTF-8 就成了二次编码 ——
+**就算能编过，路径也是错的**，属于典型的「Linux 上不报错但行为不对」。
+
+改法：Windows 分支一行不动（保证本机行为不变），POSIX 分支手写 UTF-32 → UTF-8 转换，
+`MakeFileOutPath` 直接用原生 UTF-8 字节串拼路径。
+
+还有一处更隐蔽的：`ResourceServer/CSession.h` 里写的是 `friend LogicSystem;`（少了 `class`），
+MSVC 宽松放过了，GCC 直接报 `'LogicSystem' does not name a type` → 补前置声明并规范成 `friend class LogicSystem;`。
+
+#### ③ 跨平台排查的做法
+
+一个错误一个错误等 CI 太慢（一轮 5–10 分钟，还要算上 vcpkg 依赖），
+所以后面改成**先静态扫描、一次改完**，扫描项：
+
+- **Windows 专用符号**：`WideCharToMultiByte` / `MultiByteToWideChar` / `windows.h` / `_snprintf` / `strcpy_s` / `_MSC_VER` 等；
+- **本地 include 的大小写**是否与磁盘一致（Windows 不敏感、Linux 敏感）；
+- **每个文件用到的 `std::xxx` 是否有可达的标准库头**（GCC 不做隐式带入，这正是要补 320 处 include 的原因）；
+- **C 头形式的 `#include <xxx.h>`**（宏污染）。
+
+同时给 CI 本身加了诊断：失败时除了打 annotation，还把 `ci-errors.log` 前 250 行 + 编译日志开头 400 行
+单独推到 `ci-logs-<平台>` 分支的 `errors.txt` ——
+因为完整 `log.txt` 有 50 万字符，GitHub 网页渲染不出来，抓回来的 HTML 里根本没有正文。
+上面 `complex.h` 那条根因，就是靠这个 `head -n 10` 的首错 annotation 一眼定位的。
+
+#### ④ 修完之后 CI 的实际耗时
+
+以双平台全绿的这一轮为准（vcpkg 缓存命中）：
+
+| Job | 总耗时 | Restore cache | Install vcpkg deps | Configure and build |
+| --- | --- | --- | --- | --- |
+| `build (windows-msvc)` | **17.2 min** | 2.1 min | 1.4 min | 6.4 min |
+| `build (linux-gcc)` | **5.7 min** | 0.9 min | 0.5 min | 3.1 min |
+| `MySQL schema check` | **0.5 min** | — | — | — |
+
+对比提速前：vcpkg 依赖从源码冷编要 1–2 小时，现在 `Install vcpkg dependencies` 只要 **1.4 / 0.5 分钟**，
+说明钉版本 + 自定义 triplet + 缓存 key 的组合生效了。
+Windows 侧目前最大的开销反而是 `Save vcpkg cache`（6.8 分钟，每轮都要上传 `installed/` + 二进制缓存），
+后续可以改成只在上传内容变化时才保存。
+
 ## 九、工程实践与踩坑记录
 
 1. **同步日志是最贵的开销**：心跳里的 `std::cout << ... << std::endl` 每次强制刷新，
