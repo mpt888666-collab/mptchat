@@ -61,7 +61,7 @@ add_custom_command(
 # 可执行程序
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(ChatServer
+add_executable(ChatServer2
         main.cpp
         Singleton.h
         const.h
@@ -94,12 +94,24 @@ add_executable(ChatServer
         utils.h
 )
 
+# redis-plus-plus 导出的 target 名跟链接方式绑定：
+#   Windows（x64-windows，动态库）-> redis++::redis++
+#   Linux（x64-linux，vcpkg 默认静态库）-> redis++::redis++_static
+# 所以按实际存在的 target 选，两个平台都能过
+if(TARGET redis++::redis++)
+    set(CHAT_REDIS_TARGETS redis++::redis++ hiredis::hiredis)
+elseif(TARGET redis++::redis++_static)
+    set(CHAT_REDIS_TARGETS redis++::redis++_static hiredis::hiredis)
+else()
+    message(FATAL_ERROR "redis++ found but no usable target")
+endif()
+
 # 链接库
-target_link_libraries(ChatServer PRIVATE
+target_link_libraries(ChatServer2 PRIVATE
         ${Boost_LIBRARIES}
         nlohmann_json::nlohmann_json
         gRPC::grpc++
-        redis++::redis++ hiredis::hiredis
+        ${CHAT_REDIS_TARGETS}
         unofficial::libmysql::libmysql
 
 
