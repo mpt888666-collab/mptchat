@@ -15,6 +15,7 @@
 #include "base64.h"
 #include "MysqlMgr.h"
 #include "RedisMgr.h"
+#include <system_error>
 
 namespace {
 

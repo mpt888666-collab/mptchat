@@ -11,6 +11,8 @@
 #include <functional>
 
 #include "const.h"
+#include <condition_variable>
+#include <thread>
 class LogicNode;
 class LogicSystem;
 class CSession;

@@ -8,6 +8,7 @@
 #include <boost/range/size.hpp>
 #include <mysql/mysql.h>
 #include "const.h"
+#include <condition_variable>
 
 struct UserInfo {
     int uid;

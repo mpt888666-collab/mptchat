@@ -13,6 +13,7 @@
 #include <map>
 
 #include "const.h"
+#include <atomic>
 class CSession;
 struct FileTask {
     FileTask(std::shared_ptr<CSession> session, MSG_IDS msg_id, int uid, std::string file_path_str, std::string name,

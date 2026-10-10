@@ -9,6 +9,7 @@
 #include "message.grpc.pb.h"
 #include "const.h"
 #include "Singleton.h"
+#include <condition_variable>
 
 class RPConPool {
 public:

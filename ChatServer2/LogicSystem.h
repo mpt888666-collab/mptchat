@@ -5,6 +5,7 @@
 #ifndef CHATSERVER_LOGICSYSTEM_H
 #define CHATSERVER_LOGICSYSTEM_H
 #include "const.h"
+#include <condition_variable>
 class CServer;
 class LogicNode;
 class CSession;

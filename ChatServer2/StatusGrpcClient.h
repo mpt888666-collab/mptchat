@@ -10,6 +10,7 @@
 #include <grpcpp/grpcpp.h>
 #include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
+#include <condition_variable>
 class StatusConPool {
 public:
     StatusConPool(const StatusConPool&) = delete;

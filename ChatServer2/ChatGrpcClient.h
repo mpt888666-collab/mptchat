@@ -9,6 +9,7 @@
 #include <grpcpp/channel.h>
 #include "Singleton.h"
 #include <queue>
+#include <condition_variable>
 class ChatConPool {
 public:
     ChatConPool(ChatConPool&) = delete;

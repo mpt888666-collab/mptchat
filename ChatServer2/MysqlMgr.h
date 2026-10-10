@@ -11,6 +11,7 @@
 #include <mysql/mysql.h>
 #include "const.h"
 #include "data.h"
+#include <condition_variable>
 
 // struct UserInfo {
 //     int uid;
