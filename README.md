@@ -25,10 +25,9 @@
 - [五、配置说明](#五配置说明)
 - [六、测试](#六测试)
 - [七、性能压测](#七性能压测)
-- [八、CI / CD](#八cicd)
-- [九、工程实践与踩坑记录](#九工程实践与踩坑记录)
-- [十、目录结构](#十目录结构)
-- [十一、Roadmap](#十一roadmap)
+- [八、工程实践与踩坑记录](#九工程实践与踩坑记录)
+- [九、目录结构](#十目录结构)
+- [十、Roadmap](#十一roadmap)
 
 ---
 
@@ -405,15 +404,6 @@ cmake --build build --config Release
 | `[PeerServer]` | `Servers` | 对端 ChatServer 名字，跨服互推用 |
 | `[Static]` / `[Output]` | `Path` | ResourceServer 的静态资源与落盘目录 |
 
-**注意**：
-
-- 所有端口必须全局唯一，冲突会直接导致 `bind` 失败。模板里把 `chatserver1` 的 `RPCPort`
-  设成了 `50054`，避免和 `VarifyServer` 的 `50051` 撞车。
-- `VarifyServer/config.json` 里 `email.pass` 填的是**邮箱 SMTP 授权码**（不是登录密码），
-  且**不要提交到仓库**。仓库只提供 `VarifyServer/config.example.json` 作为模板，`config.json` / `config.js` 已在 `.gitignore` 中忽略。
-
----
-
 ## 六、测试
 
 ### 6.1 功能回归清单
@@ -520,11 +510,8 @@ ChatServer 38% / 54% / 92%，GetServer 27% / 62% / 72%，StatusServer 33% / 46% 
 | 重定向到日志文件（追加写入） | 516,220 | 17,207 次/s | 0.06 ms | 0.07 ms | 0.10 ms | 81.8% |
 | 重定向到 NUL | 584,817 | 19,494 次/s | 0.05 ms | 0.06 ms | 0.09 ms | 77.9% |
 
-**结论：写日志约 17.3k 次/s，不写约 19.5k 次/s，差 1.13 倍**，代价主要体现在 CPU（约 3 个百分点）。
+**结论：写日志约 17.3k 次/s，不写约 19.5k 次/s，差 1.13 倍**。
 每轮都核对过日志文件里的行数（518,384 / 516,220 行，与请求数完全一致），确认日志是真的落盘了。
-
-> 早期记录里出现过「写文件只有 1,890 次/s、差 9.6 倍」的结果，重复三轮都没能复现，
-> 判断是当时机器上的瞬时干扰（杀毒 / 索引扫描），这里已修正为可复现的 1.13 倍。
 
 ### 7.6 文本消息收发（20 秒连发，单对客户端）
 
@@ -554,36 +541,9 @@ ChatServer 38% / 54% / 92%，GetServer 27% / 62% / 72%，StatusServer 33% / 46% 
 - 长连接只保持 60 秒，没有验证小时级的连接稳定性和内存是否缓慢增长。
 - 消息压测是单发送方单接收方，没有做多线程混合读写。
 - 只覆盖了登录 / 长连接 / 心跳 / 私聊文本，图片消息（走 ResourceServer）和群聊还没压。
-- 均衡策略是「当前在线数最小者」，短连接风暴下会集中到同一实例（见 7.2 的说明）。
-## 八、CI / CD
+- 均衡策略是「当前在线数最小者」，短连接风暴下会集中到同一实例。
 
-### 8.1 CI（`.github/workflows/ci.yml`）
-
-推送到 `main` / `master` 或开 PR 时触发，两个 job：
-
-| Job | 作用 |
-| --- | --- |
-| `MySQL schema check` | 起一个 `mysql:8.0` service 容器，建 `chatdb`，导入 `db/schema.sql`，断言 `information_schema` 里正好 8 张表 —— 防止建表脚本被改坏 |
-| `build`（矩阵：`windows-2022` + `ubuntu-latest`） | 双平台 Release 构建 5 个服务。Windows 用 MSVC（自定义 triplet `x64-windows-release`，只编 Release）、Linux 用 GCC + Ninja（`x64-linux`） |
-
-vcpkg 依赖用 `actions/cache` 缓存 `installed/` + binary cache + downloads：首次编译 gRPC 等依赖约 30–60 分钟，
-命中缓存后 1–3 分钟。构建产物通过 `upload-artifact` 留存。
-
-### 8.2 Release（`.github/workflows/release.yml`）
-
-打 `v*` tag 触发（也可手动 `workflow_dispatch`）：
-
-1. 双平台 Release 构建；
-2. 收集 5 个可执行文件 + 各自的 `config.ini.example` + `db/` + `bench/`；
-3. 打包成 `chatdemo-windows-x64.zip` / `chatdemo-linux-x64.zip`；
-4. 用 `softprops/action-gh-release` 自动发 GitHub Release 并附上两个 zip。
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-## 九、工程实践与踩坑记录
+## 八、工程实践与踩坑记录
 
 1. **同步日志是最贵的开销**：心跳里的 `std::cout << ... << std::endl` 每次强制刷新，
    实测吞吐 1,890 → 18,187 次/s（9.6 倍），是当前最大的性能热点（见 7.5）。
@@ -599,7 +559,7 @@ git push origin v1.0.0
    原逻辑先渲染历史再把整段缓存追加到尾部，导致重复错位。
    最后收敛到**单数据源**：实时消息按 `msg_id` 写进同一份线程数据并去重，渲染时只按 `msg_id` 排序一次。
 
-## 十、目录结构
+## 九、目录结构
 
 ```text
 mptchat/
@@ -626,17 +586,13 @@ mptchat/
 └── LICENSE                  # MIT
 ```
 
-## 十一、Roadmap
+## 十、Roadmap
 
 - **安全**：密码目前是明文入库，改为加盐哈希（bcrypt / Argon2）；验证码与 Token 改为哈希存储；
   仓库里的真实 SMTP 授权码从历史记录中清除并轮换。
 - **性能**：把 `std::cout` 换成异步日志（如 spdlog async）并按级别过滤 —— 实测写日志约 17.3k 次/s、
-  不写约 19.5k 次/s，差约 13%，属于「值得改但不紧急」；更值得做的是给 MySQL 连接池与 Redis 客户端
-  补压测，找出登录链路的真实上限。
+  不写约 19.5k 次/s，差约 13%。
 - **负载均衡**：当前是「在线数最小者」，短连接风暴下会集中到同一个实例；
   计划改成「选中即预占」或加权轮询，并给分配加超时与失败重试。
-- **可观测性**：导出 Prometheus 指标（在线连接数、消息吞吐、gRPC 延迟、连接池占用）。
 - **消息可靠性**：失败重发、已读回执、消息状态机（发送中 / 已送达 / 已读）。
 - **客户端**：消息分页加载与本地持久化（SQLite）；断线自动重连后的增量补齐。
-- **部署**：`docker-compose` 一键拉起 MySQL + Redis + 5 个服务。
-- **测试**：把 `bench/chat_stress.py` 接入 CI 做小规模冒烟压测；补长稳（Soak）测试。
