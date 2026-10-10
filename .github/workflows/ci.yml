@@ -10,6 +10,10 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# job 失败时要把日志推到 ci-logs-* 分支，需要写权限
+permissions:
+  contents: write
+
 env:
   # 钉死 vcpkg 版本：以前每次跑都 clone 最新 master，master 一漂移、port 一变，
   # 所有依赖的 ABI 就跟着变，缓存虽然恢复成功也判定过期 → 整棵树重编。
@@ -184,10 +188,10 @@ jobs:
       - name: Install vcpkg dependencies
         shell: bash
         run: |
-          set -e
+          set -eo pipefail
           echo "ninja -> $(command -v ninja || echo MISSING)"
           cd "$GITHUB_WORKSPACE"
-          "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --overlay-triplets="$GITHUB_WORKSPACE/ci/triplets" --clean-after-build
+          "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --overlay-triplets="$GITHUB_WORKSPACE/ci/triplets" --clean-after-build 2>&1 | tee "$GITHUB_WORKSPACE/ci-install.log"
 
       - name: Configure and build services
         shell: bash
@@ -259,3 +263,37 @@ jobs:
             build/ChatServer/ChatServer
             build/ChatServer2/ChatServer2
             build/ResourceServer/ResourceServer
+
+      # 为什么要有这一步：未登录的 GitHub API 读不到 job 日志（限流 / 403），
+      # 而 raw.githubusercontent.com 任何人都能读。失败时把日志尾部推到
+      # ci-logs-<平台> 分支，本地就能直接拉真实报错，不用登录网页翻日志。
+      - name: Publish build log to ci-logs branch
+        if: always()
+        shell: bash
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ci-logs-${{ matrix.name }}
+        run: |
+          set -e
+          DIR="$RUNNER_TEMP/lastlog"
+          rm -rf "$DIR"; mkdir -p "$DIR"
+          OUT="$DIR/log.txt"
+          { echo "run=$GITHUB_RUN_ID sha=$GITHUB_SHA branch=$BRANCH"; } > "$OUT"
+          for f in ci-install.log ci-build.log ci-errors.log; do
+            if [ -f "$GITHUB_WORKSPACE/$f" ]; then
+              printf '\n===== %s (tail 3000) =====\n' "$f" >> "$OUT"
+              tail -n 3000 "$GITHUB_WORKSPACE/$f" >> "$OUT"
+            fi
+          done
+          { head -n 150 "$OUT"; echo; echo '...... [middle truncated] ......'; echo; tail -n 3000 "$OUT"; } > "$OUT.tmp"
+          mv "$OUT.tmp" "$OUT"
+          head -c 2000000 "$OUT" > "$OUT.cap" 2>/dev/null || cp "$OUT" "$OUT.cap"
+          mv "$OUT.cap" "$OUT"
+          wc -l "$OUT"
+          cd "$DIR"
+          git init -q .
+          git add log.txt
+          git -c user.email=ci@example.com -c user.name=ci-bot commit -qm "ci log $GITHUB_RUN_ID"
+          git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/"$BRANCH"
+          echo "log pushed to branch $BRANCH"

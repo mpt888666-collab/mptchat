@@ -99,9 +99,15 @@ target_link_libraries(ChatServer PRIVATE
         ${Boost_LIBRARIES}
         nlohmann_json::nlohmann_json
         gRPC::grpc++
-        gRPC::grpc++_reflection
         redis++::redis++ hiredis::hiredis
         unofficial::libmysql::libmysql
 
 
 )
+
+# gRPC 1.81 起 CMake 不再导出 gRPC::grpc++_reflection 这个 target（1.71 时代有），
+# 硬链会直接 configure 失败。项目没用到 gRPC 反射 API，所以有就链、没有就跳过，
+# 新旧两代 gRPC 都能编。
+if(TARGET gRPC::grpc++_reflection)
+    target_link_libraries(ChatServer2 PRIVATE gRPC::grpc++_reflection)
+endif()
