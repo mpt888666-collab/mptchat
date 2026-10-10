@@ -598,27 +598,6 @@ git push origin v1.0.0
 5. **切换会话后消息重复 / 乱序**：历史消息在会话线程数据里，实时消息另存一份缓存，
    原逻辑先渲染历史再把整段缓存追加到尾部，导致重复错位。
    最后收敛到**单数据源**：实时消息按 `msg_id` 写进同一份线程数据并去重，渲染时只按 `msg_id` 排序一次。
-6. **自己发的消息在 ack 回来前会消失**：发送中的消息存在 `_msg_unrsp_map`，而重绘只画已响应的历史。
-   渲染时补上未 ack 的自己消息，ack 到达后用 `MoveMsg` 迁移，避免重复或丢失。
-7. **切到别的页面再回聊天看不到新消息**：实时消息只在「聊天模式 + 当前会话」时上屏，
-   侧边栏「聊天」只切页不重绘。切回时对当前会话重新 `RenderChatHistory`。
-### 附：ChatServer 双实例的代码漂移（已修复）
-
-排查「chatserver2 → chatserver1 发消息收不到 ack」时发现：`ChatServer2/` 其实是 `ChatServer/` 的一份旧拷贝
-（9 月 4 日 vs 9 月 12 日），有 11 个源文件不一致，`message.proto` 也少了 `is_group`、`MembersUid`、
-`AddGroupChatReq` 等字段。跨服分支里恰好漏了回 ack 的那一行：
-
-```cpp
-ChatGrpcClient::GetInstance()->NotifyTextChatMsg(to_ip_value, text_msg_req);
-};   // <-- 少了 session->Send(root.dump(), ID_TEXT_CHAT_MSG_RSP);
-```
-
-对端能收到通知（转发是成功的），但发送方永远等不到 ack，10 秒超时。
-把 11 个源文件对齐、重新生成 proto 之后双向恢复正常（见 7.7 的实测）。
-
-教训：同一份源码不要手工复制成两份维护 —— 这次是「两边看起来一样、只有一处差异」，
-光靠编译是发现不了的。当前两个目录内容保持一致，只有 `config.ini` 不同；
-后续计划把公共部分抽成 `IMServerCore` 静态库，两个目录只留各自的 `main.cpp` 与配置。
 
 ## 十、目录结构
 
