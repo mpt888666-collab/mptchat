@@ -14,8 +14,9 @@
 #include <queue>
 #include <string>
 class CServer;
+class LogicSystem;
 class CSession : public std::enable_shared_from_this<CSession>{
-    friend LogicSystem;
+    friend class LogicSystem;
 public:
     CSession(boost::asio::io_context&, CServer* server);
 

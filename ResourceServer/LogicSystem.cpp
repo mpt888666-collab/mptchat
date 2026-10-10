@@ -16,6 +16,7 @@
 #include <windows.h>
 #endif
 #include <filesystem>
+#include <cstdint>
 #include <exception>
 #include <functional>
 #include <iostream>
@@ -56,6 +57,7 @@ std::filesystem::path ToPath(const std::string& utf8) {
 
 
 std::string WideToUtf8(const std::wstring& wide) {
+#if defined(_WIN32)
     if (wide.empty()) {
         return {};
     }
@@ -70,15 +72,50 @@ std::string WideToUtf8(const std::wstring& wide) {
                         static_cast<int>(wide.size()), utf8.data(), len,
                         nullptr, nullptr);
     return utf8;
+#else
+    // Linux 的 wchar_t 是 4 字节，按 UTF-32 -> UTF-8 手写转换，
+    // 不依赖 <windows.h>，与 Windows 下 CP_UTF8 的结果一致
+    std::string out;
+    out.reserve(wide.size());
+    for (wchar_t wc : wide) {
+        uint32_t cp = static_cast<uint32_t>(wc);
+        if (cp < 0x80) {
+            out.push_back(static_cast<char>(cp));
+        } else if (cp < 0x800) {
+            out.push_back(static_cast<char>(0xC0 | (cp >> 6)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else if (cp < 0x10000) {
+            out.push_back(static_cast<char>(0xE0 | (cp >> 12)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        } else {
+            out.push_back(static_cast<char>(0xF0 | (cp >> 18)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 12) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | ((cp >> 6) & 0x3F)));
+            out.push_back(static_cast<char>(0x80 | (cp & 0x3F)));
+        }
+    }
+    return out;
+#endif
 }
 
 std::string MakeFileOutPath(const boost::filesystem::path& base_path,
                             const std::string& uid_dir,
                             const std::string& file_name) {
+#if defined(_WIN32)
     std::filesystem::path out(base_path.wstring());
     out /= ToPath(uid_dir);
     out /= ToPath(file_name);
     return WideToUtf8(out.wstring());
+#else
+    // Linux 下文件系统路径本身就是 UTF-8 字节串，直接用原生字符串拼。
+    // 不能绕 wstring：boost::filesystem::path::wstring() 在 POSIX 下按 locale 转换，
+    // 中文路径会按字节展开，再转回 UTF-8 就成了二次编码、路径就错了。
+    std::filesystem::path out(base_path.string());
+    out /= uid_dir;
+    out /= file_name;
+    return out.string();
+#endif
 }
 
 }  // namespace
