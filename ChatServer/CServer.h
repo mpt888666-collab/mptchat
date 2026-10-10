@@ -5,6 +5,10 @@
 #ifndef CHATSERVER_CSERVER_H
 #define CHATSERVER_CSERVER_H
 #include "const.h"
+#include <map>
+#include <memory>
+#include <mutex>
+#include <string>
 class CSession;
 class CServer {
 public:

@@ -6,6 +6,10 @@
 
 #include "AsioIOServicePool.h"
 #include "CSession.h"
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
 CServer::CServer(boost::asio::io_context& io_context, short port) :_io_context(io_context), _port(port),
                                                                    _acceptor(_io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)) {
 

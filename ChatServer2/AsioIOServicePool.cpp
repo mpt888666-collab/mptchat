@@ -3,6 +3,9 @@
 //
 
 #include "AsioIOServicePool.h"
+#include <cstddef>
+#include <iostream>
+#include <memory>
 
 AsioIOServicePool::AsioIOServicePool(std::size_t size) :_works(size), _ioServices(size),  _nextIOService(0){
     for (std::size_t i = 0; i < size; ++i) {

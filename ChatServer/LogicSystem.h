@@ -6,6 +6,13 @@
 #define CHATSERVER_LOGICSYSTEM_H
 #include "const.h"
 #include <condition_variable>
+#include <functional>
+#include <map>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <string>
+#include <thread>
 class CServer;
 class LogicNode;
 class CSession;

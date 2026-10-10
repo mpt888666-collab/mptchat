@@ -5,6 +5,8 @@
 #include "CServer.h"
 
 #include <iostream>
+#include <exception>
+#include <memory>
 
 CServer::CServer(boost::asio::io_context &ioc, const unsigned short &port) : _ioc(ioc), _socket(ioc),
                                                                              _acceptor(ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)){

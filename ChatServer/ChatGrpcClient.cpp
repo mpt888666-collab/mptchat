@@ -4,6 +4,12 @@
 
 #include "ChatGrpcClient.h"
 #include "ConfigMgr.h"
+#include <memory>
+#include <mutex>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 ChatConPool::ChatConPool(std::string  host, std::string  port, const int size) : _pool_size(size),
 _stop(false), _host(std::move(host)), _port(std::move(port)){
     for (int i = 0; i < _pool_size; i++) {

@@ -10,6 +10,8 @@
 #include <grpcpp/channel.h>
 
 #include "data.h"
+#include <memory>
+#include <string>
 class UserMgr;
 class CServer;
 class ChatServiceImpl final : public message::ChatService::Service{

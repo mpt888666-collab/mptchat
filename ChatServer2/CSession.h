@@ -7,6 +7,12 @@
 #include "const.h"
 #include <boost/uuid.hpp>
 #include "MsgNode.h"
+#include <cstddef>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <string>
 class CServer;
 class CSession : public std::enable_shared_from_this<CSession>{
 public:

@@ -7,6 +7,14 @@
 #include "LogicSystem.h"
 #include "AsioIOServicePool.h"
 #include "RedisMgr.h"
+#include <cstddef>
+#include <ctime>
+#include <exception>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
 
 CSession::CSession(boost::asio::io_context &io, CServer* server)
     : _socket(io), _server(server), _b_close(false), _b_head_parse(false), _user_uid(0)

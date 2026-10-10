@@ -5,6 +5,11 @@
 #include "StatusServiceImpl.h"
 #include <boost/uuid.hpp>
 #include "RedisMgr.h"
+#include <iostream>
+#include <mutex>
+#include <sstream>
+#include <string>
+#include <vector>
 std::string generate_unique_string() {
     // 创建UUID对象
     boost::uuids::uuid uuid = boost::uuids::random_generator()();

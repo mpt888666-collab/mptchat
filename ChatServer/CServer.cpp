@@ -7,6 +7,12 @@
 #include "AsioIOServicePool.h"
 #include "CSession.h"
 #include "RedisMgr.h"
+#include <ctime>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <vector>
 
 CServer::CServer(boost::asio::io_context& io_context, short port) :_io_context(io_context), _port(port),
                                                                    _acceptor(_io_context, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), _port)), _timer(io_context, std::chrono::seconds(60)) {

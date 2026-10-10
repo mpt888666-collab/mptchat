@@ -5,6 +5,10 @@
 #include "LogicSystem.h"
 
 #include "RedisMgr.h"
+#include <iostream>
+#include <memory>
+#include <string>
+#include <utility>
 
 void LogicSystem::RegGet(std::string url, HttpHandler handler) {
     _get_handlers.insert(std::make_pair(url, handler));

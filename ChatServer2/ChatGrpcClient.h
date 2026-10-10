@@ -10,6 +10,10 @@
 #include "Singleton.h"
 #include <queue>
 #include <condition_variable>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 class ChatConPool {
 public:
     ChatConPool(ChatConPool&) = delete;

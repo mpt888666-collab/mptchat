@@ -16,6 +16,10 @@
 #include "MysqlMgr.h"
 #include "RedisMgr.h"
 #include <system_error>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <thread>
 
 namespace {
 

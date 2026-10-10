@@ -5,6 +5,10 @@
 #ifndef RESOURCESERVER_CSERVER_H
 #define RESOURCESERVER_CSERVER_H
 #include "const.h"
+#include <map>
+#include <memory>
+#include <mutex>
+#include <string>
 class CSession;
 class CServer : public std::enable_shared_from_this<CServer>{
 public:

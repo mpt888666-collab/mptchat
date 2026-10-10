@@ -4,6 +4,8 @@
 
 #include "RedisMgr.h"
 #include <cstring>
+#include <memory>
+#include <string>
 
 
 RedisMgr::~RedisMgr()

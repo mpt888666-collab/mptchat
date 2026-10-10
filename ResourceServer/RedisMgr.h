@@ -11,6 +11,7 @@
 #include <chrono>
 #include <thread>
 #include "ConfigMgr.h"
+#include <memory>
 
 class FileInfo;
 

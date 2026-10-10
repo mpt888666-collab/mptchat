@@ -6,6 +6,8 @@
 #include "CServer.h"
 #include "const.h"
 #include "RedisMgr.h"
+#include <exception>
+#include <memory>
 int main()
 {
     MysqlConnGuard conn_guard(MysqlMgr::GetInstance()->GetConn());

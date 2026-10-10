@@ -14,6 +14,9 @@
 
 #include "const.h"
 #include <atomic>
+#include <memory>
+#include <string>
+#include <unordered_map>
 class CSession;
 struct FileTask {
     FileTask(std::shared_ptr<CSession> session, MSG_IDS msg_id, int uid, std::string file_path_str, std::string name,

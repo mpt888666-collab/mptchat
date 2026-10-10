@@ -10,6 +10,7 @@
 #include <string>
 #include <chrono>
 #include "ConfigMgr.h"
+#include <memory>
 class RedisMgr : public Singleton<RedisMgr>
 {
 friend class Singleton<RedisMgr>;

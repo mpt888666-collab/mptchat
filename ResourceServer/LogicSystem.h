@@ -13,6 +13,10 @@
 #include "const.h"
 #include <condition_variable>
 #include <thread>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 class LogicNode;
 class LogicSystem;
 class CSession;

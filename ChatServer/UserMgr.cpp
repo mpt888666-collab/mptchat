@@ -6,6 +6,9 @@
 #include <utility>
 
 #include "CSession.h"
+#include <memory>
+#include <mutex>
+#include <string>
 
 std::shared_ptr<CSession> UserMgr::getSession(const int uid) {
     std::lock_guard<std::mutex> lock(_session_mtx);

@@ -14,6 +14,14 @@
 #include "data.h"
 #include "AsioIOServicePool.h"
 #include "utils.h"
+#include <cctype>
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 LogicSystem::LogicSystem() : _b_stop(false), _p_server(nullptr){
     RegisterCallBacks();
 

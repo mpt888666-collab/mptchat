@@ -5,6 +5,11 @@
 #include "RedisMgr.h"
 #include <cstring>
 #include "LogicSystem.h"
+#include <initializer_list>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <thread>
 RedisMgr::~RedisMgr()
 {
     Close();

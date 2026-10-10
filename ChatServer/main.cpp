@@ -8,6 +8,11 @@
 #include "message.grpc.pb.h"
 #include "ChatServiceImpl.h"
 #include "LogicSystem.h"
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <string>
+#include <thread>
 
 int main() {
     try {

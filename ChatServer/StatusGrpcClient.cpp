@@ -3,6 +3,11 @@
 //
 
 #include "StatusGrpcClient.h"
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <utility>
 
 StatusConPool::StatusConPool(std::string host, std::string port, int num) : _poolSize(num), _host(std::move(host)), _port(std::move(port)){
     for (size_t i = 0; i < num; i++) {

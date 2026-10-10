@@ -9,6 +9,14 @@
 #include "LogicSystem.h"
 #include <functional>
 #include <boost/asio/post.hpp>
+#include <cstddef>
+#include <ctime>
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <utility>
 CSession::CSession(boost::asio::io_context &io, CServer* server)
     : _socket(io), _server(server), _b_close(false), _b_head_parse(false), _user_uid(0)
 {

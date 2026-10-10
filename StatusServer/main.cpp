@@ -7,6 +7,7 @@
 #include "ConfigMgr.h"
 #include <thread>
 #include "RedisMgr.h"
+#include <exception>
 void RunServer() {
     auto cfg = ConfigMgr::Inst();
     std::string server_address(cfg["StatusServer"]["Host"] + ":" + cfg["StatusServer"]["Port"]);

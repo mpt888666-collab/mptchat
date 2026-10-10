@@ -6,6 +6,8 @@
 #include "const.h"
 #include <boost/property_tree/ptree.hpp>
 #include <boost/filesystem.hpp>
+#include <map>
+#include <string>
 struct SectionInfo {
     SectionInfo(){}
     ~SectionInfo(){

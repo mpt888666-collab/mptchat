@@ -13,6 +13,9 @@
 #include "MysqlMgr.h"
 #include "RedisMgr.h"
 #include "CServer.h"
+#include <iostream>
+#include <memory>
+#include <string>
 using json = nlohmann::json;
 ChatServiceImpl::ChatServiceImpl() {
 

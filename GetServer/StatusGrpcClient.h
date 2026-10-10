@@ -11,6 +11,9 @@
 #include "message.grpc.pb.h"
 #include <grpcpp/channel.h>
 #include <condition_variable>
+#include <memory>
+#include <mutex>
+#include <string>
 class StatusConPool {
 public:
     StatusConPool(const StatusConPool&) = delete;

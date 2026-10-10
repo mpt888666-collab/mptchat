@@ -8,6 +8,11 @@
 #include <utility>
 #include "const.h"
 #include "MsgNode.h"
+#include <cstddef>
+#include <functional>
+#include <mutex>
+#include <queue>
+#include <string>
 class CServer;
 class CSession : public std::enable_shared_from_this<CSession>{
     friend LogicSystem;

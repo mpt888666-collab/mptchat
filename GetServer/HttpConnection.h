@@ -9,6 +9,7 @@
 #include <boost/beast.hpp>
 #include <iostream>
 #include "LogicSystem.h"
+#include <chrono>
 class HttpConnection : public std::enable_shared_from_this<HttpConnection>{
 public:
     friend class LogicSystem;

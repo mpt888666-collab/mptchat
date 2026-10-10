@@ -4,6 +4,10 @@
 
 #include "RedisMgr.h"
 #include <cstring>
+#include <initializer_list>
+#include <memory>
+#include <string>
+#include <thread>
 
 RedisMgr::~RedisMgr()
 {

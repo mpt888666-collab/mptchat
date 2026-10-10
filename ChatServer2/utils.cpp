@@ -3,6 +3,9 @@
 //
 
 #include "utils.h"
+#include <locale>
+#include <sstream>
+#include <string>
 
 std::string getCurrentTimestamp() {
     namespace pt = boost::posix_time;

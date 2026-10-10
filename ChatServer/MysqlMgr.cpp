@@ -6,6 +6,10 @@
 #include "data.h"
 #include <iostream>
 #include <algorithm>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 bool MysqlMgr::IsUserExist(const std::string& username)
     {
         auto conn = GetConn();

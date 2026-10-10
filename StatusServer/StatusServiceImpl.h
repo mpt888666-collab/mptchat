@@ -7,6 +7,10 @@
 #include <grpcpp/grpcpp.h>
 #include "message.grpc.pb.h"
 #include "const.h"
+#include <map>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 struct ChatServer {
     std::string host;
     std::string port;

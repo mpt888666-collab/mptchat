@@ -6,6 +6,7 @@
 #include "CServer.h"
 #include "RedisMgr.h"
 #include "MysqlMgr.h"
+#include <memory>
 int main() {
     auto &cfg = ConfigMgr::Inst();
 

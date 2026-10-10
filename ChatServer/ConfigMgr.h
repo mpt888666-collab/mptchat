@@ -4,6 +4,8 @@
 #ifndef GETSERVER_CONFIGMGR_H
 #define GETSERVER_CONFIGMGR_H
 #include "const.h"
+#include <map>
+#include <string>
 struct SectionInfo {
     SectionInfo(){}
     ~SectionInfo(){

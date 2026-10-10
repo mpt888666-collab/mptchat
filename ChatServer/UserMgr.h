@@ -6,6 +6,9 @@
 #define CHATSERVER_USERMGR_H
 #include "Singleton.h"
 #include <unordered_map>
+#include <memory>
+#include <mutex>
+#include <string>
 class CSession;
 class UserMgr : public Singleton<UserMgr>{
     friend class Singleton<UserMgr>;

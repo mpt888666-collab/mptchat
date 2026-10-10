@@ -6,6 +6,9 @@
 #include "const.h"
 #include <atomic>
 #include <thread>
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 class AsioIOServicePool : public Singleton<AsioIOServicePool> {
     friend class Singleton<AsioIOServicePool>;

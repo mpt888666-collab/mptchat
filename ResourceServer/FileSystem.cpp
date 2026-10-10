@@ -5,6 +5,7 @@
 #include "FileSystem.h"
 
 #include "FileWorker.h"
+#include <memory>
 struct FileTask;
 
 FileSystem::~FileSystem()

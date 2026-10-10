@@ -9,6 +9,14 @@
 #include <mysql/mysql.h>
 #include "const.h"
 #include <condition_variable>
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <queue>
+#include <stdexcept>
+#include <string>
+#include <utility>
 
 struct UserInfo {
     int uid;

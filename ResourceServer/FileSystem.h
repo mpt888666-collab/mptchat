@@ -9,6 +9,8 @@
 #include "const.h"
 #include "FileWorker.h"
 #include "Singleton.h"
+#include <memory>
+#include <vector>
 
 
 class FileSystem :public Singleton<FileSystem>

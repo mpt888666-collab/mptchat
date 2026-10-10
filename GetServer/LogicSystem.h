@@ -13,6 +13,9 @@
 #include "const.h"
 #include "RedisMgr.h"
 #include "MysqlMgr.h"
+#include <functional>
+#include <memory>
+#include <string>
 using json = nlohmann::json;
 
 class HttpConnection;

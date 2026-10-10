@@ -6,6 +6,9 @@
 
 #include <algorithm>
 #include <stdexcept>
+#include <exception>
+#include <string>
+#include <string_view>
 
  //
  // Depending on the url parameter in base64_chars, one of

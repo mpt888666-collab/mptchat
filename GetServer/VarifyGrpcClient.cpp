@@ -2,6 +2,10 @@
 // Created by mpt on 2026/7/1.
 //
 #include "VarifyGrpcClient.h"
+#include <memory>
+#include <mutex>
+#include <string>
+#include <utility>
 RPConPool::RPConPool(size_t poolSize, std::string host, std::string port) :_poolSize(poolSize), _host(host), _port(port) {
     std::shared_ptr<grpc::Channel> channel = grpc::CreateChannel(host + ":" + port, grpc::InsecureChannelCredentials());
     for (int i = 0; i < poolSize; ++i) {

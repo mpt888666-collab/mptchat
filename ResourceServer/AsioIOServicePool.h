@@ -5,6 +5,9 @@
 #define GETSERVER_ASIOIOSERVICEPOOL_H
 #include "const.h"
 #include <thread>
+#include <cstddef>
+#include <memory>
+#include <vector>
 
 class AsioIOServicePool : public Singleton<AsioIOServicePool> {
     friend class Singleton<AsioIOServicePool>;

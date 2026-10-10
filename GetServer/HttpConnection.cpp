@@ -3,6 +3,9 @@
 //
 
 #include "HttpConnection.h"
+#include <cstddef>
+#include <exception>
+#include <iostream>
 
 HttpConnection::HttpConnection(boost::asio::io_context &ioc) : _socket(ioc){
 

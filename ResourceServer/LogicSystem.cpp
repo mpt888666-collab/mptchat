@@ -16,6 +16,14 @@
 #include <windows.h>
 #endif
 #include <filesystem>
+#include <exception>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 
 namespace {
 

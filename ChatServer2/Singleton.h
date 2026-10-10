@@ -6,6 +6,7 @@
 #define GETSERVER_SINGLETON_H
 #include <iostream>
 #include <mutex>
+#include <memory>
 
 template<typename T>
 class Singleton {
