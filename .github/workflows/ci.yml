@@ -107,7 +107,11 @@ jobs:
         run: |
           set -e
           sudo apt-get update
-          sudo apt-get install -y ninja-build build-essential
+          # libtirpc-dev：libmysql 端口在 Linux 上要系统提供 rpc/rpc.h，缺了会直接
+          #   CMake Error: Could not find rpc/rpc.h（Windows 上不需要，所以只在 Linux 装）
+          # autoconf/automake/libtool/bison/flex：给 libsamplerate 等 autotools 端口兜底
+          sudo apt-get install -y ninja-build build-essential libtirpc-dev \
+            autoconf automake libtool bison flex pkg-config
           NINJA_BIN="$(command -v ninja)"
           test -x "$NINJA_BIN"
           "$NINJA_BIN" --version
