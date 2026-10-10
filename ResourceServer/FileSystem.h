@@ -4,7 +4,6 @@
 
 #ifndef RESOURCESERVER_FILESYSTEM_H
 #define RESOURCESERVER_FILESYSTEM_H
-#include <complex.h>
 
 #include "const.h"
 #include "FileWorker.h"

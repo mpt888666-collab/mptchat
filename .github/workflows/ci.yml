@@ -225,6 +225,9 @@ jobs:
           if [ -n "$FAILED" ]; then
             echo "::error::CI 构建失败：$FAILED"
             grep -i -E 'error|fatal' "$LOG" > "$GITHUB_WORKSPACE/ci-errors.log" || true
+            echo "---- 首个错误（head 10）：下游报错会淹掉根因，根因永远在头部 ----"
+            head -n 10 "$GITHUB_WORKSPACE/ci-errors.log" | while IFS= read -r line; do echo "::error::${line//%/%25}"; done
+            echo "---- 最后 8 个错误 ----"
             tail -n 8 "$GITHUB_WORKSPACE/ci-errors.log" | while IFS= read -r line; do echo "::error::${line//%/%25}"; done
             echo "=========== 日志最后 15 行 ==========="
             tail -n 15 "$LOG"
@@ -295,9 +298,25 @@ jobs:
           head -c 2000000 "$OUT" > "$OUT.cap" 2>/dev/null || cp "$OUT" "$OUT.cap"
           mv "$OUT.cap" "$OUT"
           wc -l "$OUT"
+          # log.txt 有 50 万字符，GitHub 网页渲染不出来，抓回来的 HTML 里没有正文。
+          # 另外推一个 errors.txt：只放首个错误和开头，体积小、网页能直接看。
+          {
+            echo "run=$GITHUB_RUN_ID sha=$GITHUB_SHA branch=$BRANCH"
+            echo
+            echo "===== ci-errors.log（前 250 行）====="
+            if [ -f "$GITHUB_WORKSPACE/ci-errors.log" ]; then
+              head -n 250 "$GITHUB_WORKSPACE/ci-errors.log"
+            else
+              echo "(none)"
+            fi
+            echo
+            echo "===== 编译日志开头 400 行（首个错误在这里）====="
+            head -n 400 "$DIR/log.txt"
+          } > "$DIR/errors.txt"
+          wc -l "$DIR/errors.txt"
           cd "$DIR"
           git init -q .
-          git add log.txt
+          git add log.txt errors.txt
           git -c user.email=ci@example.com -c user.name=ci-bot commit -qm "ci log $GITHUB_RUN_ID"
           git push -q --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:refs/heads/"$BRANCH"
           echo "log pushed to branch $BRANCH"

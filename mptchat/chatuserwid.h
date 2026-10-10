@@ -5,7 +5,6 @@
 #ifndef MPTCHAT_CHATUSERWID_H
 #define MPTCHAT_CHATUSERWID_H
 
-#include <complex.h>
 #include <QWidget>
 #include "ListItemBase.h"
 #include "userdata.h"

@@ -4,7 +4,6 @@
 
 #ifndef MPTCHAT_USERMGR_H
 #define MPTCHAT_USERMGR_H
-#include <complex.h>
 
 #include "global.h"
 #include "singleton.h"

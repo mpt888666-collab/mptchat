@@ -5,7 +5,6 @@
 #ifndef MPTCHAT_APPLYFRIENDPAGE_H
 #define MPTCHAT_APPLYFRIENDPAGE_H
 
-#include <complex.h>
 #include <QWidget>
 #include "ApplyFriendItem.h"
 #include "userdata.h"

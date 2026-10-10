@@ -4,7 +4,6 @@
 
 #ifndef MPTCHAT_TCPFILEMGR_H
 #define MPTCHAT_TCPFILEMGR_H
-#include <complex.h>
 #include <QObject>
 #include <QTcpSocket>
 #include "singleton.h"
