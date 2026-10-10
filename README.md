@@ -226,7 +226,7 @@ for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
 done
 ```
 
-> Linux 构建由 CI 在 `ubuntu-latest` 上持续验证（见 [八、CI / CD](#八cicd)）。
+> Linux 构建由 CI 在 `ubuntu-latest` 上持续验证。
 
 ### 4.4 准备 MySQL 与 Redis
 
