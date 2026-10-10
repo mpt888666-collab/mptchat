@@ -418,8 +418,6 @@ cmake --build build --config Release
 
 ### 6.1 功能回归清单
 
-发版前按下面的清单手工过一遍（协议层已自动化，见 6.2）。
-
 | 模块 | 用例 | 期望结果 |
 | --- | --- | --- |
 | 注册 | 取验证码 → 提交注册 | 验证码写入 Redis（TTL 600s），注册后可直接登录 |
@@ -447,17 +445,6 @@ python bench/chat_stress.py --mode sessions  --clients 1000 --distinct-users 100
 python bench/chat_stress.py --mode heartbeat --duration 30
 python bench/chat_stress.py --mode msg       --duration 20 --rate 5 --msg-size 32
 ```
-
-### 6.3 本次发版实测结论
-
-本轮发版前修了两个问题，并重跑了全部压测与回归：
-
-| 修复项 | 现象 | 根因 | 结果 |
-| --- | --- | --- | --- |
-| `StatusServer/StatusServiceImpl.cpp` 的 `GetChatServer` | 网关下发的聊天服务器永远是 `127.0.0.1:8090`，第二个实例从不被选中 | 真正算出来的均衡结果被注释掉了，`set_chat_host/set_chat_port` 写死 8090 | 改为使用均衡选出的实例，并补了空值检查（无可用实例时返回 `RPCFailed`）；1000 并发长连接实测 600 / 400 分布在两个实例 |
-| `ChatServer2` 与 `ChatServer` 代码漂移 | chatserver2 → chatserver1 发消息，对端能收到通知但发送方 10 s 收不到 ack | `ChatServer2/` 是 `ChatServer/` 的旧快照（9/4 vs 9/12），11 个源文件不一致；跨服分支漏了 `session->Send(root.dump(), ID_TEXT_CHAT_MSG_RSP)`，`message.proto` 也少 `is_group`、`MembersUid`、`AddGroupChatReq` 等字段 | 11 个源文件对齐并重新生成 proto 后，双向跨服均为 ack 0.01 s、对端各收到 1 条 notify |
-
-功能回归见 6.1 / 6.2，全部通过；性能数据见第七章。
 
 ## 七、性能压测
 
