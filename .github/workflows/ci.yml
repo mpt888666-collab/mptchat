@@ -192,10 +192,13 @@ jobs:
       - name: Configure and build services
         shell: bash
         run: |
-          set -e
+          set -eo pipefail
+          LOG="$GITHUB_WORKSPACE/ci-build.log"
+          : > "$LOG"
+          FAILED=""
           for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
             echo "::group::build $svc"
-            cmake -S "$svc" -B "build/$svc" \
+            if ! cmake -S "$svc" -B "build/$svc" \
               -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_MAKE_PROGRAM="${CMAKE_MAKE_PROGRAM:-ninja}" \
@@ -203,10 +206,22 @@ jobs:
               -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
               -DVCPKG_OVERLAY_TRIPLETS="$GITHUB_WORKSPACE/ci/triplets" \
               -DVCPKG_MANIFEST_DIR="$GITHUB_WORKSPACE" \
-              -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed"
-            cmake --build "build/$svc" --config Release --parallel
+              -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed" 2>&1 | tee -a "$LOG"; then
+              FAILED="$svc (configure)"
+            elif ! cmake --build "build/$svc" --config Release --parallel 2>&1 | tee -a "$LOG"; then
+              FAILED="$svc (build)"
+            fi
             echo "::endgroup::"
+            if [ -n "$FAILED" ]; then break; fi
           done
+          if [ -n "$FAILED" ]; then
+            echo "::error::CI 构建失败：$FAILED"
+            grep -i -E 'error|fatal' "$LOG" > "$GITHUB_WORKSPACE/ci-errors.log" || true
+            tail -n 8 "$GITHUB_WORKSPACE/ci-errors.log" | while IFS= read -r line; do echo "::error::${line//%/%25}"; done
+            echo "=========== 日志最后 15 行 ==========="
+            tail -n 15 "$LOG"
+            exit 1
+          fi
 
       - name: Show artifacts
         if: always()
