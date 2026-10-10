@@ -387,7 +387,6 @@ bool RedisMgr::SetFileInfo(const std::string& md5, std::shared_ptr<FileInfo> fil
     return success;
 }
 
-#include <json/json.h>
 
 std::shared_ptr<FileInfo> RedisMgr::GetFileInfo(const std::string& md5)
 {
@@ -397,7 +396,7 @@ std::shared_ptr<FileInfo> RedisMgr::GetFileInfo(const std::string& md5)
     std::string redis_key = "file_upload_" + md5;
     std::string json_str;
 
-    // ???????? Get ??
+    // 从 Redis 里取出 JSON 串
     bool ok = Get(redis_key, json_str);
     if (!ok)
     {
