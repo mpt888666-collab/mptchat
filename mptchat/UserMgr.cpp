@@ -11,6 +11,7 @@
 #include <QLabel>
 #include <QFileInfo>
 #include "TCPFileMgr.h"
+#include <algorithm>
 UserMgr::~UserMgr()
 {
 
@@ -88,6 +89,14 @@ void UserMgr::AddApplyList(std::shared_ptr<ApplyInfo> app)
     _apply_list.push_back(app);
 }
 
+void UserMgr::RemoveApply(int uid)
+{
+    _apply_list.erase(std::remove_if(_apply_list.begin(), _apply_list.end(),
+        [uid](const std::shared_ptr<ApplyInfo>& item) {
+            return !item || item->_uid == uid;
+        }), _apply_list.end());
+}
+
 bool UserMgr::AlreadyApply(int uid)
 {
     for(auto& apply: _apply_list){
@@ -126,7 +135,7 @@ void UserMgr::AppendFriendList(QJsonArray array) {
         auto back = value["back"].toString();
 
         auto info = std::make_shared<UserInfo>(uid, name,
-            nick, icon, sex, desc, back);
+            nick, icon, sex, /*last_msg=*/QString(), desc);
         _friend_list.push_back(info);
         _friend_map.insert(uid, info);
     }
@@ -194,6 +203,14 @@ void UserMgr::AddFriend(std::shared_ptr<AuthRsp> user) {
     _friend_list.push_back(friend_info);
 }
 
+void UserMgr::RemoveFriend(int uid) {
+    _friend_map.remove(uid);
+    _friend_list.erase(std::remove_if(_friend_list.begin(), _friend_list.end(),
+        [uid](const std::shared_ptr<UserInfo>& item) {
+            return !item || item->_uid == uid;
+        }), _friend_list.end());
+}
+
 std::shared_ptr<UserInfo> UserMgr::GetFriendById(int uid) {
     auto iter = _friend_map.find(uid);
     if(iter == _friend_map.end()) return nullptr;
@@ -242,6 +259,19 @@ void UserMgr::AddChatThreadData(std::shared_ptr<ChatThreadData> thread) {
         _uid_to_thread_id[thread->GetOtherId()] = thread->GetThreadId();
     }
 
+}
+
+void UserMgr::RemoveChatThreadData(int thread_id) {
+    auto iter = _chat_map.find(thread_id);
+    if (iter != _chat_map.end()) {
+        const int other_uid = iter.value() ? iter.value()->GetOtherId() : 0;
+        if (other_uid > 0 && _uid_to_thread_id.value(other_uid, -1) == thread_id) {
+            _uid_to_thread_id.remove(other_uid);
+        }
+        _chat_map.erase(iter);
+    }
+    _chat_thread_ids.erase(std::remove(_chat_thread_ids.begin(), _chat_thread_ids.end(), thread_id),
+                           _chat_thread_ids.end());
 }
 
 void UserMgr::SetLastChatThreadId(int last_thread_id) {

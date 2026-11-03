@@ -78,6 +78,22 @@ signals:
 
     void sig_show_red_point(int thread_id);
 
+    void sig_clear_chat_msg(int thread_id, int error);
+
+    void sig_delete_friend_rsp(int peer_uid, int error);
+
+    void sig_reject_friend_rsp(int apply_uid, int error);
+
+    void sig_add_group_member_rsp(int thread_id, QVector<int> added_members, int error);
+
+    void sig_kick_group_member_rsp(int thread_id, int target_uid, int error);
+
+    void sig_friend_deleted(int peer_uid);
+
+    void sig_group_members_changed(int thread_id, int owner_uid, QVector<int> members);
+
+    void sig_group_kicked(int thread_id);
+
 
 private:
     QTcpSocket _socket;

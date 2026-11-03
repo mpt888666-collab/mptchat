@@ -35,11 +35,14 @@ public:
 
 public slots:
     void slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp);
+    void slot_reject_rsp(int apply_uid, int error);
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
 
     void AddApplyList();
+
+    void sendRejectApply(std::shared_ptr<ApplyInfo> apply_info);
 
     Ui::ApplyFriendPage *ui;
 

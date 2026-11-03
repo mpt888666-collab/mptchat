@@ -7,6 +7,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QStandardPaths>
 
 #include "FileBubble.h"
@@ -34,6 +35,45 @@ ChatPage::ChatPage(QWidget *parent) : QWidget(parent), ui(new Ui::ChatPage) {
     _private_info = new ChatFriendInfoShow(this);
     _group_info = new ChatGroupInfoShow(this);
     connect(ui->show_friend_or_member_label, &ClickedLabel::clicked, this, &ChatPage::slot_display_friend_or_group_info);
+
+    // 清空入口放在会话信息面板里，私聊和群聊共用同一条请求链路
+    auto request_clear = [this]() {
+        emit sig_clear_chat_requested(_chat_data ? _chat_data->GetThreadId() : -1);
+    };
+    connect(_private_info, &ChatFriendInfoShow::sig_clear_chat_requested, this, request_clear);
+    connect(_group_info, &ChatGroupInfoShow::sig_clear_chat_requested, this, request_clear);
+    connect(_group_info, &ChatGroupInfoShow::sig_invite_members, this,
+            [this](const QVector<int>& members) {
+        if (!_chat_data || _group_members_uid.isEmpty() || members.isEmpty()) {
+            return;
+        }
+        QJsonObject jsonObj;
+        jsonObj["thread_id"] = _chat_data->GetThreadId();
+        jsonObj["uid"] = UserMgr::instance()->GetUid();
+        QJsonArray member_array;
+        for (int uid : members) {
+            member_array.append(uid);
+        }
+        jsonObj["members"] = member_array;
+        emit TCPMgr::instance()->sig_send_data(ID_ADD_GROUP_MEMBER_REQ,
+            QJsonDocument(jsonObj).toJson(QJsonDocument::Compact));
+    });
+    connect(_group_info, &ChatGroupInfoShow::sig_kick_member, this, [this](int uid) {
+        if (!_chat_data || _group_members_uid.isEmpty()) {
+            return;
+        }
+        if (QMessageBox::question(this, QStringLiteral("移出群聊"),
+                QStringLiteral("确定把这个成员移出群聊吗？"),
+                QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) {
+            return;
+        }
+        QJsonObject jsonObj;
+        jsonObj["thread_id"] = _chat_data->GetThreadId();
+        jsonObj["uid"] = UserMgr::instance()->GetUid();
+        jsonObj["target_uid"] = uid;
+        emit TCPMgr::instance()->sig_send_data(ID_KICK_GROUP_MEMBER_REQ,
+            QJsonDocument(jsonObj).toJson(QJsonDocument::Compact));
+    });
 
 
 
@@ -95,8 +135,11 @@ ChatPage::~ChatPage() {
 }
 
 void ChatPage::SetUserInfo(std::shared_ptr<UserInfo> info) {
+    if (_private_info) _private_info->hide();
+    if (_group_info) _group_info->hide();
     _user_info = info;
     _group_members_uid.clear();
+    _group_owner_uid = 0;
     if (info) {
         ui->title_label->setText(info->_name);
     }
@@ -679,18 +722,26 @@ void ChatPage::setGroupUids(const QVector<int> &uids) {
     }
 }
 
+void ChatPage::RefreshGroupInfo() {
+    if (_group_info && _group_info->isVisible()) {
+        _group_info->SetGroupInfo(ui->title_label->text(), _group_members_uid, _group_owner_uid);
+    }
+}
+
 void ChatPage::slot_display_friend_or_group_info() {
     if (!hasActiveChat()) return;
     if (_user_info) {
         qDebug() << "this is private chatPage";
         _private_info->setWindowTitle(ui->title_label->text());
-        _private_info->SetPrivateChatInfo(_user_info->_icon);
+        _private_info->SetPrivateChatInfo(_user_info->_name, _user_info->_icon, _user_info->_uid);
         _private_info->show();
+        _private_info->raise();
 
     }else {
         _group_info->setWindowTitle(ui->title_label->text());
-        //_group_info->SetPrivateChatInfo(_user_info->_icon);
+        _group_info->SetGroupInfo(ui->title_label->text(), _group_members_uid, _group_owner_uid);
         _group_info->show();
+        _group_info->raise();
         qDebug() << "this is group chatPage";
     }
 }

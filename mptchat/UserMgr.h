@@ -50,11 +50,13 @@ public:
     std::shared_ptr<FileInfo> GetNameFile(QString name);
 
     void AddApplyList(std::shared_ptr<ApplyInfo> app);
+    void RemoveApply(int uid);
     bool AlreadyApply(int uid);
     void AppendApplyList(QJsonArray array);
     void AppendFriendList(QJsonArray array);
     bool CheckFriendById(int uid);
     void AddChatThreadData(std::shared_ptr<ChatThreadData>);
+    void RemoveChatThreadData(int thread_id);
     void SetLastChatThreadId(int);
     int GetChatThreadByUid(int uid);
 
@@ -66,6 +68,7 @@ public:
 
     void AddFriend(std::shared_ptr<AuthInfo> user);
     void AddFriend(std::shared_ptr<AuthRsp> user);
+    void RemoveFriend(int uid);
 
     std::vector<std::shared_ptr<ApplyInfo>> GetApplyList();
     std::vector<std::shared_ptr<UserInfo>> GetFriendList();

@@ -577,7 +577,42 @@ ApplyFriendItem #already_add_label {
     background: #ffffff;
     border-color: #07c160;
 }
-#user_info_card QPushButton {
+#user_info_card QComboBox {
+    background: #f7f8fa;
+    border: 1px solid #e4e6eb;
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: #1f2329;
+}
+#user_info_card QComboBox:hover {
+    border-color: #d6d9de;
+}
+#user_info_card QComboBox:focus {
+    background: #ffffff;
+    border-color: #07c160;
+}
+#user_info_card QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 24px;
+    border: none;
+    background: transparent;
+}
+#user_info_card QComboBox::down-arrow {
+    image: url(:/icons/res/arrow_down.png);
+    width: 12px;
+    height: 12px;
+}
+#user_info_card QComboBox QAbstractItemView {
+    background: #ffffff;
+    border: 1px solid #e4e6eb;
+    border-radius: 8px;
+    outline: none;
+    padding: 4px;
+    selection-background-color: #e8f8ef;
+    selection-color: #07c160;
+}#user_info_card QPushButton {
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -665,33 +700,11 @@ ApplyFriendItem #already_add_label {
     color: #ff6fa5;
 }
 
-/* ---------- 三个动作：空心方框，不填底色 ---------- */
-#friend_info_card #send_msg_label,
-#friend_info_card #voice_label,
-#friend_info_card #video_label {
+/* ---------- 发消息按钮：空心方框，不填底色 ---------- */
+#friend_info_card #send_msg_label {
     background: transparent;
     border-radius: 8px;
     font-size: 14px;
-}
-
-#friend_info_card #voice_label,
-#friend_info_card #video_label {
-    color: #1f2329;
-    border: 1px solid #d7d9dd;
-}
-
-#friend_info_card #voice_label:hover,
-#friend_info_card #video_label:hover {
-    background: #f5f6f7;
-    border-color: #c6c9cf;
-}
-
-#friend_info_card #voice_label:pressed,
-#friend_info_card #video_label:pressed {
-    background: #eef0f3;
-}
-
-#friend_info_card #send_msg_label {
     color: #07c160;
     border: 1px solid #07c160;
 }

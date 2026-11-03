@@ -76,6 +76,7 @@ void ChatUserWid::SetLastMsg(const QString& msg) {
 
 void ChatUserWid::SetChatData(std::shared_ptr<ChatThreadData> chat_data) {
     _chat_data = chat_data;
+    _thread_id = chat_data->GetThreadId();
     auto other_id = _chat_data->GetOtherId();
     _uid = other_id;
     if (_chat_type == ChatFormType::PRIVATE) {

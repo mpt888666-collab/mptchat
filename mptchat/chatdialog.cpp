@@ -92,6 +92,8 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
 
     connect(ui->friend_info_page, &FriendInfoPage::sig_jump_chat_item, this,
         &ChatDialog::slot_jump_chat_item_from_infopage);
+    connect(ui->friend_info_page, &FriendInfoPage::sig_delete_friend, this,
+        &ChatDialog::slot_delete_friend);
 
     connect(clearAction, &QAction::triggered, this, [this, clearAction](bool checked) {
         if (checked) {
@@ -129,6 +131,9 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
 
     // Click on a chat user to open their conversation
     connect(ui->chat_user_list, &QListWidget::itemClicked, this, &ChatDialog::slot_chat_item_clicked);
+    ui->chat_user_list->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->chat_user_list, &QListWidget::customContextMenuRequested,
+            this, &ChatDialog::slot_chat_user_context_menu);
     connect(ui->con_user_list, &QListWidget::itemClicked, this, &ChatDialog::slot_con_item_clicked);
     connect(ui->more_label, &StateWidget::clicked, this, &ChatDialog::slot_more_select);
 
@@ -158,10 +163,26 @@ ChatDialog::ChatDialog(QWidget *parent) : QDialog(parent), ui(new Ui::ChatDialog
     connect(TCPMgr::instance().get(), &TCPMgr::sig_load_chat_thread,this, &ChatDialog::slot_load_chat_thread);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_create_private_chat,this, &ChatDialog::slot_create_private_chat);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_load_chat_msg, this, &ChatDialog::slot_load_chat_msg);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_clear_chat_msg, this, &ChatDialog::slot_clear_chat_msg);
+    connect(ui->chat_page, &ChatPage::sig_clear_chat_requested, this, [this](int thread_id) {
+        clearChatHistory(thread_id > 0 ? thread_id : _cur_chat_thread_id);
+    });
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_chatDialog_head_icon, this, &ChatDialog::slot_show_head_icon);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_add_group_chat_item, this, &ChatDialog::slot_group_chat_item);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_notify_add_group_chat_item, this, &ChatDialog::slot_notify_group_chat_item);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_show_red_point, this, &ChatDialog::slot_show_red_point_chat);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_delete_friend_rsp, this,
+            &ChatDialog::slot_delete_friend_rsp);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_friend_deleted, this,
+            &ChatDialog::slot_friend_deleted);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_group_members_changed, this,
+            &ChatDialog::slot_group_members_changed);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_group_kicked, this,
+            &ChatDialog::slot_group_kicked);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_add_group_member_rsp, this,
+            &ChatDialog::slot_add_group_member_rsp);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_kick_group_member_rsp, this,
+            &ChatDialog::slot_kick_group_member_rsp);
 
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_reset_label_icon, this, &ChatDialog::slot_reset_icon);
 
@@ -253,6 +274,7 @@ void ChatDialog::slot_side_chat() {
                     group_uids.push_back(UserMgr::instance()->GetUid());
                 }
                 ui->chat_page->setGroupUids(group_uids);
+                ui->chat_page->setGroupOwner(thread_data->GetOwnerUid());
                 ui->chat_page->SetTitleName(chat_item->GetGroupName());
                 ui->chat_page->setChatData(thread_data);
                 RenderChatHistory(thread_data);
@@ -288,6 +310,7 @@ void ChatDialog::slot_side_config() {
     ui->chat_user_list->setCurrentItem(nullptr);
 
     ui->stackedWidget->setCurrentWidget(ui->user_info_page);
+    ui->user_info_page->RefreshFromUserMgr();
     ui->user_info_page->show();
     ShowSearch(false);
 }
@@ -465,6 +488,7 @@ void ChatDialog::slot_chat_item_clicked(QListWidgetItem *item) {
             group_uids.push_back(UserMgr::instance()->GetUid());
         }
         ui->chat_page->setGroupUids(group_uids);
+        ui->chat_page->setGroupOwner(chat_data->GetOwnerUid());
         ui->chat_page->SetTitleName(chat_wid->GetGroupName());
         ui->chat_page->show();
         ui->stackedWidget->setCurrentWidget(ui->chat_page);
@@ -807,6 +831,8 @@ void ChatDialog::slot_load_chat_thread(bool load_more, int last_thread_id, std::
 
             auto chat_thread_data = std::make_shared<ChatThreadData>(0, cti->_thread_id, 0);
             chat_thread_data->SetGroupMembers(cti->_group_members);
+            chat_thread_data->SetGroupName(cti->_group_name);
+            chat_thread_data->SetOwnerUid(cti->_owner_uid);
             UserMgr::instance()->AddChatThreadData(chat_thread_data);
             chat_item->SetGroupUids(cti->_group_members);
             chat_item->SetChatData(chat_thread_data);
@@ -1222,6 +1248,7 @@ void ChatDialog::slot_group_chat_item(QVector<int> members, int thread_id) {
     if (!UserMgr::instance()->GetChatThreadDataByThreadId(thread_id)) {
         auto chat_thread_data = std::make_shared<ChatThreadData>(0, thread_id, 0);
         chat_thread_data->SetGroupMembers(members);
+        chat_thread_data->SetOwnerUid(UserMgr::instance()->GetUid());
         UserMgr::instance()->AddChatThreadData(chat_thread_data);
         chat_item->SetChatData(chat_thread_data);
     }
@@ -1248,12 +1275,246 @@ void ChatDialog::slot_notify_group_chat_item(QVector<int> members, int host_uid,
     if (!UserMgr::instance()->GetChatThreadDataByThreadId(thread_id)) {
         auto chat_thread_data = std::make_shared<ChatThreadData>(0, thread_id, 0);
         chat_thread_data->SetGroupMembers(members);
+        chat_thread_data->SetOwnerUid(host_uid);
         UserMgr::instance()->AddChatThreadData(chat_thread_data);
         chat_item->SetChatData(chat_thread_data);
     }
 
     fillGroupAvatars(chat_item, members);
 
+}
+
+void ChatDialog::slot_delete_friend(int uid) {
+    if (uid <= 0) {
+        return;
+    }
+    if (QMessageBox::question(this, QStringLiteral("删除好友"),
+            QStringLiteral("删除后将不再显示为好友，聊天记录会保留。确定删除吗？"),
+            QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes) {
+        return;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj["uid"] = UserMgr::instance()->GetUid();
+    jsonObj["peer_uid"] = uid;
+    emit TCPMgr::instance()->sig_send_data(ID_DELETE_FRIEND_REQ,
+        QJsonDocument(jsonObj).toJson(QJsonDocument::Compact));
+}
+
+void ChatDialog::slot_delete_friend_rsp(int peer_uid, int error) {
+    if (error != ErrorCodes::SUCCESS) {
+        QMessageBox::warning(this, QStringLiteral("删除失败"),
+                             QStringLiteral("好友关系不存在，或服务器处理失败。"));
+        return;
+    }
+    removeFriendFromUi(peer_uid);
+}
+
+void ChatDialog::slot_friend_deleted(int peer_uid) {
+    removeFriendFromUi(peer_uid);
+    QMessageBox::information(this, QStringLiteral("好友已删除"),
+                             QStringLiteral("对方已将你从好友列表中删除。"));
+}
+
+void ChatDialog::removeFriendFromUi(int uid) {
+    if (uid <= 0) {
+        return;
+    }
+
+    const int thread_id = UserMgr::instance()->GetChatThreadByUid(uid);
+    UserMgr::instance()->RemoveFriend(uid);
+    ui->con_user_list->RemoveFriend(uid);
+
+    QListWidgetItem *item = nullptr;
+    auto id_iter = _chat_id_items.find(uid);
+    if (id_iter != _chat_id_items.end()) {
+        item = id_iter.value();
+        _chat_id_items.erase(id_iter);
+    }
+
+    if (thread_id > 0) {
+        auto thread_iter = _chat_thread_items.find(thread_id);
+        if (thread_iter != _chat_thread_items.end()) {
+            if (!item) {
+                item = thread_iter.value();
+            }
+            _chat_thread_items.erase(thread_iter);
+        }
+        UserMgr::instance()->RemoveChatThreadData(thread_id);
+        if (_cur_chat_thread_id == thread_id) {
+            _cur_chat_thread_id = -1;
+            ui->chat_page->clearUserInfo();
+            ui->chat_page->clearGroupUids();
+            ui->stackedWidget->setCurrentWidget(ui->chat_user_list);
+        }
+    }
+
+    if (item) {
+        delete ui->chat_user_list->takeItem(ui->chat_user_list->row(item));
+    }
+}
+
+void ChatDialog::slot_group_members_changed(int thread_id, int owner_uid, QVector<int> members) {
+    if (thread_id <= 0) {
+        return;
+    }
+
+    auto thread_data = UserMgr::instance()->GetChatThreadDataByThreadId(thread_id);
+    if (!thread_data) {
+        thread_data = std::make_shared<ChatThreadData>(0, thread_id, 0);
+        UserMgr::instance()->AddChatThreadData(thread_data);
+    }
+    thread_data->SetGroupMembers(members);
+    thread_data->SetOwnerUid(owner_uid);
+
+    QListWidgetItem *item = _chat_thread_items.value(thread_id, nullptr);
+    auto *chat_item = item
+        ? qobject_cast<ChatUserWid *>(ui->chat_user_list->itemWidget(item))
+        : nullptr;
+    if (!chat_item) {
+        item = new QListWidgetItem();
+        chat_item = new ChatUserWid(ChatFormType::GROUP);
+        chat_item->SetThreadId(thread_id);
+        chat_item->SetName(thread_data->GetGroupName().isEmpty()
+            ? QStringLiteral("群聊") : thread_data->GetGroupName());
+        item->setSizeHint(chat_item->sizeHint());
+        ui->chat_user_list->insertItem(0, item);
+        ui->chat_user_list->setItemWidget(item, chat_item);
+        _chat_thread_items.insert(thread_id, item);
+    }
+
+    chat_item->SetGroupUids(members);
+    chat_item->SetChatData(thread_data);
+    fillGroupAvatars(chat_item, members);
+
+    if (_cur_chat_thread_id == thread_id) {
+        ui->chat_page->setGroupUids(members);
+        ui->chat_page->setGroupOwner(owner_uid);
+        ui->chat_page->RefreshGroupInfo();
+    }
+}
+
+void ChatDialog::slot_group_kicked(int thread_id) {
+    removeGroupFromUi(thread_id);
+    QMessageBox::information(this, QStringLiteral("群聊"),
+                             QStringLiteral("你已被群主移出该群聊。"));
+}
+
+void ChatDialog::removeGroupFromUi(int thread_id) {
+    if (thread_id <= 0) {
+        return;
+    }
+
+    UserMgr::instance()->RemoveChatThreadData(thread_id);
+    auto iter = _chat_thread_items.find(thread_id);
+    QListWidgetItem *item = iter != _chat_thread_items.end() ? iter.value() : nullptr;
+    if (iter != _chat_thread_items.end()) {
+        _chat_thread_items.erase(iter);
+    }
+    if (_cur_chat_thread_id == thread_id) {
+        _cur_chat_thread_id = -1;
+        ui->chat_page->clearUserInfo();
+        ui->chat_page->clearGroupUids();
+        ui->stackedWidget->setCurrentWidget(ui->chat_user_list);
+    }
+    if (item) {
+        delete ui->chat_user_list->takeItem(ui->chat_user_list->row(item));
+    }
+}
+
+void ChatDialog::slot_add_group_member_rsp(int thread_id, QVector<int> added_members, int error) {
+    Q_UNUSED(thread_id);
+    Q_UNUSED(added_members);
+    if (error != ErrorCodes::SUCCESS) {
+        QMessageBox::warning(this, QStringLiteral("邀请失败"),
+                             QStringLiteral("只有群成员才能邀请好友入群。"));
+    }
+}
+
+void ChatDialog::slot_kick_group_member_rsp(int thread_id, int target_uid, int error) {
+    Q_UNUSED(thread_id);
+    Q_UNUSED(target_uid);
+    if (error != ErrorCodes::SUCCESS) {
+        QMessageBox::warning(this, QStringLiteral("移出失败"),
+                             QStringLiteral("只有群主可以移出普通成员。"));
+    }
+}
+
+void ChatDialog::clearChatHistory(int thread_id) {
+    if (thread_id <= 0) {
+        return;
+    }
+
+    auto ret = QMessageBox::question(this,
+        QStringLiteral("清空聊天记录"),
+        QStringLiteral("确定清空这个会话的聊天记录吗？\n清空后只对你自己不可见，且无法恢复。"),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::No);
+    if (ret != QMessageBox::Yes) {
+        return;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj["uid"] = UserMgr::instance()->GetUid();
+    jsonObj["thread_id"] = thread_id;
+    QJsonDocument doc(jsonObj);
+    emit TCPMgr::instance()->sig_send_data(ReqId::ID_CLEAR_CHAT_MSG_REQ,
+                                           doc.toJson(QJsonDocument::Compact));
+}
+
+void ChatDialog::slot_clear_chat_msg(int thread_id, int error) {
+    if (error != ErrorCodes::SUCCESS) {
+        qDebug() << "clear chat msg failed, thread_id is " << thread_id << " error is " << error;
+        QMessageBox::warning(this, QStringLiteral("清空失败"),
+                             QStringLiteral("服务器未能清空该会话的聊天记录，请稍后重试。"));
+        return;
+    }
+
+    auto chat_data = UserMgr::instance()->GetChatThreadDataByThreadId(thread_id);
+    if (chat_data) {
+        chat_data->ClearMsgs();
+    }
+
+    auto item = _chat_thread_items.value(thread_id, nullptr);
+    if (item) {
+        if (auto *chat_wid = qobject_cast<ChatUserWid *>(ui->chat_user_list->itemWidget(item))) {
+            chat_wid->SetLastMsg(QString());
+            chat_wid->ShowRedPoint(false);
+        }
+    }
+
+    if (_cur_chat_thread_id == thread_id) {
+        ui->chat_page->ClearChatMessages();
+    }
+
+    qDebug() << "clear chat msg success, thread_id is " << thread_id;
+}
+
+void ChatDialog::slot_chat_user_context_menu(const QPoint &pos) {
+    auto *item = ui->chat_user_list->itemAt(pos);
+    if (!item) {
+        return;
+    }
+
+    auto *chat_wid = qobject_cast<ChatUserWid *>(ui->chat_user_list->itemWidget(item));
+    if (!chat_wid) {
+        return;
+    }
+
+    int thread_id = chat_wid->GetThreadId();
+    if (thread_id <= 0) {
+        thread_id = UserMgr::instance()->GetChatThreadByUid(chat_wid->GetUid());
+    }
+    if (thread_id <= 0) {
+        return;
+    }
+
+    QMenu menu(this);
+    QAction *clear_action = menu.addAction(QStringLiteral("清空聊天记录"));
+    connect(clear_action, &QAction::triggered, this, [this, thread_id]() {
+        clearChatHistory(thread_id);
+    });
+    menu.exec(ui->chat_user_list->mapToGlobal(pos));
 }
 
 void ChatDialog::slot_more_select() {

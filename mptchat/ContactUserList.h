@@ -14,6 +14,7 @@ class ContactUserList : public QListWidget{
 public:
     explicit ContactUserList(QWidget *parent = nullptr);
     void ShowRedPoint(bool bshow = true);
+    void RemoveFriend(int uid);
 
     void slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp);
 

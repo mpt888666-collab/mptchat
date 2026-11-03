@@ -592,6 +592,7 @@ void TCPMgr::initHandlers() {
             cti->_user1_id = value["user1_id"].toInt();
             cti->_user2_id = value["user2_id"].toInt();
             cti->_group_name = value["group_name"].toString();
+            cti->_owner_uid = value["owner_uid"].toInt();
             for (const QJsonValue& member : value["members"].toArray()) {
                 cti->_group_members.push_back(member.toInt());
             }
@@ -972,7 +973,7 @@ void TCPMgr::initHandlers() {
            return;
        }
 
-        auto host_uid = UserMgr::instance()->GetUid();
+        auto host_uid = jsonObj["host_uid"].toInt();
         auto thread_id = jsonObj["thread_id"].toInt();
         QVector<int> members;
         for (const auto& member : jsonObj["members"].toArray()) {
@@ -1008,7 +1009,7 @@ void TCPMgr::initHandlers() {
            return;
        }
 
-        auto host_uid = UserMgr::instance()->GetUid();
+        auto host_uid = jsonObj["host_uid"].toInt();
         auto thread_id = jsonObj["thread_id"].toInt();
         QVector<int> members;
         for (const auto& member : jsonObj["members"].toArray()) {
@@ -1018,6 +1019,98 @@ void TCPMgr::initHandlers() {
         emit sig_notify_add_group_chat_item(members, host_uid, thread_id);
 
        });
+
+    _handlers.insert(ID_CLEAR_CHAT_MSG_RSP, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(len);
+        qDebug() << "handle id is " << id << " data is " << data;
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        if (jsonDoc.isNull()) {
+            qDebug() << "clear chat msg rsp: failed to create QJsonDocument.";
+            return;
+        }
+
+        QJsonObject jsonObj = jsonDoc.object();
+        int thread_id = jsonObj["thread_id"].toInt();
+        int err = jsonObj.contains("error") ? jsonObj["error"].toInt() : ErrorCodes::ERR_JSON;
+        emit sig_clear_chat_msg(thread_id, err);
+    });
+
+    _handlers.insert(ID_DELETE_FRIEND_RSP, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        emit sig_delete_friend_rsp(jsonObj.value("peer_uid").toInt(),
+                                   jsonObj.value("error").toInt(ErrorCodes::ERR_JSON));
+    });
+
+    _handlers.insert(ID_REJECT_FRIEND_RSP, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        emit sig_reject_friend_rsp(jsonObj.value("apply_uid").toInt(),
+                                   jsonObj.value("error").toInt(ErrorCodes::ERR_JSON));
+    });
+
+    _handlers.insert(ID_ADD_GROUP_MEMBER_RSP, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        QVector<int> added;
+        for (const auto& item : jsonObj.value("added_members").toArray()) {
+            added.push_back(item.toInt());
+        }
+        emit sig_add_group_member_rsp(jsonObj.value("thread_id").toInt(), added,
+                                      jsonObj.value("error").toInt(ErrorCodes::ERR_JSON));
+    });
+
+    _handlers.insert(ID_KICK_GROUP_MEMBER_RSP, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        emit sig_kick_group_member_rsp(jsonObj.value("thread_id").toInt(),
+                                       jsonObj.value("target_uid").toInt(),
+                                       jsonObj.value("error").toInt(ErrorCodes::ERR_JSON));
+    });
+
+    _handlers.insert(ID_NOTIFY_FRIEND_DELETED, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        emit sig_friend_deleted(jsonObj.value("peer_uid").toInt());
+    });
+
+    _handlers.insert(ID_NOTIFY_GROUP_MEMBERS_CHANGED, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        QVector<int> members;
+        for (const auto& item : jsonObj.value("members").toArray()) {
+            members.push_back(item.toInt());
+        }
+        for (const auto& value : jsonObj.value("member_infos").toArray()) {
+            const QJsonObject info = value.toObject();
+            const int member_uid = info.value("uid").toInt();
+            if (member_uid <= 0) {
+                continue;
+            }
+            QString member_name = info.value("nick").toString();
+            if (member_name.isEmpty()) {
+                member_name = info.value("name").toString();
+            }
+            UserMgr::instance()->AddGroupMemberInfo(std::make_shared<UserInfo>(
+                member_uid, member_name, member_name, info.value("icon").toString(), 0));
+        }
+        emit sig_group_members_changed(jsonObj.value("thread_id").toInt(),
+                                       jsonObj.value("owner_uid").toInt(), members);
+    });
+
+    _handlers.insert(ID_NOTIFY_GROUP_KICKED, [this](ReqId id, int len, QByteArray data) {
+        Q_UNUSED(id);
+        Q_UNUSED(len);
+        QJsonObject jsonObj = QJsonDocument::fromJson(data).object();
+        emit sig_group_kicked(jsonObj.value("thread_id").toInt());
+    });
 
 }
 

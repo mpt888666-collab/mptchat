@@ -229,6 +229,7 @@ struct ChatThreadInfo {
     int _user2_id;    // 私聊时对应 private_chat.user2_id；群聊时设为 0
     QString _group_name;
     QVector<int> _group_members;
+    int _owner_uid = 0;
 };
 
 //客户端本地存储的聊天线程数据结构
@@ -242,8 +243,11 @@ struct ChatThreadInfo {
      void SetOtherId(int other_id);
      int  GetOtherId();
      QString GetGroupName();
+     void SetGroupName(const QString& name);
      void SetGroupMembers(const QVector<int>& members);
      const QVector<int>& GetGroupMembers();
+     void SetOwnerUid(int uid) { _owner_uid = uid; }
+     int GetOwnerUid() const { return _owner_uid; }
      QMap<int, std::shared_ptr<ChatDataBase>> GetMsgMap();
      int  GetThreadId();
      QMap<int, std::shared_ptr<ChatDataBase>>&  GetMsgMapRef();
@@ -254,6 +258,8 @@ struct ChatThreadInfo {
      int GetLastMsgId();
      QMap<QString, std::shared_ptr<ChatDataBase>>& GetMsgUnRspRef();
      void AppendUnRspMsg(QString unique_id, std::shared_ptr<ChatDataBase> base_msg);
+     //清空本地缓存的消息，同时把分页游标归零
+     void ClearMsgs();
  private:
      //如果是私聊，则为对方的id；如果是群聊，则为0
      int _other_id;
@@ -264,6 +270,8 @@ struct ChatThreadInfo {
      QVector<int> _group_members;
      //群聊名称
      QString _group_name;
+     //群主 uid，私聊为 0
+     int _owner_uid{0};
      //缓存消息map，抽象为基类，因为会有图片等其他类型消息
      QMap<int, std::shared_ptr<ChatDataBase>>  _msg_map;
      QVector<std::shared_ptr<ChatDataBase>> _msg_order;

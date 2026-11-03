@@ -57,6 +57,8 @@ private:
 
     bool checkPwdValid();
 
+    bool checkEmailValid();
+
     void initHttpHandlers();
 
     void showTip(QString str, bool b_ok);

@@ -68,6 +68,12 @@ private:
 
     void load_chat_msg();
 
+    void clearChatHistory(int thread_id);
+
+    void removeFriendFromUi(int uid);
+
+    void removeGroupFromUi(int thread_id);
+
 signals:
     void sig_show_add_group();
 
@@ -126,6 +132,24 @@ private slots:
     void slot_logout();
 
     void slot_show_red_point_chat(int thread_id);
+
+    void slot_clear_chat_msg(int thread_id, int error);
+
+    void slot_delete_friend(int uid);
+
+    void slot_delete_friend_rsp(int peer_uid, int error);
+
+    void slot_friend_deleted(int peer_uid);
+
+    void slot_group_members_changed(int thread_id, int owner_uid, QVector<int> members);
+
+    void slot_group_kicked(int thread_id);
+
+    void slot_add_group_member_rsp(int thread_id, QVector<int> added_members, int error);
+
+    void slot_kick_group_member_rsp(int thread_id, int target_uid, int error);
+
+    void slot_chat_user_context_menu(const QPoint &pos);
 
 
 

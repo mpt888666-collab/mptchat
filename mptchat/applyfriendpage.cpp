@@ -7,6 +7,9 @@
 #include "applyfriendpage.h"
 #include "userdata.h"
 #include <QPainter>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
 
 #include "applyfrienditem.h"
 #include "authenfriend.h"
@@ -18,6 +21,8 @@ ApplyFriendPage::ApplyFriendPage(QWidget *parent) : QWidget(parent), ui(new Ui::
     ui->setupUi(this);
     loadApplyList();
     connect(TCPMgr::instance().get(), &TCPMgr::sig_auth_rsp, this, &ApplyFriendPage::slot_auth_rsp);
+    connect(TCPMgr::instance().get(), &TCPMgr::sig_reject_friend_rsp, this,
+            &ApplyFriendPage::slot_reject_rsp);
 
 }
 
@@ -58,6 +63,8 @@ void ApplyFriendPage::AddNewApply(std::shared_ptr<AddFriendApply> apply) {
         authFriend->SetApplyInfo(apply_info);
         authFriend->show();
     });
+    connect(apply_item, &ApplyFriendItem::sig_reject_friend, this,
+            &ApplyFriendPage::sendRejectApply);
     QListWidgetItem* item = new QListWidgetItem;
     //qDebug()<<"chat_user_wid sizeHint is " << chat_user_wid->sizeHint();
     item->setSizeHint(apply_item->sizeHint());
@@ -78,7 +85,40 @@ void ApplyFriendPage::slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp) {
     find_iter->second->ShowAddBtn(false);
 }
 
+void ApplyFriendPage::sendRejectApply(std::shared_ptr<ApplyInfo> apply_info) {
+    if (!apply_info) {
+        return;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj["uid"] = UserMgr::instance()->GetUid();
+    jsonObj["apply_uid"] = apply_info->_uid;
+    emit TCPMgr::instance()->sig_send_data(ID_REJECT_FRIEND_REQ,
+        QJsonDocument(jsonObj).toJson(QJsonDocument::Compact));
+}
+
+void ApplyFriendPage::slot_reject_rsp(int apply_uid, int error) {
+    if (error != ErrorCodes::SUCCESS) {
+        QMessageBox::warning(this, QStringLiteral("拒绝失败"),
+                             QStringLiteral("好友申请不存在或已经处理过了。"));
+        return;
+    }
+
+    UserMgr::instance()->RemoveApply(apply_uid);
+    _unauth_items.erase(apply_uid);
+    for (int row = 0; row < ui->apply_friend_list->count(); ++row) {
+        auto *item = ui->apply_friend_list->item(row);
+        auto *widget = qobject_cast<ApplyFriendItem *>(ui->apply_friend_list->itemWidget(item));
+        if (widget && widget->GetUid() == apply_uid) {
+            delete ui->apply_friend_list->takeItem(row);
+            break;
+        }
+    }
+}
+
 void ApplyFriendPage::loadApplyList() {
+    ui->apply_friend_list->clear();
+    _unauth_items.clear();
     //添加好友申请
     auto apply_list = UserMgr::instance()->GetApplyList();
     for(auto &apply: apply_list){
@@ -106,6 +146,8 @@ void ApplyFriendPage::loadApplyList() {
             authFriend->SetApplyInfo(apply_info);
             authFriend->show();
             });
+        connect(apply_item, &ApplyFriendItem::sig_reject_friend, this,
+                &ApplyFriendPage::sendRejectApply);
     }
 }
 

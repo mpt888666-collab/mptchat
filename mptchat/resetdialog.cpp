@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by mpt on 2026/7/5.
 //
 
@@ -88,9 +88,9 @@ bool ResetDialog::checkPassValid()
 bool ResetDialog::checkEmailValid()
 {
     //验证邮箱的地址正则表达式
-    auto email = ui->email_edit->text();
+    auto email = ui->email_edit->text().trimmed();
     // 邮箱地址的正则表达式
-    QRegularExpression regex(R"((\w+)(\.|_)?(\w*)@(\w+)(\.(\w+))+)");
+    QRegularExpression regex(R"(^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$)");
     bool match = regex.match(email).hasMatch(); // 执行正则表达式匹配
     if(!match){
         //提示邮箱不正确
@@ -190,7 +190,7 @@ void ResetDialog::initHandlers() {
 }
 
 void ResetDialog::slot_varify_btn_clicked() {
-    auto email = ui->email_edit->text();
+    auto email = ui->email_edit->text().trimmed();
     auto check = checkEmailValid();
     if(!check){
         return;
@@ -221,7 +221,7 @@ void ResetDialog::slot_confirm_btn_clicked() {
     }
 
     QJsonObject jsonObj;
-    jsonObj["email"] = ui->email_edit->text();
+    jsonObj["email"] = ui->email_edit->text().trimmed();
     jsonObj["user"] = ui->user_edit->text();
     jsonObj["passwd"] = ui->pass_edit->text();
     jsonObj["variety_code"] = ui->variety_edit->text();

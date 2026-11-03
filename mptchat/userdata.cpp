@@ -115,6 +115,11 @@ QString ChatThreadData::GetGroupName()
     return _group_name;
 }
 
+void ChatThreadData::SetGroupName(const QString& name)
+{
+    _group_name = name;
+}
+
 QMap<int, std::shared_ptr<ChatDataBase>> ChatThreadData::GetMsgMap() {
     return _msg_map;
 }
@@ -201,6 +206,15 @@ void ChatThreadData::AppendUnRspMsg(QString unique_id, std::shared_ptr<ChatDataB
 
 QMap<QString, std::shared_ptr<ChatDataBase>>& ChatThreadData::GetMsgUnRspRef() {
     return _msg_unrsp_map;
+}
+
+void ChatThreadData::ClearMsgs()
+{
+    _msg_map.clear();
+    _msg_order.clear();
+    _msg_unrsp_map.clear();
+    _last_msg.clear();
+    _last_msg_id = 0;
 }
 
 void AuthInfo::SetChatDatas(std::vector<std::shared_ptr<TextChatData>> chat_datas)

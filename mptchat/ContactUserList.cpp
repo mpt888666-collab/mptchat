@@ -144,6 +144,17 @@ void ContactUserList::ShowRedPoint(bool bshow) {
     _add_friend_item->ShowRedPoint(bshow);
 }
 
+void ContactUserList::RemoveFriend(int uid) {
+    for (int row = 0; row < count(); ++row) {
+        auto *item = this->item(row);
+        auto *con_item = qobject_cast<ConUserItem *>(itemWidget(item));
+        if (con_item && con_item->GetUserInfo() && con_item->GetUserInfo()->_uid == uid) {
+            delete takeItem(row);
+            return;
+        }
+    }
+}
+
 void ContactUserList::slot_auth_rsp(std::shared_ptr<AuthRsp> auth_rsp) {
     qDebug() << "slot auth rsp called";
     UserMgr::instance()->AddFriend(auth_rsp);
@@ -166,7 +177,7 @@ void ContactUserList::slot_refresh_con() {
     for (const auto& apply : friend_list) {
         auto * con_user_item = new ConUserItem();
 
-        con_user_item->SetInfo(apply->_uid, apply->_name, apply->_icon);
+        con_user_item->SetInfo(apply);
 
         auto * con_item = new QListWidgetItem();
 

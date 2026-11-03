@@ -26,6 +26,8 @@ public:
     // void SetInfo(std::shared_ptr<AuthRsp> auth_rsp);
     void SetInfo(std::shared_ptr<AuthInfo> auth_info);
     void SetInfo(int uid, const QString& name, const QString& icon);
+    // 保留完整的 UserInfo（昵称/签名/性别），避免资料页丢字段
+    void SetInfo(std::shared_ptr<UserInfo> user_info);
     void ShowRedPoint(bool show = false);
     std::shared_ptr<UserInfo> GetUserInfo() {
         return _info;

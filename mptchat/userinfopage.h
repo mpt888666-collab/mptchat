@@ -1,4 +1,4 @@
-﻿//
+//
 // Created by mpt on 2026/8/24.
 //
 
@@ -7,6 +7,7 @@
 
 #include <QWidget>
 
+#include "global.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -24,12 +25,19 @@ public:
 
     ~UserInfoPage() override;
 
+    // 用 UserMgr 里的当前登录信息填充表单
+    void RefreshFromUserMgr();
+
 private:
     QString generateUniqueIconName();
     Ui::UserInfoPage *ui;
 
 public slots:
     void slot_up_btn();
+
+    void slot_submit();
+
+    void slot_update_finish(ReqId id, QString res, ErrorCodes err);
 };
 
 

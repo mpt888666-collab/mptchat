@@ -4,6 +4,7 @@
         <file>res/search.ico</file>
         <file>res/clear_visible.ico</file>
         <file>res/empty.ico</file>
+        <file>res/arrow_down.png</file>
     </qresource>
 
     <qresource prefix="/images">

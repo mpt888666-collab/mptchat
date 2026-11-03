@@ -9,6 +9,7 @@
 #include <QFont>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPushButton>
 #include <QSize>
 
 #include "ui_FriendInfoPage.h"
@@ -75,6 +76,20 @@ FriendInfoPage::FriendInfoPage(QWidget *parent) : QWidget(parent), ui(new Ui::Fr
     ui->setupUi(this);
     connect(ui->send_msg_label, &ClickedLabel::clicked, this, &FriendInfoPage::on_msg_chat_clicked);
 
+    _delete_btn = new QPushButton(QStringLiteral("删除好友"), this);
+    _delete_btn->setFixedSize(96, 36);
+    _delete_btn->setCursor(Qt::PointingHandCursor);
+    _delete_btn->setStyleSheet(QStringLiteral(
+        "QPushButton{border:1px solid #e5b4b4;border-radius:6px;background:#fff7f7;"
+        "color:#d94b4b;font-size:13px;}"
+        "QPushButton:hover{background:#ffecec;}"));
+    ui->action_row->insertWidget(ui->action_row->indexOf(ui->send_msg_label) + 1, _delete_btn);
+    connect(_delete_btn, &QPushButton::clicked, this, [this]() {
+        if (_user_info) {
+            emit sig_delete_friend(_user_info->_uid);
+        }
+    });
+
     // 陌生人第一次查看资料时头像要现下，下载完刷新一下本页
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_avatar_downloaded, this,
             [this](const QString &name) {
@@ -84,8 +99,6 @@ FriendInfoPage::FriendInfoPage(QWidget *parent) : QWidget(parent), ui(new Ui::Fr
             });
 
     ui->send_msg_label->setCursor(Qt::PointingHandCursor);
-    ui->voice_label->setCursor(Qt::PointingHandCursor);
-    ui->video_label->setCursor(Qt::PointingHandCursor);
 }
 
 FriendInfoPage::~FriendInfoPage() {
@@ -98,12 +111,13 @@ void FriendInfoPage::setInfo(std::shared_ptr<UserInfo> user_info) {
         return;
     }
 
-    ui->name_label->setText(_user_info->_name);
+    ui->name_label->setText(_user_info->_nick.isEmpty() ? _user_info->_name : _user_info->_nick);
     ui->sex_label->setText(_user_info->_sex == 0 ? QStringLiteral("男") : QStringLiteral("女"));
     ui->sex_label->setProperty("sex", _user_info->_sex == 0 ? "male" : "female");
     repolish(ui->sex_label);
     ui->desc_label->setText(_user_info->_desc.isEmpty() ? QStringLiteral("暂无个性签名")
                                                         : _user_info->_desc);
+    _delete_btn->setVisible(UserMgr::instance()->CheckFriendById(_user_info->_uid));
 
     refreshAvatar();
 }

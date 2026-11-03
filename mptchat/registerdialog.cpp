@@ -1,4 +1,4 @@
-//
+﻿//
 // Created by mpt on 2026/6/28.
 //
 
@@ -123,7 +123,7 @@ RegisterDialog::~RegisterDialog() {
 void RegisterDialog::get_bin_clicked()
 {
     // //验证邮箱的地址正则表达式
-    auto email = ui->email_edit->text();
+    auto email = ui->email_edit->text().trimmed();
     if (email == "") {
         AddTipErr(TipErr::TIP_EMAIL_EMPTY, tr("邮箱不能为空"));
         return;
@@ -191,7 +191,7 @@ void RegisterDialog::slot_confirm_btn_clicked() {
 
     QJsonObject json_obj;
     json_obj["user"] = ui->user_edit->text();
-    json_obj["email"] = ui->email_edit->text();
+    json_obj["email"] = ui->email_edit->text().trimmed();
     json_obj["passwd"] = ui->pass_edit->text();
     json_obj["confirm"] = ui->confirm_edit->text();
     json_obj["variety_code"] = ui->variety_edit->text();
@@ -261,13 +261,13 @@ bool RegisterDialog::checkPassValid()
 bool RegisterDialog::checkEmailValid()
 {
     //验证邮箱的地址正则表达式
-    auto email = ui->email_edit->text();
+    auto email = ui->email_edit->text().trimmed();
     if (email == "") {
         AddTipErr(TipErr::TIP_EMAIL_EMPTY, tr("邮箱不能为空"));
         return false;
     }
     // 邮箱地址的正则表达式
-    QRegularExpression regex(R"((\w+)(\.|_)?(\w*)@(\w+)(\.(\w+))+)");
+    QRegularExpression regex(R"(^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$)");
     bool match = regex.match(email).hasMatch(); // 执行正则表达式匹配
     if(!match){
         //提示邮箱不正确

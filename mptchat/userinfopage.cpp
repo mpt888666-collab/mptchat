@@ -1,59 +1,159 @@
-﻿//
+//
 // Created by mpt on 2026/8/24.
 //
 
-// You may need to build the project (run Qt uic code generator) to get "ui_UserInfoPage.h" resolved
-
 #include "userinfopage.h"
 #include "ui_UserInfoPage.h"
+
+#include <QDateTime>
+#include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMessageBox>
 #include <QStandardPaths>
-#include <QCryptographicHash>
-#include <QDir>
-#include <QFileInfo>
-#include <QDateTime>
 #include <QUuid>
+#include <QCryptographicHash>
 
 #include "global.h"
+#include "HttpMgr.h"
 #include "ImageCropperDialog.h"
 #include "TCPFileMgr.h"
 #include "usermgr.h"
 
 UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent), ui(new Ui::UserInfoPage) {
     ui->setupUi(this);
-    connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_user_info_page_show_icon, this, [this](){
-        QString storage_dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-        QDir dir(storage_dir);
-        if (!dir.exists() && !dir.mkpath(storage_dir)) {
-            qDebug() << "头像登录加载失败";
-        }else {
-            QString head_icon = UserMgr::instance()->GetIcon();
-            if (!head_icon.isEmpty()) {
-                QString avatar_path = QDir(storage_dir).filePath(QString("avatars/") + head_icon);
-                QPixmap pix(avatar_path);
-                if (!pix.isNull()) {
-                    ui->head_label->setPixmap(pix);
-                    ui->head_label->setScaledContents(true);
-                } else {
-                    qWarning() << "头像加载失败:" << avatar_path;
-                }
-            } else {
-                qDebug() << "icon    ''";
-            }
-        }
-    });
+
+    // 用户名是登录账号，只读展示
+    ui->name_label_2->setReadOnly(true);
+    ui->name_label_2->setFocusPolicy(Qt::NoFocus);
+    ui->name_label_2->setToolTip(QStringLiteral("登录账号不可修改"));
+    ui->name_label_2->setStyleSheet(QStringLiteral("color:#8a8a8a;"));
+
+    ui->nick_edit->setMaxLength(64);
+    ui->desc_edit->setMaxLength(512);
+
+    // 性别：下拉选择，提交时按索引转成 0=男 / 1=女
+    ui->sex_combo->addItem(QStringLiteral("男"), 0);
+    ui->sex_combo->addItem(QStringLiteral("女"), 1);
+
+    connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_user_info_page_show_icon,
+            this, &UserInfoPage::RefreshFromUserMgr);
     connect(ui->up_btn, &QPushButton::clicked, this, &UserInfoPage::slot_up_btn);
+    connect(ui->submit_btn, &QPushButton::clicked, this, &UserInfoPage::slot_submit);
+    connect(HttpMgr::instance().get(), &HttpMgr::sig_login_mod_finish,
+            this, &UserInfoPage::slot_update_finish);
 }
 
 UserInfoPage::~UserInfoPage() {
     delete ui;
 }
 
+void UserInfoPage::RefreshFromUserMgr() {
+    auto info = UserMgr::instance()->GetUserInfo();
+    if (!info) {
+        return;
+    }
+
+    ui->nick_edit->setText(info->_nick.isEmpty() ? info->_name : info->_nick);
+    ui->name_label_2->setText(info->_name);
+    ui->desc_edit->setText(info->_desc);
+    ui->sex_combo->setCurrentIndex(info->_sex == 0 ? 0 : 1);
+
+    if (!info->_icon.isEmpty()) {
+        QPixmap pix(UserMgr::GetAvatarLocalPath(info->_icon));
+        if (!pix.isNull()) {
+            ui->head_label->setPixmap(pix.scaled(ui->head_label->size(),
+                                                 Qt::KeepAspectRatio,
+                                                 Qt::SmoothTransformation));
+            ui->head_label->setScaledContents(true);
+        }
+    } else {
+        ui->head_label->clear();
+    }
+}
+
 QString UserInfoPage::generateUniqueIconName() {
     return QString("head_%1_%2.png")
         .arg(QDateTime::currentMSecsSinceEpoch())
         .arg(QUuid::createUuid().toString(QUuid::WithoutBraces).left(8));
+}
+
+void UserInfoPage::slot_submit() {
+    auto info = UserMgr::instance()->GetUserInfo();
+    if (!info) {
+        return;
+    }
+
+    const QString nick = ui->nick_edit->text().trimmed();
+    const QString desc = ui->desc_edit->text().trimmed();
+
+    if (nick.isEmpty()) {
+        QMessageBox::warning(this, tr("提示"), tr("昵称不能为空。"));
+        ui->nick_edit->setFocus();
+        return;
+    }
+    if (nick.length() > 64) {
+        QMessageBox::warning(this, tr("提示"), tr("昵称不能超过 64 个字符。"));
+        ui->nick_edit->setFocus();
+        return;
+    }
+    if (desc.length() > 512) {
+        QMessageBox::warning(this, tr("提示"), tr("个性签名不能超过 512 个字符。"));
+        ui->desc_edit->setFocus();
+        return;
+    }
+
+    QJsonObject jsonObj;
+    jsonObj["uid"] = UserMgr::instance()->GetUid();
+    jsonObj["token"] = UserMgr::instance()->GetToken();
+    jsonObj["nick"] = nick;
+    jsonObj["desc"] = desc;
+    jsonObj["sex"] = ui->sex_combo->currentIndex();
+
+    ui->submit_btn->setEnabled(false);
+    ui->submit_btn->setText(tr("保存中…"));
+
+    HttpMgr::instance()->PostHttpReq(QUrl(gate_url_prefix + "/user_update_info"),
+                                     jsonObj, ReqId::ID_UPDATE_USER_INFO, Modules::LOGINMOD);
+}
+
+void UserInfoPage::slot_update_finish(ReqId id, QString res, ErrorCodes err) {
+    if (id != ReqId::ID_UPDATE_USER_INFO) {
+        return;
+    }
+
+    ui->submit_btn->setEnabled(true);
+    ui->submit_btn->setText(tr("保存"));
+
+    if (err != ErrorCodes::SUCCESS) {
+        QMessageBox::warning(this, tr("保存失败"), tr("网络异常，请稍后重试。"));
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(res.toUtf8());
+    if (!doc.isObject()) {
+        QMessageBox::warning(this, tr("保存失败"), tr("服务器返回数据异常。"));
+        return;
+    }
+
+    const QJsonObject obj = doc.object();
+    const int code = obj.value("error").toInt(-1);
+    if (code != 0) {
+        QMessageBox::warning(this, tr("保存失败"),
+                             tr("服务器拒绝了本次修改（错误码 %1）。").arg(code));
+        return;
+    }
+
+    auto info = UserMgr::instance()->GetUserInfo();
+    if (info) {
+        info->_nick = obj.value("nick").toString(ui->nick_edit->text().trimmed());
+        info->_desc = obj.value("desc").toString(ui->desc_edit->text().trimmed());
+        info->_sex = obj.value("sex").toInt(ui->sex_combo->currentIndex());
+    }
+
+    QMessageBox::information(this, tr("已保存"), tr("个人资料已更新。"));
 }
 
 void UserInfoPage::slot_up_btn() {

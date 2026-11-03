@@ -16,6 +16,7 @@ namespace Ui {
 
 QT_END_NAMESPACE
 struct UserInfo;
+class QPushButton;
 class FriendInfoPage : public QWidget {
     Q_OBJECT
 
@@ -34,9 +35,11 @@ private:
 
     std::shared_ptr<UserInfo> _user_info;
     Ui::FriendInfoPage *ui;
+    QPushButton *_delete_btn{nullptr};
 
 signals:
     void sig_jump_chat_item(std::shared_ptr<UserInfo> si);
+    void sig_delete_friend(int uid);
 };
 
 

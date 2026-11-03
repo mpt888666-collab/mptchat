@@ -1,4 +1,4 @@
-﻿//
+//
 // Created by mpt on 2026/6/28.
 //
 
@@ -7,13 +7,14 @@
 #include "logindialog.h"
 #include "ui_LoginDialog.h"
 #include <QKeyEvent>
+#include <QRegularExpression>
 
 #include "TCPFileMgr.h"
 
 LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), ui(new Ui::LoginDialog) {
     ui->setupUi(this);
     initHttpHandlers();
-    ui->tx_label->setPixmap(QPixmap(":/images/res/tx.jpg"));
+    ui->tx_label->setPixmap(QPixmap(":/images/res/chat.png"));
 
     ui->pass_visible->SetState("unvisible","","","visible",
                             "","");
@@ -44,6 +45,10 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent), ui(new Ui::LoginDia
         checkUserValid();
     });
 
+    connect(ui->email_edit, &QLineEdit::editingFinished, this, [this]() {
+        checkEmailValid();
+    });
+
     connect(this, &LoginDialog::sig_connect_tcp, TCPMgr::instance().get(), &TCPMgr::slot_tcp_connect);
     connect(TCPMgr::instance().get(), &TCPMgr::sig_connect_success, this, &LoginDialog::slot_tcp_con_finish);
     connect(TCPFileMgr::instance().get(), &TCPFileMgr::sig_con_success, this, &LoginDialog::slot_res_tcp_con_finish);
@@ -64,6 +69,10 @@ void LoginDialog::slot_forget_pwd() {
 
 void LoginDialog::slot_login() {
     qDebug()<<"login btn clicked";
+
+    if(checkEmailValid() == false){
+        return;
+    }
     if(checkUserValid() == false){
         return;
     }
@@ -74,8 +83,7 @@ void LoginDialog::slot_login() {
 
     auto user = ui->user_edit->text();
     auto pwd = ui->pass_edit->text();
-    auto email = ui->email_edit->text();
-    //鍙戦€乭ttp璇锋眰鐧诲綍
+    auto email = ui->email_edit->text().trimmed();
     QJsonObject json_obj;
     json_obj["user"] = user;
     json_obj["passwd"] = pwd;
@@ -93,6 +101,34 @@ bool LoginDialog::checkUserValid(){
         return false;
     }
 
+    return true;
+}
+
+bool LoginDialog::checkEmailValid(){
+    auto email = ui->email_edit->text().trimmed();
+
+    if(email.isEmpty()){
+        qDebug() << "Email empty";
+        AddTipErr(TipErr::TIP_EMAIL_EMPTY, tr("邮箱不能为空"));
+        return false;
+    }
+
+    if(email.length() > 64){
+        qDebug() << "Email too long";
+        AddTipErr(TipErr::TIP_EMAIL_ERR, tr("邮箱长度不能超过64个字符"));
+        return false;
+    }
+
+    static const QRegularExpression email_re(
+        R"(^[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}$)");
+    if(!email_re.match(email).hasMatch()){
+        qDebug() << "Email format invalid";
+        AddTipErr(TipErr::TIP_EMAIL_ERR, tr("邮箱格式不正确"));
+        return false;
+    }
+
+    DelTipErr(TipErr::TIP_EMAIL_EMPTY);
+    DelTipErr(TipErr::TIP_EMAIL_ERR);
     return true;
 }
 
@@ -152,7 +188,12 @@ void LoginDialog::slot_login_mod_finish(ReqId id, QString res, ErrorCodes err) {
     }
     qDebug() << "this id is " << id;
 
-    _handlers[id](jsonDoc.object());
+    auto it = _handlers.find(id);
+    if (it == _handlers.end()) {
+        // 其他模块（如资料页）的请求也会走这个信号，未知 id 直接忽略
+        return;
+    }
+    it.value()(jsonDoc.object());
 
     return;
 }

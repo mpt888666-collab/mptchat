@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include "userdata.h"
+class QPushButton;
 
 QT_BEGIN_NAMESPACE
 
@@ -36,9 +37,11 @@ private:
 
     std::shared_ptr<ApplyInfo> _apply_info;
     bool _added;
+    QPushButton *_reject_btn{nullptr};
 
 signals:
     void sig_auth_friend(std::shared_ptr<ApplyInfo> apply_info);
+    void sig_reject_friend(std::shared_ptr<ApplyInfo> apply_info);
 };
 
 

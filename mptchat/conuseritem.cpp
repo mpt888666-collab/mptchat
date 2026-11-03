@@ -31,6 +31,15 @@ void ConUserItem::SetInfo(int uid, const QString& name, const QString& icon) {
     ui->user_name_label->setText(_info->_name);
 }
 
+void ConUserItem::SetInfo(std::shared_ptr<UserInfo> user_info) {
+    _info = std::move(user_info);
+    if (!_info) {
+        return;
+    }
+    UserMgr::SetLabelAvatar(ui->icon_label, _info->_icon);
+    // 列表里仍然显示登录名，保持原有展示习惯
+    ui->user_name_label->setText(_info->_name);
+}
 void ConUserItem::SetInfo(std::shared_ptr<AuthInfo> auth_info)
 {
     _info = std::make_shared<UserInfo>(auth_info);

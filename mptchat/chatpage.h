@@ -48,6 +48,8 @@ public:
     void SetTitleName(QString name);
 
     void setGroupUids(const QVector<int> &uids);
+    void setGroupOwner(int owner_uid) { _group_owner_uid = owner_uid; }
+    void RefreshGroupInfo();
 
     // private chat: _user_info is set; group chat: _group_members_uid is not empty.
     // Both empty means there is no usable conversation, so nothing may be rendered or sent.
@@ -85,6 +87,7 @@ signals:
     void sigPartialText(QString text);
     void sigSentence(QString text);
     void sigInitFinished(bool ok);
+    void sig_clear_chat_requested(int thread_id);
 private:
     QPixmap loadAvatarPixmap(const QString &iconFileName) const;
     void showAsrPreview(const QString &text);
@@ -103,6 +106,7 @@ private:
     std::shared_ptr<ChatThreadData> _chat_data;
     QMap<QString, QList<PictureBubble*>> _pending_pictures;
     QVector<int> _group_members_uid;
+    int _group_owner_uid{0};
     ChatFriendInfoShow * _private_info{nullptr};
     ChatGroupInfoShow * _group_info{nullptr};
     AudioRecorder *_recorder{nullptr};

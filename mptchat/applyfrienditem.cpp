@@ -15,6 +15,19 @@ ApplyFriendItem::ApplyFriendItem(QWidget *parent) : QWidget(parent), ui(new Ui::
 
     ui->already_add_label->hide();
 
+    _reject_btn = new QPushButton(QStringLiteral("拒绝"), this);
+    _reject_btn->setObjectName("rejectFriendBtn");
+    _reject_btn->setFixedSize(56, 28);
+    _reject_btn->setCursor(Qt::PointingHandCursor);
+    _reject_btn->setStyleSheet(QStringLiteral(
+        "QPushButton#rejectFriendBtn{border:1px solid #d9d9d9;border-radius:6px;"
+        "background:#ffffff;color:#666666;font-size:13px;}"
+        "QPushButton#rejectFriendBtn:hover{background:#f5f5f5;}"));
+    ui->horizontalLayout_2->insertWidget(ui->horizontalLayout_2->indexOf(ui->add_btn), _reject_btn);
+    connect(_reject_btn, &QPushButton::clicked, this, [this]() {
+        emit sig_reject_friend(_apply_info);
+    });
+
     connect(ui->add_btn, &QPushButton::clicked,  [this](){
         emit this->sig_auth_friend(_apply_info);
     });
@@ -40,11 +53,13 @@ void ApplyFriendItem::ShowAddBtn(bool bshow)
 {
     if (bshow) {
         ui->add_btn->show();
+        if (_reject_btn) _reject_btn->show();
         ui->already_add_label->hide();
         _added = false;
     }
     else {
         ui->add_btn->hide();
+        if (_reject_btn) _reject_btn->hide();
         ui->already_add_label->show();
         _added = true;
     }

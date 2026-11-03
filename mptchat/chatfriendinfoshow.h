@@ -7,14 +7,7 @@
 
 #include <QDialog>
 
-
-QT_BEGIN_NAMESPACE
-
-namespace Ui {
-    class ChatFriendInfoShow;
-}
-
-QT_END_NAMESPACE
+class QLabel;
 
 class ChatFriendInfoShow : public QDialog {
     Q_OBJECT
@@ -24,13 +17,15 @@ public:
 
     ~ChatFriendInfoShow() override;
 
-    void SetPrivateChatInfo(const QString& icon);
+    void SetPrivateChatInfo(const QString &name, const QString &icon, int uid);
+
+signals:
+    void sig_clear_chat_requested();
 
 private:
-    Ui::ChatFriendInfoShow *ui;
-
-    QString _icon;
+    QLabel *_avatar_label{nullptr};
+    QLabel *_name_label{nullptr};
+    QLabel *_uid_label{nullptr};
 };
-
 
 #endif //MPTCHAT_CHATFRIENDINFOSHOW_H
