@@ -140,7 +140,7 @@ sequenceDiagram
 | 语言标准 | C++20（服务端）、C++17（Qt 客户端，由 Qt 6 要求）、JavaScript（验证码服务）、Python（压测工具） |
 | 网络 | Boost.Asio（多 Reactor + 线程池）、TCP 长连接、HTTP、自定义二进制帧协议 |
 | RPC | gRPC + Protocol Buffers（服务间通信与消息互推） |
-| 存储 | MySQL（8 张表，utf8mb4）、Redis（验证码 / Token / 在线路由 / 计数） |
+| 存储 | MySQL（9 张表，utf8mb4）、Redis（验证码 / Token / 在线路由 / 计数） |
 | 客户端 | Qt 6（Widgets、Network、Multimedia、QSS、QThread、信号槽） |
 | 端侧推理 | sherpa-onnx + 流式 Zipformer（int8）+ ONNX Runtime |
 | 构建 | CMake ≥ 3.25、vcpkg（清单模式）、MSVC 2022 / GCC |
@@ -231,11 +231,11 @@ done
 ### 4.4 准备 MySQL 与 Redis
 
 ```bash
-# 建库 + 导入表结构（8 张表）
+# 建库 + 导入表结构（9 张表）
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS chatdb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p --default-character-set=utf8mb4 chatdb < db/schema.sql
 
-# 校验，应输出 8
+# 校验，应输出 9
 mysql -u root -p -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='chatdb';"
 
 # 启动 Redis（Windows 下把可执行文件目录加入 PATH 后同样命令）
@@ -244,16 +244,17 @@ redis-server
 
 字段明细见下面 4.5；完整建表脚本在 [`db/schema.sql`](db/schema.sql)。
 
-### 4.5 数据库表结构（8 张表）
+### 4.5 数据库表结构（9 张表）
 
 `schema.sql` 由 `mysqldump --no-data` 导出（MySQL 8，字符集 `utf8mb4`），
-开头会 `DROP TABLE IF EXISTS`，可以直接重复执行。8 张表按用途分三组：
+开头会 `DROP TABLE IF EXISTS`，可以直接重复执行。9 张表按用途分三组：
 
 | 分组 | 表 | 作用 |
 | --- | --- | --- |
 | 账号 | `user` | 账号、昵称、密码、头像 |
 | 好友 | `friend` / `friend_apply` | 好友关系 / 好友申请 |
 | 会话与消息 | `chat_thread` / `private_chat` / `group_chat` / `group_chat_member` / `chat_message` | 会话索引 / 单聊 / 群聊 / 群成员 / 消息明细 |
+| 消息状态 | `chat_clear_history` | 每个用户在每个会话中已清空到的 `message_id`（按用户软删除） |
 
 **`user` — 账号**
 
@@ -543,6 +544,33 @@ ChatServer 38% / 54% / 92%，GetServer 27% / 62% / 72%，StatusServer 33% / 46% 
 - 只覆盖了登录 / 长连接 / 心跳 / 私聊文本，图片消息（走 ResourceServer）和群聊还没压。
 - 均衡策略是「当前在线数最小者」，短连接风暴下会集中到同一实例。
 
+### 8.1 CI（`.github/workflows/ci.yml`）
+
+推送到 `main` / `master` 或开 PR 时触发，三个 job：
+
+| Job | 作用 |
+| --- | --- |
+| `MySQL schema check` | 起一个 `mysql:8.0` service 容器，建 `chatdb`，导入 `db/schema.sql`，断言 `information_schema` 里正好 9 张表 —— 防止建表脚本被改坏 |
+| `sync` | 比对 `ChatServer` 与 `ChatServer2` 的 12 个共享源文件，只要有一处不一致就直接失败，防止两份部署跑偏 |
+| `build`（矩阵：`windows-2022` + `ubuntu-latest`） | 双平台 Release 构建 5 个服务。Windows 用 MSVC（自定义 triplet `x64-windows-release`，只编 Release）、Linux 用 GCC + Ninja（`x64-linux`） |
+
+vcpkg 依赖用 `actions/cache` 缓存 `installed/` + binary cache + downloads：首次编译 gRPC 等依赖约 30–60 分钟，
+命中缓存后 1–3 分钟。构建产物通过 `upload-artifact` 留存。
+
+### 8.2 Release（`.github/workflows/release.yml`）
+
+打 `v*` tag 触发（也可手动 `workflow_dispatch`）：
+
+1. 双平台 Release 构建；
+2. 收集 5 个可执行文件 + 各自的 `config.ini.example` + `db/` + `bench/`（Windows 包内额外附带 vcpkg 依赖的 DLL）；
+3. 打包成 `chatdemo-windows-x64.zip` / `chatdemo-linux-x64.zip`；
+4. 用 `softprops/action-gh-release` 自动发 GitHub Release 并附上两个 zip。
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
 ## 八、工程实践与踩坑记录
 
 1. **同步日志是最贵的开销**：心跳里的 `std::cout << ... << std::endl` 每次强制刷新，
@@ -567,7 +595,7 @@ mptchat/
 ├── VarifyServer/            # Node.js 验证码服务：gRPC :50051 + nodemailer 发邮件
 ├── mptchat/                 # Qt 6 桌面客户端（界面 / 网络 / 端侧语音识别）
 ├── db/
-│   ├── schema.sql           # 8 张表的建表脚本（mysqldump --no-data 导出）
+│   ├── schema.sql           # 9 张表的建表脚本（mysqldump --no-data 导出）
 │   ├── seed_bench_users.sql # 压测账号 bench0001..bench1000
 │   └── README.md            # 表结构说明与导入步骤
 ├── bench/

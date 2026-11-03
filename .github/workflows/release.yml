@@ -5,29 +5,34 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch:
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
 env:
+  # 和 ci.yml 保持一致：钉死 vcpkg 版本，避免 master 漂移导致依赖 ABI 变化
+  VCPKG_REF: "0699a19d0c6386247ce50d4dedbb8217d484d536"
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
 
 jobs:
   build-release:
     name: package (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 180
+    timeout-minutes: 240
     strategy:
       fail-fast: false
       matrix:
         include:
+          # windows-latest 现在是 VS 18(MSVC 14.51)，编 gRPC 会挂，必须钉 2022
           - name: windows-x64
-            os: windows-latest
-            triplet: x64-windows
-            generator: "Visual Studio 17 2022"
+            os: windows-2022
+            triplet: x64-windows-release
           - name: linux-x64
             os: ubuntu-latest
             triplet: x64-linux
-            generator: "Ninja"
     env:
       VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
       VCPKG_BINARY_SOURCES: "clear;files,${{ github.workspace }}/vcpkg-cache,readwrite"
@@ -37,30 +42,72 @@ jobs:
       - name: Install Linux toolchain
         if: runner.os == 'Linux'
         run: |
+          set -e
           sudo apt-get update
-          sudo apt-get install -y ninja-build build-essential zip
+          sudo apt-get install -y ninja-build build-essential libtirpc-dev \
+            autoconf automake libtool bison flex pkg-config zip
 
-      - name: Cache vcpkg
-        uses: actions/cache@v4
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-Command ninja -ErrorAction SilentlyContinue)) {
+            choco install ninja -y --no-progress
+          }
+          ninja --version
+
+      - name: Runner image version
+        id: image
+        shell: bash
+        run: echo "version=${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore vcpkg cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             ${{ env.VCPKG_ROOT }}/installed
             ${{ github.workspace }}/vcpkg-cache
-          key: vcpkg-${{ matrix.name }}-${{ hashFiles('vcpkg.json') }}
-          restore-keys: vcpkg-${{ matrix.name }}-
+          key: vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-${{ steps.image.outputs.version }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: |
+            vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-
+            vcpkg-${{ matrix.name }}-
 
       - name: Bootstrap vcpkg
         shell: bash
         run: |
           set -e
           mkdir -p "${{ github.workspace }}/vcpkg-cache"
-          if [ ! -d "$VCPKG_ROOT" ]; then
-            git clone --depth 1 https://github.com/microsoft/vcpkg.git "$VCPKG_ROOT"
+          if [ ! -f "$VCPKG_ROOT/bootstrap-vcpkg.sh" ] || [ "$(git -C "$VCPKG_ROOT" rev-parse HEAD 2>/dev/null)" != "$VCPKG_REF" ]; then
+            rm -rf "$VCPKG_ROOT"
+            git init -q "$VCPKG_ROOT"
+            git -C "$VCPKG_ROOT" remote add origin https://github.com/microsoft/vcpkg.git
+            git -C "$VCPKG_ROOT" fetch --depth 1 -q origin "$VCPKG_REF"
+            git -C "$VCPKG_ROOT" checkout -q --detach FETCH_HEAD
           fi
+          echo "vcpkg commit = $(git -C "$VCPKG_ROOT" rev-parse HEAD)"
           if [ "$RUNNER_OS" = "Windows" ]; then
             "$VCPKG_ROOT/bootstrap-vcpkg.bat" -disableMetrics
           else
             "$VCPKG_ROOT/bootstrap-vcpkg.sh" -disableMetrics
+          fi
+
+      - name: Install vcpkg dependencies
+        shell: bash
+        run: |
+          set -eo pipefail
+          cd "$GITHUB_WORKSPACE"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} \
+              --overlay-triplets="$GITHUB_WORKSPACE/ci/triplets" --clean-after-build
+          else
+            VCPKG_FORCE_SYSTEM_BINARIES=1 "$VCPKG_ROOT/vcpkg" install --triplet ${{ matrix.triplet }} --clean-after-build
           fi
 
       - name: Build Release
@@ -68,14 +115,18 @@ jobs:
         run: |
           set -e
           for svc in StatusServer GetServer ChatServer ChatServer2 ResourceServer; do
+            echo "::group::build $svc"
             cmake -S "$svc" -B "build/$svc" \
-              -G "${{ matrix.generator }}" \
+              -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_MAKE_PROGRAM=ninja \
               -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
               -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }} \
-              -DVCPKG_MANIFEST_DIR="$PWD" \
+              -DVCPKG_OVERLAY_TRIPLETS="$GITHUB_WORKSPACE/ci/triplets" \
+              -DVCPKG_MANIFEST_DIR="$GITHUB_WORKSPACE" \
               -DVCPKG_INSTALLED_DIR="$VCPKG_ROOT/installed"
             cmake --build "build/$svc" --config Release --parallel
+            echo "::endgroup::"
           done
 
       - name: Collect artifacts (Linux)
@@ -101,8 +152,20 @@ jobs:
             Copy-Item $exe.FullName "dist/$svc.exe"
             Copy-Item "$svc/config.ini.example" "dist/$svc.config.ini.example"
           }
+          # 把 vcpkg 依赖的 DLL 一起打进去，解压后双击就能跑，不用再装运行库
+          $bin = "$env:VCPKG_ROOT/installed/${{ matrix.triplet }}/bin"
+          if (Test-Path $bin) { Copy-Item "$bin/*.dll" dist -Force }
           Copy-Item db, bench -Destination dist -Recurse
           Compress-Archive -Path dist/* -DestinationPath "chatdemo-${{ matrix.name }}.zip" -Force
+
+      - name: Save vcpkg cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            ${{ env.VCPKG_ROOT }}/installed
+            ${{ github.workspace }}/vcpkg-cache
+          key: vcpkg-${{ matrix.name }}-${{ env.VCPKG_REF }}-${{ steps.image.outputs.version }}-${{ hashFiles('vcpkg.json') }}-${{ github.run_id }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -114,6 +177,7 @@ jobs:
     needs: build-release
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -128,5 +192,6 @@ jobs:
 
             包含 StatusServer / GetServer / ChatServer / ChatServer2 / ResourceServer 五个服务，
             以及 `config.ini.example` 配置模板、`db/schema.sql` 建表脚本与 `bench/` 压测工具。
+            Windows 包内已附带 vcpkg 依赖 DLL，解压即可运行。
 
-            快速开始见 [README](../README.md)。
+            快速开始见 [README](https://github.com/mpt888666-collab/mptchat/blob/main/README.md)。

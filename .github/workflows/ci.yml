@@ -22,7 +22,7 @@ env:
 
 jobs:
   # ---------------------------------------------------------------------------
-  # 1) 建表脚本可在 MySQL 8 上干净执行（8 张表）
+  # 1) 建表脚本可在 MySQL 8 上干净执行（9 张表）
   # ---------------------------------------------------------------------------
   schema:
     name: MySQL schema check
@@ -55,10 +55,36 @@ jobs:
           n=$(mysql -h127.0.0.1 -uroot -proot -N \
               -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='chatdb';")
           echo "chatdb tables = $n"
-          test "$n" -eq 8
+          test "$n" -eq 9
 
   # ---------------------------------------------------------------------------
-  # 2) Windows / Linux 双平台 Release 构建（统一用 Ninja）
+  # 2) ChatServer 与 ChatServer2 是同一份代码的两份部署，改一边忘另一边
+  #    就会出现"1 服能用 2 服不行为"的问题，这里直接卡住
+  # ---------------------------------------------------------------------------
+  sync:
+    name: ChatServer / ChatServer2 sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shared sources must be identical
+        run: |
+          set -e
+          files="const.h message.proto LogicSystem.cpp LogicSystem.h \
+                 MysqlMgr.cpp MysqlMgr.h ChatGrpcClient.cpp ChatGrpcClient.h \
+                 ChatServiceImpl.cpp ChatServiceImpl.h data.h CSession.h"
+          fail=0
+          for f in $files; do
+            if ! diff -q "ChatServer/$f" "ChatServer2/$f" > /dev/null; then
+              echo "::error file=ChatServer2/$f::与 ChatServer/$f 不一致，两边必须同步修改"
+              diff -u "ChatServer/$f" "ChatServer2/$f" | head -n 40 || true
+              fail=1
+            fi
+          done
+          if [ "$fail" -ne 0 ]; then exit 1; fi
+          echo "共享文件全部一致"
+  # ---------------------------------------------------------------------------
+  # 3) Windows / Linux 双平台 Release 构建（统一用 Ninja）
   #    Windows 钉在 windows-2022：windows-latest 现在换成 VS 18(MSVC 14.51)，
   #    跟本机 VS 2022 差太多，会编挂 gRPC 的头文件
   #    vcpkg 首次要从源码编 gRPC / Boost，约 1-2 小时；命中二进制缓存后 1-3 分钟
