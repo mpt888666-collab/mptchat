@@ -53,6 +53,19 @@ enum MSG_IDS {
     ID_CREATE_GROUP_CHAT_REQ = 1045,
     ID_CREATE_GROUP_CHAT_RSP = 1046,
     ID_NOTIFY_CREATE_GROUP_CHAT_RSP = 1047,
+    ID_CLEAR_CHAT_MSG_REQ = 1050,     //清空会话聊天记录请求
+    ID_CLEAR_CHAT_MSG_RSP = 1051,     //清空会话聊天记录回复
+    ID_DELETE_FRIEND_REQ = 1060,      //删除好友请求
+    ID_DELETE_FRIEND_RSP = 1061,      //删除好友回复
+    ID_ADD_GROUP_MEMBER_REQ = 1062,   //邀请好友入群请求
+    ID_ADD_GROUP_MEMBER_RSP = 1063,   //邀请好友入群回复
+    ID_KICK_GROUP_MEMBER_REQ = 1064,  //群主踢人请求
+    ID_KICK_GROUP_MEMBER_RSP = 1065,  //群主踢人回复
+    ID_REJECT_FRIEND_REQ = 1066,      //拒绝好友申请请求
+    ID_REJECT_FRIEND_RSP = 1067,      //拒绝好友申请回复
+    ID_NOTIFY_FRIEND_DELETED = 1068,  //通知好友关系已删除
+    ID_NOTIFY_GROUP_MEMBERS_CHANGED = 1069, //通知群成员变化
+    ID_NOTIFY_GROUP_KICKED = 1070,    //通知被移出群聊
 };
 
 enum ErrorCodes {
@@ -72,6 +85,13 @@ enum ErrorCodes {
     CREATE_CHAT_FAILED,
     LOAD_CHAT_FAILED,
     CREATE_GROUP_FAILED,
+    CLEAR_CHAT_FAILED,
+    FRIEND_NOT_EXIST,
+    FRIEND_APPLY_NOT_EXIST,
+    GROUP_NOT_EXIST,
+    GROUP_NO_PERMISSION,
+    GROUP_MEMBER_NOT_EXIST,
+    GROUP_OWNER_CANNOT_KICK,
 };
 
 enum MsgStatus {

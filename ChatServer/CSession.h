@@ -46,6 +46,10 @@ public:
         _user_uid = uid;
     }
 
+    int GetUserId() const {
+        return _user_uid;
+    }
+
     void Send(std::string, short);
 
     void HandleWrite(const boost::system::error_code& error, std::shared_ptr<CSession>);

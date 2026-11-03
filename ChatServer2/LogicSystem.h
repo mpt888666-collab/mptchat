@@ -13,6 +13,7 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include <vector>
 class CServer;
 class LogicNode;
 class CSession;
@@ -30,7 +31,7 @@ public:
 
     void PostMsgToQue(std::shared_ptr<LogicNode> msg);
 
-    bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo> user_info);
+    bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& user_info);
 
     void SetServer(std::shared_ptr<CServer> pserver);
 
@@ -64,6 +65,11 @@ private:
     void NotifyFileChatMsg(int from_uid, int to_uid, int thread_id, int message_id,
         const std::string& unique_id, const std::string& unique_name,
         const std::string& md5, const std::string& chat_time, int status, int type, int total_size);
+
+    void PushFriendDeleted(int target_uid, int from_uid);
+    void PushGroupMembersChanged(int target_uid, int thread_id, int owner_uid,
+        const std::vector<int>& members, int new_uid);
+    void PushGroupKicked(int target_uid, int thread_id);
 };
 
 

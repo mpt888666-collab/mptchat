@@ -49,6 +49,12 @@ public:
     message::ImageChatMsgRsp NotifyImageChatMsg(std::string server_ip, const message::ImageChatMsgReq& req);
     message::KickUserRsp NotifyKickUser(std::string server_ip, const message::KickUserReq& req);
     message::AddGroupChatRsp NotifyAddGroupChat(std::string server_ip, const message::AddGroupChatReq &req);
+    message::FriendDeletedRsp NotifyFriendDeleted(std::string server_ip,
+        const message::FriendDeletedReq& req);
+    message::GroupMembersChangedRsp NotifyGroupMembersChanged(std::string server_ip,
+        const message::GroupMembersChangedReq& req);
+    message::GroupKickedRsp NotifyGroupKicked(std::string server_ip,
+        const message::GroupKickedReq& req);
 private:
     ChatGrpcClient();
     std::unordered_map<std::string, std::unique_ptr<ChatConPool>> _pools;

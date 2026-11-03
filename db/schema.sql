@@ -27,6 +27,18 @@ CREATE TABLE `chat_message` (
   KEY `idx_thread_message` (`thread_id`,`message_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `chat_clear_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `chat_clear_history` (
+  `user_id` bigint unsigned NOT NULL COMMENT '清空操作发起人',
+  `thread_id` bigint unsigned NOT NULL COMMENT '会话 id',
+  `cleared_before` bigint unsigned NOT NULL DEFAULT '0' COMMENT '小于等于该 message_id 的消息对该用户不可见',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`,`thread_id`),
+  KEY `idx_thread_user` (`thread_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
 DROP TABLE IF EXISTS `chat_thread`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

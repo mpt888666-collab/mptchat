@@ -24,7 +24,12 @@ enum ErrorCodes {
     ModifyPassErr = 1008,
     ModifyLoginErr = 1009,
     RPCGetFailed = 1010,
+    TokenInvalid = 1011,
+    UserUpdateFailed = 1012,
 };
+
+#define USERTOKENPREFIX "utoken_"
+#define USER_BASE_INFO "ubaseinfo_"
 
 class ConfigMgr;
 extern ConfigMgr gCfgMgr;

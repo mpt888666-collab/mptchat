@@ -210,7 +210,8 @@ public:
     bool AddChatMsg(std::vector<std::shared_ptr<ChatMessage>> &chat_datas);
     bool AddChatMsg(std::shared_ptr<ChatMessage> chat_msg);
 
-    std::shared_ptr<PageResult> LoadChatMsg(int thread_id, int message_id, int page_size);
+    std::shared_ptr<PageResult> LoadChatMsg(int user_id, int thread_id, int message_id, int page_size);
+    bool ClearChatMsg(int user_id, int thread_id);
     bool IsGroupThread(int thread_id);
     bool GetGroupMembers(int thread_id, std::vector<int>& members);
 
@@ -220,9 +221,22 @@ public:
 
     bool AuthFriendApply(int from, int to);
 
+    bool RejectFriendApply(int from_uid, int to_uid);
+
+    bool DeleteFriend(int me_uid, int peer_uid);
+
     bool AddFriend(int me_uid, int peer_uid, const std::string &back_name);
 
     bool CreateGroupChat(uint64_t host_uid, const std::vector<int>& members, int& thread_id);
+
+    bool GetGroupMemberRole(int thread_id, int uid, int& role);
+
+    bool GetGroupOwnerId(int thread_id, int& owner_uid);
+
+    bool AddGroupMembers(int thread_id, const std::vector<int>& members,
+                         std::vector<int>& added_members);
+
+    bool RemoveGroupMember(int thread_id, int uid);
 
 
 private:

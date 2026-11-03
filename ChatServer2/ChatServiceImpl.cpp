@@ -16,6 +16,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 using json = nlohmann::json;
 ChatServiceImpl::ChatServiceImpl() {
 
@@ -232,9 +233,80 @@ grpc::Status ChatServiceImpl::NotifyAddGroupChat(grpc::ServerContext* context,co
     }
 
     session->Send(notify.dump(), ID_NOTIFY_CREATE_GROUP_CHAT_RSP);
-    _p_server->ClearSession(session->GetSessionId());
-    std::cout << "kftr" << std::endl;
 
+    return grpc::Status::OK;
+}
+
+grpc::Status ChatServiceImpl::NotifyFriendDeleted(grpc::ServerContext* context,
+    const message::FriendDeletedReq* request, message::FriendDeletedRsp* response) {
+    (void)context;
+    const int uid = request->uid();
+    auto session = UserMgr::GetInstance()->getSession(uid);
+    if (session) {
+        json notify;
+        notify["error"] = ErrorCodes::Success;
+        notify["peer_uid"] = request->peer_uid();
+        session->Send(notify.dump(), ID_NOTIFY_FRIEND_DELETED);
+    }
+
+    response->set_error(ErrorCodes::Success);
+    response->set_uid(uid);
+    response->set_peer_uid(request->peer_uid());
+    return grpc::Status::OK;
+}
+
+grpc::Status ChatServiceImpl::NotifyGroupMembersChanged(grpc::ServerContext* context,
+    const message::GroupMembersChangedReq* request,
+    message::GroupMembersChangedRsp* response) {
+    (void)context;
+    const int uid = request->uid();
+    auto session = UserMgr::GetInstance()->getSession(uid);
+    if (session) {
+        json notify;
+        notify["error"] = ErrorCodes::Success;
+        notify["thread_id"] = request->thread_id();
+        notify["owner_uid"] = request->owner_uid();
+        notify["uid"] = uid;
+        notify["is_new_member"] = request->is_new_member();
+        notify["members"] = json::array();
+        notify["member_infos"] = json::array();
+
+        for (const auto& member : request->members_uid()) {
+            const int member_uid = member.uid();
+            notify["members"].push_back(member_uid);
+            json info;
+            info["uid"] = member_uid;
+            auto user_info = MysqlMgr::GetInstance()->GetUserInfoById(member_uid);
+            if (user_info) {
+                info["name"] = user_info->username;
+                info["nick"] = user_info->nick;
+                info["icon"] = user_info->icon;
+            }
+            notify["member_infos"].push_back(info);
+        }
+        session->Send(notify.dump(), ID_NOTIFY_GROUP_MEMBERS_CHANGED);
+    }
+
+    response->set_error(ErrorCodes::Success);
+    response->set_thread_id(request->thread_id());
+    return grpc::Status::OK;
+}
+
+grpc::Status ChatServiceImpl::NotifyGroupKicked(grpc::ServerContext* context,
+    const message::GroupKickedReq* request, message::GroupKickedRsp* response) {
+    (void)context;
+    const int uid = request->uid();
+    auto session = UserMgr::GetInstance()->getSession(uid);
+    if (session) {
+        json notify;
+        notify["error"] = ErrorCodes::Success;
+        notify["thread_id"] = request->thread_id();
+        session->Send(notify.dump(), ID_NOTIFY_GROUP_KICKED);
+    }
+
+    response->set_error(ErrorCodes::Success);
+    response->set_uid(uid);
+    response->set_thread_id(request->thread_id());
     return grpc::Status::OK;
 }
 

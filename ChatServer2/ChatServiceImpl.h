@@ -34,6 +34,16 @@ public:
     grpc::Status NotifyAddGroupChat(grpc::ServerContext* context,
         const message::AddGroupChatReq* request, message::AddGroupChatRsp* response) override;
 
+    grpc::Status NotifyFriendDeleted(grpc::ServerContext* context,
+        const message::FriendDeletedReq* request, message::FriendDeletedRsp* response) override;
+
+    grpc::Status NotifyGroupMembersChanged(grpc::ServerContext* context,
+        const message::GroupMembersChangedReq* request,
+        message::GroupMembersChangedRsp* response) override;
+
+    grpc::Status NotifyGroupKicked(grpc::ServerContext* context,
+        const message::GroupKickedReq* request, message::GroupKickedRsp* response) override;
+
     void RegisterServer(std::shared_ptr<CServer> pServer);
 
     bool GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo> &userinfo);

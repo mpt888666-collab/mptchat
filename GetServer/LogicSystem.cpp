@@ -237,6 +237,68 @@ LogicSystem::LogicSystem() {
             return;
         }
     });
+
+    RegPost("/user_update_info", [](std::shared_ptr<HttpConnection> connection) {
+        std::string data = boost::beast::buffers_to_string(connection->_request.body().data());
+        json root;
+        try {
+            json req_json = json::parse(data);
+            int uid = req_json.value("uid", 0);
+            std::string token = req_json.value("token", std::string{});
+            std::string nick = req_json.value("nick", std::string{});
+            std::string desc = req_json.value("desc", std::string{});
+            int sex = req_json.value("sex", -1);
+
+            if (uid <= 0 || token.empty()) {
+                root["error"] = ErrorCodes::TokenInvalid;
+                boost::beast::ostream(connection->_response.body()) << root.dump();
+                return;
+            }
+
+            // 和 ChatServer 使用同一份 Redis token，防止改别人的资料
+            std::string cached_token;
+            if (!RedisMgr::GetInstance()->Get(USERTOKENPREFIX + std::to_string(uid), cached_token)
+                || cached_token != token) {
+                root["error"] = ErrorCodes::TokenInvalid;
+                boost::beast::ostream(connection->_response.body()) << root.dump();
+                return;
+            }
+
+            // 与 user 表字段长度保持一致（字符数）
+            if (sex != 0 && sex != 1) {
+                root["error"] = ErrorCodes::Error_Json;
+                boost::beast::ostream(connection->_response.body()) << root.dump();
+                return;
+            }
+
+            if (nick.size() > 64 || desc.size() > 512) {
+                root["error"] = ErrorCodes::Error_Json;
+                boost::beast::ostream(connection->_response.body()) << root.dump();
+                return;
+            }
+
+            if (!MysqlMgr::GetInstance()->UpdateUserProfile(uid, nick, desc, sex)) {
+                root["error"] = ErrorCodes::UserUpdateFailed;
+                boost::beast::ostream(connection->_response.body()) << root.dump();
+                return;
+            }
+
+            // 清掉 ChatServer 缓存的用户基础信息，下次读取时回源 MySQL
+            RedisMgr::GetInstance()->Del(USER_BASE_INFO + std::to_string(uid));
+
+            root["error"] = 0;
+            root["uid"] = uid;
+            root["nick"] = nick;
+            root["desc"] = desc;
+            root["sex"] = sex;
+            boost::beast::ostream(connection->_response.body()) << root.dump();
+        } catch (const json::exception& e) {
+            std::cout << "user_update_info json param error" << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+            boost::beast::ostream(connection->_response.body()) << root.dump();
+            return;
+        }
+    });
 }
 
 LogicSystem::~LogicSystem() {

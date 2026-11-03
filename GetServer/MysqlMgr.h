@@ -180,6 +180,8 @@ public:
 
     bool ModifyPasswordByUserEmail(const std::string& username, const std::string& email, const std::string& newPwd);
 
+    bool UpdateUserProfile(int uid, const std::string& nick, const std::string& desc, int sex);
+
     // 登录校验：同时匹配 username + email + password，存在返回true
     bool CheckUserLogin(const std::string& username, const std::string& email, const std::string& password);
 

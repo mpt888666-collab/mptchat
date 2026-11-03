@@ -251,6 +251,78 @@ message::AddGroupChatRsp ChatGrpcClient::NotifyAddGroupChat(std::string server_i
         pool->returnConnection(std::move(stub));
         return rsp;
     }
+    pool->returnConnection(std::move(stub));
+    return rsp;
+}
+
+message::FriendDeletedRsp ChatGrpcClient::NotifyFriendDeleted(std::string server_ip,
+    const message::FriendDeletedReq& req) {
+    message::FriendDeletedRsp rsp;
+    rsp.set_error(ErrorCodes::Success);
+    rsp.set_uid(req.uid());
+    rsp.set_peer_uid(req.peer_uid());
+
+    auto iter = _pools.find(server_ip);
+    if (iter == _pools.end()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+        return rsp;
+    }
+
+    grpc::ClientContext context;
+    auto& pool = iter->second;
+    auto stub = pool->getConnection();
+    grpc::Status status = stub->NotifyFriendDeleted(&context, req, &rsp);
+    if (!status.ok()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+    }
+    pool->returnConnection(std::move(stub));
+    return rsp;
+}
+
+message::GroupMembersChangedRsp ChatGrpcClient::NotifyGroupMembersChanged(std::string server_ip,
+    const message::GroupMembersChangedReq& req) {
+    message::GroupMembersChangedRsp rsp;
+    rsp.set_error(ErrorCodes::Success);
+    rsp.set_thread_id(req.thread_id());
+
+    auto iter = _pools.find(server_ip);
+    if (iter == _pools.end()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+        return rsp;
+    }
+
+    grpc::ClientContext context;
+    auto& pool = iter->second;
+    auto stub = pool->getConnection();
+    grpc::Status status = stub->NotifyGroupMembersChanged(&context, req, &rsp);
+    if (!status.ok()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+    }
+    pool->returnConnection(std::move(stub));
+    return rsp;
+}
+
+message::GroupKickedRsp ChatGrpcClient::NotifyGroupKicked(std::string server_ip,
+    const message::GroupKickedReq& req) {
+    message::GroupKickedRsp rsp;
+    rsp.set_error(ErrorCodes::Success);
+    rsp.set_thread_id(req.thread_id());
+    rsp.set_uid(req.uid());
+
+    auto iter = _pools.find(server_ip);
+    if (iter == _pools.end()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+        return rsp;
+    }
+
+    grpc::ClientContext context;
+    auto& pool = iter->second;
+    auto stub = pool->getConnection();
+    grpc::Status status = stub->NotifyGroupKicked(&context, req, &rsp);
+    if (!status.ok()) {
+        rsp.set_error(ErrorCodes::RPCFailed);
+    }
+    pool->returnConnection(std::move(stub));
     return rsp;
 }
 

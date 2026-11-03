@@ -249,7 +249,7 @@ bool MysqlMgr::ModifyPasswordByUserEmail(const std::string& username, const std:
         }
 
         // 绑定3个字符串参数
-        MYSQL_BIND bind[3]{};
+        MYSQL_BIND bind[4]{};
         // 1. new password
         bind[0].buffer_type = MYSQL_TYPE_STRING;
         bind[0].buffer = (void*)newPwd.data();
@@ -406,4 +406,80 @@ bool MysqlMgr::CheckUserLoginImpl(const std::string& username,
 
     mysql_stmt_close(stmt);
     return succ;
+}
+
+
+bool MysqlMgr::UpdateUserProfile(int uid, const std::string& nick, const std::string& desc, int sex)
+{
+    if (uid <= 0)
+    {
+        return false;
+    }
+
+    auto connPtr = GetConn();
+    if (!connPtr)
+    {
+        std::cerr << "[UpdateUserProfile] get mysql connection failed" << std::endl;
+        return false;
+    }
+    MysqlConnGuard guard(std::move(connPtr));
+    MYSQL* mysql = guard.Raw();
+
+    const std::string sql = "UPDATE `user` SET `nick`=?, `desc`=?, `sex`=? WHERE `id`=?";
+    MYSQL_STMT* stmt = mysql_stmt_init(mysql);
+    if (!stmt)
+    {
+        std::cerr << "[UpdateUserProfile] stmt init error: " << mysql_error(mysql) << std::endl;
+        return false;
+    }
+
+    bool ok = false;
+    do
+    {
+        if (mysql_stmt_prepare(stmt, sql.c_str(), sql.size()) != 0)
+        {
+            std::cerr << "[UpdateUserProfile] prepare error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        MYSQL_BIND bind[4]{};
+        bind[0].buffer_type = MYSQL_TYPE_STRING;
+        bind[0].buffer = const_cast<char*>(nick.data());
+        bind[0].buffer_length = static_cast<unsigned long>(nick.size());
+
+        bind[1].buffer_type = MYSQL_TYPE_STRING;
+        bind[1].buffer = const_cast<char*>(desc.data());
+        bind[1].buffer_length = static_cast<unsigned long>(desc.size());
+
+        int arg_sex = (sex == 0) ? 0 : 1;
+        bind[2].buffer_type = MYSQL_TYPE_LONG;
+        bind[2].buffer = &arg_sex;
+
+        long long arg_uid = static_cast<long long>(uid);
+        bind[3].buffer_type = MYSQL_TYPE_LONGLONG;
+        bind[3].buffer = &arg_uid;
+
+        if (mysql_stmt_bind_param(stmt, bind) != 0)
+        {
+            std::cerr << "[UpdateUserProfile] bind param error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        if (mysql_stmt_execute(stmt) != 0)
+        {
+            std::cerr << "[UpdateUserProfile] execute error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        if (mysql_stmt_affected_rows(stmt) == static_cast<my_ulonglong>(-1))
+        {
+            std::cerr << "[UpdateUserProfile] affected rows error: " << mysql_stmt_error(stmt) << std::endl;
+            break;
+        }
+
+        ok = true;
+    } while (false);
+
+    mysql_stmt_close(stmt);
+    return ok;
 }

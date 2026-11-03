@@ -1,6 +1,6 @@
 # 数据库
 
-`schema.sql` 是 ChatDemo 的完整表结构（MySQL 8 / 9，字符集 `utf8mb4`），共 8 张表：
+`schema.sql` 是 ChatDemo 的完整表结构（MySQL 8 / 9，字符集 `utf8mb4`），共 9 张表：
 
 | 表名 | 作用 | 关键索引 / 约束 |
 | --- | --- | --- |
@@ -10,6 +10,7 @@
 | `group_chat_member` | 群成员 | `pk(thread_id, user_id)`、`idx(user_id)` |
 | `chat_thread` | 会话索引（会话列表） | `pk(id)` |
 | `chat_message` | 消息明细（文本 / 图片 / 文件） | `pk(message_id)`、`idx(thread_id, created_at)`、`idx(thread_id, message_id)` |
+| `chat_clear_history` | 每个用户在每个会话里“已清空到哪条消息” | `pk(user_id, thread_id)`、`idx(thread_id, user_id)` |
 | `friend` | 好友关系 | `uniq(owner_uid, friend_uid)` |
 | `friend_apply` | 好友申请 | `uniq(from_uid, to_uid)` |
 
@@ -22,7 +23,7 @@ mysql -h 127.0.0.1 -P 3306 -u root -p \
 
 mysql -h 127.0.0.1 -P 3306 -u root -p --default-character-set=utf8mb4 chatdb < db/schema.sql
 
-# 校验：应输出 8
+# 校验：应输出 9
 mysql -h 127.0.0.1 -P 3306 -u root -p -N \
   -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='chatdb';"
 ```

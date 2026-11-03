@@ -14,6 +14,7 @@
 #include "data.h"
 #include "AsioIOServicePool.h"
 #include "utils.h"
+#include <algorithm>
 #include <cctype>
 #include <exception>
 #include <iostream>
@@ -310,6 +311,168 @@ void LogicSystem::RegisterCallBacks() {
         session->Send(root.dump(), ID_AUTH_FRIEND_RSP);
     };
 
+    // friend delete handlers below
+    _fun_callbacks[ID_DELETE_FRIEND_REQ] = [this](std::shared_ptr<CSession> session,
+        const short &msg_id, const std::string &msg_data) {
+        (void)msg_id;
+        json root;
+        root["error"] = ErrorCodes::Success;
+        try {
+            json req_json = json::parse(msg_data);
+            const int uid = session->GetUserId();
+            const int peer_uid = req_json.value("peer_uid", 0);
+            root["peer_uid"] = peer_uid;
+            if (uid <= 0) {
+                root["error"] = ErrorCodes::TokenInvalid;
+            } else if (peer_uid <= 0 || peer_uid == uid) {
+                root["error"] = ErrorCodes::FRIEND_NOT_EXIST;
+            } else if (!MysqlMgr::GetInstance()->DeleteFriend(uid, peer_uid)) {
+                root["error"] = ErrorCodes::FRIEND_NOT_EXIST;
+            } else {
+                PushFriendDeleted(peer_uid, uid);
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "[DeleteFriend] parse error: " << e.what() << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+        }
+        session->Send(root.dump(), ID_DELETE_FRIEND_RSP);
+    };
+
+    _fun_callbacks[ID_REJECT_FRIEND_REQ] = [this](std::shared_ptr<CSession> session,
+        const short &msg_id, const std::string &msg_data) {
+        (void)msg_id;
+        json root;
+        root["error"] = ErrorCodes::Success;
+        try {
+            json req_json = json::parse(msg_data);
+            const int uid = session->GetUserId();
+            const int apply_uid = req_json.value("apply_uid", 0);
+            root["apply_uid"] = apply_uid;
+            if (uid <= 0) {
+                root["error"] = ErrorCodes::TokenInvalid;
+            } else if (apply_uid <= 0 || apply_uid == uid ||
+                       !MysqlMgr::GetInstance()->RejectFriendApply(apply_uid, uid)) {
+                root["error"] = ErrorCodes::FRIEND_APPLY_NOT_EXIST;
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "[RejectFriend] parse error: " << e.what() << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+        }
+        session->Send(root.dump(), ID_REJECT_FRIEND_RSP);
+    };
+
+    _fun_callbacks[ID_ADD_GROUP_MEMBER_REQ] = [this](std::shared_ptr<CSession> session,
+        const short &msg_id, const std::string &msg_data) {
+        (void)msg_id;
+        json root;
+        root["error"] = ErrorCodes::Success;
+        try {
+            json req_json = json::parse(msg_data);
+            const int uid = session->GetUserId();
+            const int thread_id = req_json.value("thread_id", 0);
+            root["thread_id"] = thread_id;
+
+            int role = 0;
+            if (uid <= 0) {
+                root["error"] = ErrorCodes::TokenInvalid;
+            } else if (thread_id <= 0 ||
+                       !MysqlMgr::GetInstance()->GetGroupMemberRole(thread_id, uid, role)) {
+                root["error"] = ErrorCodes::GROUP_MEMBER_NOT_EXIST;
+            } else {
+                std::vector<int> members;
+                if (req_json.contains("members") && req_json["members"].is_array()) {
+                    for (const auto& item : req_json["members"]) {
+                        const int member_uid = item.get<int>();
+                        if (member_uid <= 0 || member_uid == uid) {
+                            continue;
+                        }
+                        if (std::find(members.begin(), members.end(), member_uid) == members.end()) {
+                            members.push_back(member_uid);
+                        }
+                    }
+                }
+
+                std::vector<int> added;
+                if (!members.empty() &&
+                    !MysqlMgr::GetInstance()->AddGroupMembers(thread_id, members, added)) {
+                    root["error"] = ErrorCodes::GROUP_NOT_EXIST;
+                } else {
+                    std::vector<int> all_members;
+                    MysqlMgr::GetInstance()->GetGroupMembers(thread_id, all_members);
+                    int owner_uid = 0;
+                    MysqlMgr::GetInstance()->GetGroupOwnerId(thread_id, owner_uid);
+
+                    root["owner_uid"] = owner_uid;
+                    root["members"] = json::array();
+                    root["added_members"] = json::array();
+                    for (int member_uid : all_members) {
+                        root["members"].push_back(member_uid);
+                    }
+                    for (int member_uid : added) {
+                        root["added_members"].push_back(member_uid);
+                    }
+
+                    for (int member_uid : all_members) {
+                        PushGroupMembersChanged(member_uid, thread_id, owner_uid, all_members,
+                            std::find(added.begin(), added.end(), member_uid) != added.end()
+                                ? member_uid : 0);
+                    }
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "[AddGroupMember] parse error: " << e.what() << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+        }
+        session->Send(root.dump(), ID_ADD_GROUP_MEMBER_RSP);
+    };
+
+    _fun_callbacks[ID_KICK_GROUP_MEMBER_REQ] = [this](std::shared_ptr<CSession> session,
+        const short &msg_id, const std::string &msg_data) {
+        (void)msg_id;
+        json root;
+        root["error"] = ErrorCodes::Success;
+        try {
+            json req_json = json::parse(msg_data);
+            const int uid = session->GetUserId();
+            const int thread_id = req_json.value("thread_id", 0);
+            const int target_uid = req_json.value("target_uid", 0);
+            root["thread_id"] = thread_id;
+            root["target_uid"] = target_uid;
+
+            int my_role = 0;
+            int target_role = 0;
+            int owner_uid = 0;
+            if (uid <= 0) {
+                root["error"] = ErrorCodes::TokenInvalid;
+            } else if (thread_id <= 0 ||
+                       !MysqlMgr::GetInstance()->GetGroupMemberRole(thread_id, uid, my_role)) {
+                root["error"] = ErrorCodes::GROUP_MEMBER_NOT_EXIST;
+            } else if (!MysqlMgr::GetInstance()->GetGroupOwnerId(thread_id, owner_uid) ||
+                       owner_uid != uid) {
+                root["error"] = ErrorCodes::GROUP_NO_PERMISSION;
+            } else if (target_uid <= 0 ||
+                       !MysqlMgr::GetInstance()->GetGroupMemberRole(thread_id, target_uid, target_role)) {
+                root["error"] = ErrorCodes::GROUP_MEMBER_NOT_EXIST;
+            } else if (target_uid == uid || target_role > 0) {
+                root["error"] = ErrorCodes::GROUP_OWNER_CANNOT_KICK;
+            } else if (!MysqlMgr::GetInstance()->RemoveGroupMember(thread_id, target_uid)) {
+                root["error"] = ErrorCodes::GROUP_MEMBER_NOT_EXIST;
+            } else {
+                PushGroupKicked(target_uid, thread_id);
+
+                std::vector<int> all_members;
+                MysqlMgr::GetInstance()->GetGroupMembers(thread_id, all_members);
+                for (int member_uid : all_members) {
+                    PushGroupMembersChanged(member_uid, thread_id, owner_uid, all_members, 0);
+                }
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "[KickGroupMember] parse error: " << e.what() << std::endl;
+            root["error"] = ErrorCodes::Error_Json;
+        }
+        session->Send(root.dump(), ID_KICK_GROUP_MEMBER_RSP);
+    };
+
     _fun_callbacks[ID_TEXT_CHAT_MSG_REQ] = [this](std::shared_ptr<CSession> session, const short &msg_id, const std::string & msg_data) {
         json req_json = json::parse(msg_data);
         json root;
@@ -446,6 +609,7 @@ void LogicSystem::RegisterCallBacks() {
             thread_obj["user2_id"] = thread->_user2_id;
             thread_obj["group_name"] = thread->_group_name;
             if (thread->_type == "group") {
+                thread_obj["owner_uid"] = thread->_owner_uid;
                 std::vector<int> members;
                 MysqlMgr::GetInstance()->GetGroupMembers(thread->_thread_id, members);
                 json member_array = json::array();
@@ -501,8 +665,15 @@ void LogicSystem::RegisterCallBacks() {
         root["thread_id"] = thread_id;
         root["is_group"] = MysqlMgr::GetInstance()->IsGroupThread(thread_id);
 
+        int uid = session->GetUserId();
+        if (uid <= 0) {
+            root["error"] = ErrorCodes::TokenInvalid;
+            session->Send(root.dump(), ID_LOAD_CHAT_MSG_RSP);
+            return;
+        }
+
         int page_size = 10;
-        std::shared_ptr<PageResult> res = MysqlMgr::GetInstance()->LoadChatMsg(thread_id, message_id, page_size);
+        std::shared_ptr<PageResult> res = MysqlMgr::GetInstance()->LoadChatMsg(uid, thread_id, message_id, page_size);
         if (!res) {
             root["error"] = ErrorCodes::LOAD_CHAT_FAILED;
             session->Send(root.dump(), ID_LOAD_CHAT_MSG_RSP);
@@ -525,6 +696,31 @@ void LogicSystem::RegisterCallBacks() {
         }
 
         session->Send(root.dump(), ID_LOAD_CHAT_MSG_RSP);
+    };
+
+    _fun_callbacks[ID_CLEAR_CHAT_MSG_REQ] = [this](std::shared_ptr<CSession> session, const short &msg_id, const std::string & msg_data) {
+        json req_json = json::parse(msg_data);
+        json root;
+        auto thread_id = req_json.value("thread_id", 0);
+        auto uid = session->GetUserId();
+        if (uid <= 0) {
+            uid = req_json.value("uid", 0);
+        }
+
+        root["thread_id"] = thread_id;
+        if (thread_id <= 0 || uid <= 0 ||
+            !MysqlMgr::GetInstance()->ClearChatMsg(uid, thread_id)) {
+            std::cout << "clear chat msg failed, uid " << uid
+                      << " thread " << thread_id << std::endl;
+            root["error"] = ErrorCodes::CLEAR_CHAT_FAILED;
+            session->Send(root.dump(), ID_CLEAR_CHAT_MSG_RSP);
+            return;
+        }
+
+        std::cout << "clear chat msg success, uid " << uid
+                  << " thread " << thread_id << std::endl;
+        root["error"] = ErrorCodes::Success;
+        session->Send(root.dump(), ID_CLEAR_CHAT_MSG_RSP);
     };
 
 
@@ -841,7 +1037,7 @@ void LogicSystem::PostMsgToQue(std::shared_ptr<LogicNode> msg) {
     }
 }
 
-bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo> user_info) {
+bool LogicSystem::GetBaseInfo(std::string base_key, int uid, std::shared_ptr<UserInfo>& user_info) {
     std::string value_str;
     bool b_get = RedisMgr::GetInstance()->Get(base_key, value_str);
     if (b_get) {
@@ -946,6 +1142,101 @@ void LogicSystem::GetUserByUid(std::string uid_str, json & rtvalue) {
     rtvalue["desc"] = user_info->desc;
     rtvalue["sex"] = user_info->sex;
     rtvalue["icon"] = user_info->icon;
+}
+
+void LogicSystem::PushFriendDeleted(int target_uid, int from_uid) {
+    std::string target_ip;
+    if (!RedisMgr::GetInstance()->Get(USERIPPREFIX + std::to_string(target_uid), target_ip)) {
+        return;
+    }
+
+    json notify;
+    notify["error"] = ErrorCodes::Success;
+    notify["peer_uid"] = from_uid;
+    const std::string self_name = ConfigMgr::Inst()["SelfServer"]["Name"];
+    if (target_ip == self_name) {
+        auto target_session = UserMgr::GetInstance()->getSession(target_uid);
+        if (target_session) {
+            target_session->Send(notify.dump(), ID_NOTIFY_FRIEND_DELETED);
+        }
+        return;
+    }
+
+    message::FriendDeletedReq req;
+    req.set_uid(target_uid);
+    req.set_peer_uid(from_uid);
+    ChatGrpcClient::GetInstance()->NotifyFriendDeleted(target_ip, req);
+}
+
+void LogicSystem::PushGroupMembersChanged(int target_uid, int thread_id, int owner_uid,
+    const std::vector<int>& members, int new_uid) {
+    std::string target_ip;
+    if (!RedisMgr::GetInstance()->Get(USERIPPREFIX + std::to_string(target_uid), target_ip)) {
+        return;
+    }
+
+    const std::string self_name = ConfigMgr::Inst()["SelfServer"]["Name"];
+    if (target_ip == self_name) {
+        json notify;
+        notify["error"] = ErrorCodes::Success;
+        notify["thread_id"] = thread_id;
+        notify["owner_uid"] = owner_uid;
+        notify["uid"] = target_uid;
+        notify["is_new_member"] = (new_uid == target_uid);
+        notify["members"] = json::array();
+        notify["member_infos"] = json::array();
+        for (int member_uid : members) {
+            notify["members"].push_back(member_uid);
+            json info;
+            info["uid"] = member_uid;
+            auto info_ptr = MysqlMgr::GetInstance()->GetUserInfoById(member_uid);
+            if (info_ptr) {
+                info["name"] = info_ptr->username;
+                info["nick"] = info_ptr->nick;
+                info["icon"] = info_ptr->icon;
+            }
+            notify["member_infos"].push_back(info);
+        }
+        auto target_session = UserMgr::GetInstance()->getSession(target_uid);
+        if (target_session) {
+            target_session->Send(notify.dump(), ID_NOTIFY_GROUP_MEMBERS_CHANGED);
+        }
+        return;
+    }
+
+    message::GroupMembersChangedReq req;
+    req.set_thread_id(thread_id);
+    req.set_owner_uid(owner_uid);
+    req.set_uid(target_uid);
+    req.set_is_new_member(new_uid == target_uid);
+    for (int member_uid : members) {
+        req.add_members_uid()->set_uid(member_uid);
+    }
+    ChatGrpcClient::GetInstance()->NotifyGroupMembersChanged(target_ip, req);
+}
+
+void LogicSystem::PushGroupKicked(int target_uid, int thread_id) {
+    std::string target_ip;
+    if (!RedisMgr::GetInstance()->Get(USERIPPREFIX + std::to_string(target_uid), target_ip)) {
+        return;
+    }
+
+    const std::string self_name = ConfigMgr::Inst()["SelfServer"]["Name"];
+    if (target_ip == self_name) {
+        auto target_session = UserMgr::GetInstance()->getSession(target_uid);
+        if (target_session) {
+            json notify;
+            notify["error"] = ErrorCodes::Success;
+            notify["thread_id"] = thread_id;
+            target_session->Send(notify.dump(), ID_NOTIFY_GROUP_KICKED);
+        }
+        return;
+    }
+
+    message::GroupKickedReq req;
+    req.set_uid(target_uid);
+    req.set_thread_id(thread_id);
+    ChatGrpcClient::GetInstance()->NotifyGroupKicked(target_ip, req);
 }
 
 void LogicSystem::GetUserByName(std::string name, json& rtvalue)

@@ -52,6 +52,7 @@ struct ChatThreadInfo {
     int _user1_id;    // 私聊时对应 private_chat.user1_id；群聊时设为 0
     int _user2_id;    // 私聊时对应 private_chat.user2_id；群聊时设为 0
     std::string _group_name;
+    int _owner_uid = 0; // 群聊：群主 uid；私聊为 0
 };
 
 struct ChatMessage {

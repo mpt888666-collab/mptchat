@@ -133,6 +133,41 @@ message AddGroupChatRsp{
   int32 member_size = 6;
 }
 
+message FriendDeletedReq{
+  int32 uid = 1;
+  int32 peer_uid = 2;
+}
+
+message FriendDeletedRsp{
+  int32 error = 1;
+  int32 uid = 2;
+  int32 peer_uid = 3;
+}
+
+message GroupMembersChangedReq{
+  int32 thread_id = 1;
+  int32 owner_uid = 2;
+  int32 uid = 3;
+  bool is_new_member = 4;
+  repeated MembersUid members_uid = 5;
+}
+
+message GroupMembersChangedRsp{
+  int32 error = 1;
+  int32 thread_id = 2;
+}
+
+message GroupKickedReq{
+  int32 thread_id = 1;
+  int32 uid = 2;
+}
+
+message GroupKickedRsp{
+  int32 error = 1;
+  int32 thread_id = 2;
+  int32 uid = 3;
+}
+
 service ChatService{
   rpc NotifyAddFriend(AddFriendReq) returns (AddFriendRsp) {}
   rpc NotifyAuthFriend(AuthFriendReq) returns (AuthFriendRsp) {}
@@ -140,5 +175,8 @@ service ChatService{
   rpc NotifyImageChatMsg(ImageChatMsgReq) returns (ImageChatMsgRsp) {}
   rpc NotifyKickUser(KickUserReq) returns (KickUserRsp){}
   rpc NotifyAddGroupChat(AddGroupChatReq) returns(AddGroupChatRsp){}
+  rpc NotifyFriendDeleted(FriendDeletedReq) returns(FriendDeletedRsp){}
+  rpc NotifyGroupMembersChanged(GroupMembersChangedReq) returns(GroupMembersChangedRsp){}
+  rpc NotifyGroupKicked(GroupKickedReq) returns(GroupKickedRsp){}
 }
 
