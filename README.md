@@ -57,7 +57,7 @@ ChatDemo 是一套完整自研的桌面即时通讯系统，覆盖「账号 → 
 
 ![ChatDemo 总体架构](docs/architecture.svg)
 
-> 矢量图：[`docs/architecture.svg`](docs/architecture.svg) ｜ 位图：[`docs/architecture.png`](docs/architecture.png)
+> 矢量图：[`docs/architecture.svg`](docs/architecture.svg) ｜ 位图：[`docs/architecture.png`](docs/architecture.png) ｜ 架构设计文档：[`docs/architecture.md`](docs/architecture.md)
 
 ```mermaid
 flowchart TB
@@ -609,6 +609,7 @@ mptchat/
 │   ├── results/             # 本次实测的原始输出
 │   └── README.md            # 协议说明与参数表
 ├── docs/
+│   ├── architecture.md      # 系统架构设计文档（详细版）
 │   ├── architecture.svg     # 架构图（矢量）
 │   └── architecture.png
 ├── .github/workflows/       # ci.yml + release.yml
